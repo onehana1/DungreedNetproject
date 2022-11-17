@@ -1,8 +1,8 @@
 #include <windows.h>
 #include <tchar.h>
 #include "FileUtility.h"
-#include "Scene.h"
 #include "Character.h"
+#include "Framework.h"
 #include <random>
 
 RECT client;
@@ -12,7 +12,7 @@ HDC h_dc;
 HDC buf_dc;
 HBITMAP buf_bit;
 HBITMAP old_bit;
-Scene* scene;
+Framework* framework;
 std::random_device rd;
 std::default_random_engine dre(rd());
 
@@ -68,7 +68,7 @@ LRESULT CALLBACK WndProc(HWND h_wnd, UINT u_msg, WPARAM w_param, LPARAM l_param)
 	{
 	case WM_CREATE:
 		GetClientRect(h_wnd, &client);
-		scene = new Scene;
+		framework = new Framework;
 		SetTimer(h_wnd, 1, 15, 0);
 		return 0;
 	case WM_PAINT:
@@ -77,11 +77,11 @@ LRESULT CALLBACK WndProc(HWND h_wnd, UINT u_msg, WPARAM w_param, LPARAM l_param)
 		CleanUpAfterDoubleBuffering();
 		return 0;
 	case WM_TIMER:
-		scene->Update();
+		framework->Update();
 		InvalidateRect(h_wnd, NULL, FALSE);
 		return 0;
 	case WM_DESTROY:
-		delete scene;
+		delete framework;
 		PostQuitMessage(0);
 		return 0;
 	}
@@ -98,7 +98,7 @@ void PrepareToDoubleBuffering()
 
 void DoubleBuffering()
 {
-	scene->Render();
+	framework->Render();
 
 	TransmitHDCBufferToRealHDC();
 }

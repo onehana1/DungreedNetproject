@@ -1,6 +1,30 @@
 #include "Scene.h"
 
+
 Scene::Scene()
+{
+}
+
+Scene::~Scene()
+{
+}
+
+void Scene::Render() const
+{
+}
+
+void Scene::Update()
+{
+}
+
+int Scene::ChangeScene()
+{
+	return 0;
+}
+
+//------------------------------------------------------------------------------------------------------------------
+
+PlayScene::PlayScene()
 {
 	try {
 		animation_manager = new AnimationManager;
@@ -29,7 +53,7 @@ Scene::Scene()
 	}
 }
 
-Scene::Scene(const int dungeon_id)
+PlayScene::PlayScene(const int dungeon_id)
 {
 	try {
 		animation_manager = new AnimationManager;
@@ -58,7 +82,7 @@ Scene::Scene(const int dungeon_id)
 	}
 }
 
-Scene::~Scene()
+PlayScene::~PlayScene()
 {
 	delete player;
 	delete dungeon;
@@ -72,7 +96,7 @@ Scene::~Scene()
 	delete missile_manager;
 }
 
-HRESULT Scene::Init()
+HRESULT PlayScene::Init()
 {
 	player->Init(dungeon, animation_manager);
 	monster_manager->Init(dungeon, animation_manager);
@@ -86,7 +110,7 @@ HRESULT Scene::Init()
 	return S_OK;
 }
 
-void Scene::Render() const
+void PlayScene::Render() const
 {
 	InstantDCSet dc_set(RECT{ 0, 0, dungeon->dungeon_width, dungeon->dungeon_height });
 
@@ -102,7 +126,7 @@ void Scene::Render() const
 	DrawBuffer(dc_set.buf_dc, camera->Rect());
 }
 
-void Scene::Update()
+void PlayScene::Update()
 {
 	// player, monster 업데이트 루틴
 	player->Update(dungeon, weapon, crosshair, missile_manager, animation_manager, sound_manager, effect_manager);
@@ -116,7 +140,12 @@ void Scene::Update()
 	DungeonChangeProc();
 }
 
-void Scene::DungeonChangeProc()
+int PlayScene::ChangeScene()
+{
+	return 0;
+}
+
+void PlayScene::DungeonChangeProc()
 {
 	if (player->IsOut_Right(dungeon))
 		if (monster_manager->AreMonsterAllDied())
@@ -133,7 +162,7 @@ void Scene::DungeonChangeProc()
 		monster_manager->Appear(5);
 }
 
-void Scene::HitUpdate()
+void PlayScene::HitUpdate()
 {
 	for (auto* monster : monster_manager->monsters)
 		if (monster->IsAppeared()) {
@@ -147,7 +176,7 @@ void Scene::HitUpdate()
 		}
 }
 
-void Scene::GoNextDungeon()
+void PlayScene::GoNextDungeon()
 {
 	try {
 		ChangeDungeon(dungeon->next_dungeon_id);
@@ -159,7 +188,7 @@ void Scene::GoNextDungeon()
 	}
 }
 
-void Scene::GoPrevDungeon()
+void PlayScene::GoPrevDungeon()
 {
 	try {
 		ChangeDungeon(dungeon->prev_dungeon_id);
@@ -171,7 +200,7 @@ void Scene::GoPrevDungeon()
 	}
 }
 
-void Scene::ChangeDungeon(const int dungeon_id)
+void PlayScene::ChangeDungeon(const int dungeon_id)
 {
 	if (!dungeon_id)
 		throw L"ChangeDungeon_dungeon_id was 0";
@@ -179,7 +208,7 @@ void Scene::ChangeDungeon(const int dungeon_id)
 	dungeon = new Dungeon(dungeon_id);
 }
 
-void Scene::LoadPlayerAniamtion()
+void PlayScene::LoadPlayerAniamtion()
 {
 	animation_manager->Insert("player_stand");
 	animation_manager->Insert("player_move");
@@ -193,7 +222,7 @@ void Scene::LoadPlayerAniamtion()
 	animation_manager->Insert("SkellBossBullet");
 }
 
-void Scene::LoadBattleSound()
+void PlayScene::LoadBattleSound()
 {
 	sound_manager->InsertEffectSound("sound\\walk.mp3");
 	sound_manager->InsertEffectSound("sound\\dash.mp3");
@@ -206,7 +235,107 @@ void Scene::LoadBattleSound()
 	sound_manager->InsertEffectSound("sound\\Explosion1.ogg");
 }
 
-void Scene::LoadBattleEffect()
+void PlayScene::LoadBattleEffect()
 {
 	animation_manager->Insert("Dust");
+}
+
+//------------------------------------------------------------------------------------------------------------------
+
+LobbyScene::LobbyScene()
+{
+	try {
+		image = new Image(L"Background\\LobbyScene.png");
+		crosshair = new Crosshair(image->GetWidth(), image->GetHeight());
+	}
+	catch (const TCHAR* error_message) {
+		MessageBox(h_wnd, error_message, L"Error", MB_OK);
+	}
+}
+
+LobbyScene::~LobbyScene()
+{
+	delete crosshair;
+	delete image;
+}
+
+void LobbyScene::Render() const
+{
+	int width = image->GetWidth();
+	int height = image->GetHeight();
+	InstantDCSet dc_set(RECT{ 0, 0, width, height});
+
+	image->Draw(dc_set.buf_dc, 0, 0, dc_set.bit_rect.right, dc_set.bit_rect.bottom, 0, 0, width, height);
+	crosshair->Render(dc_set.buf_dc, dc_set.bit_rect);
+
+	DrawBuffer(dc_set.buf_dc, RECT{ 0, 0, width, height });
+}
+
+void LobbyScene::Update()
+{
+	crosshair->Update(image->GetWidth(), image->GetHeight());
+}
+
+int LobbyScene::ChangeScene()
+{
+	return 0;
+}
+
+//------------------------------------------------------------------------------------------------------------------
+
+StartScene::StartScene()
+{
+	try {
+		image = new Image(L"Background\\StartScene.png");
+		crosshair = new Crosshair(image->GetWidth(), image->GetHeight());
+	}
+	catch (const TCHAR* error_message) {
+		MessageBox(h_wnd, error_message, L"Error", MB_OK);
+	}
+}
+
+StartScene::~StartScene()
+{
+	delete image;
+	delete crosshair;
+}
+
+void StartScene::Render() const
+{
+	int width = image->GetWidth();
+	int height = image->GetHeight();
+	InstantDCSet dc_set(RECT{ 0, 0, width, height });
+
+	image->Draw(dc_set.buf_dc, 0, 0, dc_set.bit_rect.right, dc_set.bit_rect.bottom, 0, 0, width, height);
+	crosshair->Render(dc_set.buf_dc, dc_set.bit_rect);
+
+	POINT pos;
+	GetCursorPos(&pos);
+	ScreenToClient(h_wnd, &pos);
+
+	TCHAR str[128];
+	wsprintf(str, TEXT("[프로그램 기준] X: %04d, Y: %04d"), pos.x, pos.y);
+
+	TextOut(dc_set.buf_dc, 10, 30, str, lstrlen(str));
+
+	DrawBuffer(dc_set.buf_dc, RECT{ 0, 0, width, height });
+}
+
+void StartScene::Update()
+{
+	crosshair->Update(image->GetWidth(), image->GetHeight());
+}
+
+int StartScene::ChangeScene()
+{
+	if (GetAsyncKeyState(VK_LBUTTON) & 0x8000) {	// Test 휠 누르면 LobbyScene으로 전환...
+		POINT pos;
+		GetCursorPos(&pos);
+		ScreenToClient(h_wnd, &pos);
+		if (pos.x > 450 && pos.x < 820 && pos.y > 460 && pos.y < 580)
+		{
+			return 2;
+		}
+	}
+	return 0;
 }

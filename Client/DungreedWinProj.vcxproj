@@ -161,6 +161,7 @@
     <ClCompile Include="include\Dungeon.cpp" />
     <ClCompile Include="include\Effect.cpp" />
     <ClCompile Include="include\FileUtility.cpp" />
+    <ClCompile Include="include\Framework.cpp" />
     <ClCompile Include="include\HitScan.cpp" />
     <ClCompile Include="include\MainFrame.cpp" />
     <ClCompile Include="include\Missile.cpp" />
@@ -182,6 +183,7 @@
     <ClInclude Include="include\Dungeon.h" />
     <ClInclude Include="include\Effect.h" />
     <ClInclude Include="include\FileUtility.h" />
+    <ClInclude Include="include\Framework.h" />
     <ClInclude Include="include\HitScan.h" />
     <ClInclude Include="include\Missile.h" />
     <ClInclude Include="include\Monster.h" />

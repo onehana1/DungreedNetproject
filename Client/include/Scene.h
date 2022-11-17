@@ -23,6 +23,18 @@ extern void DrawBuffer(HDC instant_dc, const RECT& rect);
 class Scene : private Uncopyable
 {
 private:
+public:
+	Scene();
+	~Scene();
+
+	virtual void Render() const;
+	virtual void Update();
+	virtual int ChangeScene();
+};
+
+class PlayScene : public Scene
+{
+private:
 	Dungeon* dungeon;
 	Player* player;
 	Weapon* weapon;
@@ -49,11 +61,50 @@ private:
 	void LoadBattleEffect();
 
 public:
-	Scene();
-	Scene(const int dungeon_id);
-	~Scene();
+	PlayScene();
+	PlayScene(const int dungeon_id);
+	~PlayScene();
 
-	void Render() const;
-	void Update();
+	virtual void Render() const;
+	virtual void Update();
+
+	virtual int ChangeScene();
+};
+
+class StartScene : public Scene
+{
+private:
+	Crosshair* crosshair;
+	Image* image;
+	
+
+	int update_cnt = 0;
+
+public:
+	StartScene();
+	~StartScene();
+
+	virtual void Render() const;
+	virtual void Update();
+
+	virtual int ChangeScene();
+};
+
+class LobbyScene : public Scene
+{
+private:
+	Crosshair* crosshair;
+	Image* image;
+
+	int update_cnt = 0;
+
+public:
+	LobbyScene();
+	~LobbyScene();
+
+	virtual void Render() const;
+	virtual void Update();
+
+	virtual int ChangeScene();
 };
 #endif
