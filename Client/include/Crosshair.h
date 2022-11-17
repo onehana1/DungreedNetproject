@@ -18,10 +18,12 @@ private:
 	POINT pos;
 	int half_size;
 public:
+	Crosshair(int, int);
 	Crosshair(const Camera* camera);
 	~Crosshair();
 
 	void Init(const Camera* camera);
+	void Update(int, int);
 	void Update(const Camera* camera);
 	void Render(HDC scene_dc, const RECT& bit_rect);
 

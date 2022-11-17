@@ -1,5 +1,13 @@
 #include "Crosshair.h"
 
+Crosshair::Crosshair(int x_range, int y_range)
+{
+	Update(x_range, y_range);
+	ShowCursor(FALSE);
+	half_size = x_range / 40.0f;
+	image = new Image(L"ShootingCursor1-resources.assets-2645.png");
+}
+
 Crosshair::Crosshair(const Camera* camera) : half_size { camera->x_half_range / 20 }
 {
 	Update(camera);
@@ -18,6 +26,15 @@ void Crosshair::Init(const Camera* camera)
 	Update(camera);
 }
 
+void Crosshair::Update(int x_range, int y_range)
+{
+	GetCursorPos(&pos);
+	ScreenToClient(h_wnd, &pos);
+
+	pos.x *= x_range / static_cast<double>(client.right);
+	pos.y *= y_range / static_cast<double>(client.bottom);
+}
+
 void Crosshair::Update(const Camera* camera)
 {
 	GetCursorPos(&pos);
@@ -28,6 +45,7 @@ void Crosshair::Update(const Camera* camera)
 	pos.x += camera->pos.x - camera->x_half_range;
 	pos.y += camera->pos.y - camera->y_half_range;
 }
+
 
 void Crosshair::Render(HDC scene_dc, const RECT& bit_rect)
 {
