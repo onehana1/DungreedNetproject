@@ -1,0 +1,72 @@
+﻿  Camera.cpp
+C:\Users\jhana\Desktop\DungreedWinProj\include\Player.h(44,33): warning C4244: '인수': 'double'에서 'const int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\jhana\Desktop\DungreedWinProj\include\Player.h(43,51): warning C4244: '인수': 'double'에서 'const int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  Crosshair.cpp
+C:\Users\jhana\Desktop\DungreedWinProj\include\Player.h(44,33): warning C4244: '인수': 'double'에서 'const int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\jhana\Desktop\DungreedWinProj\include\Player.h(43,51): warning C4244: '인수': 'double'에서 'const int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\jhana\Desktop\DungreedWinProj\include\Crosshair.cpp(17,35): warning C4244: '=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\jhana\Desktop\DungreedWinProj\include\Crosshair.cpp(26,36): warning C4244: '*=': 'double'에서 'LONG'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\jhana\Desktop\DungreedWinProj\include\Crosshair.cpp(27,36): warning C4244: '*=': 'double'에서 'LONG'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  HitScan.cpp
+  MainFrame.cpp
+C:\Users\jhana\Desktop\DungreedWinProj\include\Player.h(44,33): warning C4244: '인수': 'double'에서 'const int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\jhana\Desktop\DungreedWinProj\include\Player.h(43,51): warning C4244: '인수': 'double'에서 'const int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\jhana\Desktop\DungreedWinProj\include\Monster.h(75,1): warning C4305: '=': 'double'에서 'float'(으)로 잘립니다.
+  Monster.cpp
+C:\Users\jhana\Desktop\DungreedWinProj\include\Player.h(44,33): warning C4244: '인수': 'double'에서 'const int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\jhana\Desktop\DungreedWinProj\include\Player.h(43,51): warning C4244: '인수': 'double'에서 'const int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\jhana\Desktop\DungreedWinProj\include\Monster.h(75,1): warning C4305: '=': 'double'에서 'float'(으)로 잘립니다.
+C:\Users\jhana\Desktop\DungreedWinProj\include\Monster.cpp(200,40): warning C4244: '*=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\jhana\Desktop\DungreedWinProj\include\Monster.cpp(201,41): warning C4244: '*=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\jhana\Desktop\DungreedWinProj\include\Monster.cpp(255,40): warning C4244: '*=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\jhana\Desktop\DungreedWinProj\include\Monster.cpp(256,41): warning C4244: '*=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  MonsterAI.cpp
+C:\Users\jhana\Desktop\DungreedWinProj\include\Player.h(44,33): warning C4244: '인수': 'double'에서 'const int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\jhana\Desktop\DungreedWinProj\include\Player.h(43,51): warning C4244: '인수': 'double'에서 'const int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\jhana\Desktop\DungreedWinProj\include\Monster.h(75,1): warning C4305: '=': 'double'에서 'float'(으)로 잘립니다.
+  MonsterAttackSpecific.cpp
+C:\Users\jhana\Desktop\DungreedWinProj\include\Player.h(44,33): warning C4244: '인수': 'double'에서 'const int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\jhana\Desktop\DungreedWinProj\include\Player.h(43,51): warning C4244: '인수': 'double'에서 'const int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\jhana\Desktop\DungreedWinProj\include\Monster.h(75,1): warning C4305: '=': 'double'에서 'float'(으)로 잘립니다.
+C:\Users\jhana\Desktop\DungreedWinProj\include\MonsterAttackSpecific.cpp(38,31): warning C4305: '인수': 'double'에서 'const float'(으)로 잘립니다.
+C:\Users\jhana\Desktop\DungreedWinProj\include\MonsterAttackSpecific.cpp(37,8): warning C4244: '인수': 'double'에서 'const float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\jhana\Desktop\DungreedWinProj\include\MonsterAttackSpecific.cpp(93,36): warning C4305: '인수': 'double'에서 'const float'(으)로 잘립니다.
+C:\Users\jhana\Desktop\DungreedWinProj\include\MonsterAttackSpecific.cpp(92,9): warning C4244: '인수': 'double'에서 'const float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\jhana\Desktop\DungreedWinProj\include\MonsterAttackSpecific.cpp(104,74): warning C4305: '인수': 'double'에서 'const float'(으)로 잘립니다.
+C:\Users\jhana\Desktop\DungreedWinProj\include\MonsterAttackSpecific.cpp(114,74): warning C4305: '인수': 'double'에서 'const float'(으)로 잘립니다.
+  Player.cpp
+C:\Users\jhana\Desktop\DungreedWinProj\include\Player.h(44,33): warning C4244: '인수': 'double'에서 'const int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\jhana\Desktop\DungreedWinProj\include\Player.h(43,51): warning C4244: '인수': 'double'에서 'const int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\jhana\Desktop\DungreedWinProj\include\Player.cpp(21,39): warning C4244: '=': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\jhana\Desktop\DungreedWinProj\include\Player.cpp(22,40): warning C4244: '=': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\jhana\Desktop\DungreedWinProj\include\Player.cpp(72,29): warning C4244: '인수': 'double'에서 'const int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\jhana\Desktop\DungreedWinProj\include\Player.cpp(74,28): warning C4244: '인수': 'double'에서 'const int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\jhana\Desktop\DungreedWinProj\include\Player.cpp(93,30): warning C4838: 'double'에서 'LONG'(으)로의 변환에는 축소 변환이 필요합니다.
+C:\Users\jhana\Desktop\DungreedWinProj\include\Player.cpp(93,30): warning C4244: '초기화 중': 'double'에서 'LONG'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\jhana\Desktop\DungreedWinProj\include\Player.cpp(93,61): warning C4838: 'double'에서 'LONG'(으)로의 변환에는 축소 변환이 필요합니다.
+C:\Users\jhana\Desktop\DungreedWinProj\include\Player.cpp(93,61): warning C4244: '초기화 중': 'double'에서 'LONG'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\jhana\Desktop\DungreedWinProj\include\Player.cpp(99,30): warning C4838: 'double'에서 'LONG'(으)로의 변환에는 축소 변환이 필요합니다.
+C:\Users\jhana\Desktop\DungreedWinProj\include\Player.cpp(99,30): warning C4244: '초기화 중': 'double'에서 'LONG'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\jhana\Desktop\DungreedWinProj\include\Player.cpp(99,61): warning C4838: 'double'에서 'LONG'(으)로의 변환에는 축소 변환이 필요합니다.
+C:\Users\jhana\Desktop\DungreedWinProj\include\Player.cpp(99,61): warning C4244: '초기화 중': 'double'에서 'LONG'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\jhana\Desktop\DungreedWinProj\include\Player.cpp(135,90): warning C4244: '인수': 'double'에서 'const int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\jhana\Desktop\DungreedWinProj\include\Player.cpp(138,90): warning C4244: '인수': 'double'에서 'const int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\jhana\Desktop\DungreedWinProj\include\Player.cpp(145,32): warning C4244: '=': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\jhana\Desktop\DungreedWinProj\include\Player.cpp(148,32): warning C4244: '=': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\jhana\Desktop\DungreedWinProj\include\Player.cpp(151,44): warning C4244: '=': 'double'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  Scene.cpp
+C:\Users\jhana\Desktop\DungreedWinProj\include\Player.h(44,33): warning C4244: '인수': 'double'에서 'const int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\jhana\Desktop\DungreedWinProj\include\Player.h(43,51): warning C4244: '인수': 'double'에서 'const int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\jhana\Desktop\DungreedWinProj\include\Monster.h(75,1): warning C4305: '=': 'double'에서 'float'(으)로 잘립니다.
+  Sound.cpp
+C:\Users\jhana\Desktop\DungreedWinProj\include\Sound.cpp(40,20): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
+C:\Users\jhana\Desktop\DungreedWinProj\include\Sound.cpp(53,20): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
+  Weapon.cpp
+C:\Users\jhana\Desktop\DungreedWinProj\include\Player.h(44,33): warning C4244: '인수': 'double'에서 'const int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\jhana\Desktop\DungreedWinProj\include\Player.h(43,51): warning C4244: '인수': 'double'에서 'const int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  코드를 생성하고 있습니다.
+  0 of 1368 functions ( 0.0%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    0 functions had inline decision re-evaluated but remain unchanged
+  코드를 생성했습니다.
+  DungreedWinProj.vcxproj -> C:\Users\jhana\Desktop\DungreedWinProj\Release\DungreedWinProj.exe
