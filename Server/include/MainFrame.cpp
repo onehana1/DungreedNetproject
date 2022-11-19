@@ -1,9 +1,12 @@
-#include <windows.h>
+#include "ServerThread.h"
 #include <tchar.h>
 #include "FileUtility.h"
 #include "Scene.h"
 #include "Character.h"
+
 #include <random>
+
+#include <windows.h>
 
 RECT client;
 HWND h_wnd;
@@ -13,6 +16,7 @@ HDC buf_dc;
 HBITMAP buf_bit;
 HBITMAP old_bit;
 Scene* scene;
+SOCKET LISTEN; 
 std::random_device rd;
 std::default_random_engine dre(rd());
 
@@ -63,10 +67,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdPa
 
 LRESULT CALLBACK WndProc(HWND h_wnd, UINT u_msg, WPARAM w_param, LPARAM l_param)
 {
-
+	int retval = 0;
+	HANDLE hThread;
 	switch (u_msg)
 	{
 	case WM_CREATE:
+		//대기소켓 생성 
+		LISTEN = Create_Listen();
 		GetClientRect(h_wnd, &client);
 		scene = new Scene;
 		SetTimer(h_wnd, 1, 15, 0);
@@ -77,8 +84,45 @@ LRESULT CALLBACK WndProc(HWND h_wnd, UINT u_msg, WPARAM w_param, LPARAM l_param)
 		CleanUpAfterDoubleBuffering();
 		return 0;
 	case WM_TIMER:
-		scene->Update();
-		InvalidateRect(h_wnd, NULL, FALSE);
+		switch (w_param) {
+		case 1: //대기 소켓 유지
+			retval = listen(LISTEN, SOMAXCONN);
+			if (retval == SOCKET_ERROR) err_quit("listen()");
+
+			SOCKET client_sock;
+			struct sockaddr_in clientaddr;
+			int addrlen;
+
+			// accept()
+			addrlen = sizeof(clientaddr);
+			client_sock = accept(LISTEN, (struct sockaddr*)&clientaddr, &addrlen);
+			if (client_sock == INVALID_SOCKET) {
+				err_display("accept()");
+				break;
+			}
+
+			// 접속한 클라이언트 정보 출력
+			char addr[INET_ADDRSTRLEN];
+			inet_ntop(AF_INET, &clientaddr.sin_addr, addr, sizeof(addr));
+			printf("\n[TCP 서버] 클라이언트 접속: IP 주소=%s, 포트 번호=%d\n",
+				addr, ntohs(clientaddr.sin_port));
+
+			////스레드 생성!
+			 hThread = CreateThread(NULL, 0, ClientThread, (LPVOID)client_sock, 0, NULL);
+			if (hThread == NULL) {
+				closesocket(client_sock);
+			}
+			else {
+				CloseHandle(hThread);
+
+			}
+			break;
+		case 2: // Scene update 
+			scene->Update();
+			InvalidateRect(h_wnd, NULL, FALSE);
+			break;
+		default: break;
+		}
 		return 0;
 	case WM_DESTROY:
 		delete scene;

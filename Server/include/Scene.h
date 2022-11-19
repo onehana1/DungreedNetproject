@@ -16,6 +16,14 @@
 extern HWND h_wnd;
 extern void DrawBuffer(HDC instant_dc, const RECT& rect);
 
+class Dungeon;
+class Player;
+class Weapon; 
+class MonsterManager;
+class MissileManager;
+class HitScanner;
+class Uncopyable;
+
 class Scene : private Uncopyable
 {
 private:
@@ -44,7 +52,7 @@ public:
 	Scene(const int dungeon_id);
 	~Scene();
 
-POINT DungeonSize{ 100,100 };
+    POINT DungeonSize{ 100,100 };
 
 	//void Render() const;
 	void Update();

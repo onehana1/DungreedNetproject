@@ -39,11 +39,7 @@ void Player::Update(const Dungeon* dungeon, Weapon* weapon, MissileManager* miss
 
 }
 
-void Player::KeyProc(const Dungeon* dungeon, MissileManager* missile_manager
-
-
-
-)
+void Player::KeyProc(const Dungeon* dungeon, MissileManager* missile_manager)
 {
 	InstantDCSet dc_set(RECT{ 0, 0, dungeon->dungeon_width, dungeon->dungeon_height });
 

@@ -48,7 +48,6 @@ public:
 
 	void Update(const Dungeon* dungeon, Weapon* weapon, MissileManager* missile_manager );
 
-	friend class Camera;
 	friend class Weapon;
 	friend class MonsterAI;
 	POINT mouse;

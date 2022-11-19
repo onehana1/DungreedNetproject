@@ -18,6 +18,12 @@ extern std::default_random_engine dre;
 constexpr int MONSTER_MAX_ANIMATION_NUM = 4;
 
 class MonsterAI;
+class Monster;
+class Dungeon;
+class Player;
+class MissileManager;
+class Character;
+
 
 class Monster : public Character
 {
@@ -59,7 +65,7 @@ public:
 		const double x_move_px, const double jump_start_power,
 		const int hp, const int atk, const int def, const BOOL is_floating, const BOOL melee_attack, const BOOL missile_attack,
 		const POINT policy_stand, const POINT policy_move_to_player, const POINT policy_move_from_player, const POINT policy_attack)
-		: Character(monster_id, width, height, pos, State::DOWN, TRUE, x_move_px, jump_start_power, hp, atk, def),
+		:Character(monster_id, width, height, pos, State::DOWN, TRUE, x_move_px, jump_start_power, hp, atk, def),
 		is_floating {is_floating}, melee_attack {melee_attack}, missile_attack {missile_attack},
 		stand_animation_name{ stand_animation_name }, attack_animation_name{ attack_animation_name }, move_animation_name{ move_animation_name },
 		policy_stand{ policy_stand }, policy_move_to_player{ policy_move_to_player }, policy_move_from_player{ policy_move_from_player },

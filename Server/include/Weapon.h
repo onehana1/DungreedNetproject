@@ -25,9 +25,9 @@ private:
 
 	int ATTACT_TIME;
 public:  
-	Weapon(const Scene* scene, const Player* player,const POINT mouse);
+	Weapon( const Player* player,const POINT mouse);
 	~Weapon();
-	void Init(const Scene* scene, const Player* player, const POINT mouse);
+	void Init( const Player* player, const POINT mouse);
 	void Update(const Player* player, const POINT mouse );
 	void Render(HDC scene_dc, const RECT& bit_rect);
 	void StartAttack();

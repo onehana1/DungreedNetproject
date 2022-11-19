@@ -166,11 +166,13 @@
     <ClCompile Include="include\Player.cpp" />
     <ClCompile Include="include\Scene.cpp" />
     <ClCompile Include="include\InstantDCSet.cpp" />
+    <ClCompile Include="include\SThread.h" />
     <ClCompile Include="include\Weapon.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Client\Protocol.h" />
     <ClInclude Include="include\Character.h" />
+    <ClInclude Include="include\Common.h" />
     <ClInclude Include="include\DataBase.h" />
     <ClInclude Include="include\Dungeon.h" />
     <ClInclude Include="include\FileUtility.h" />
@@ -180,6 +182,7 @@
     <ClInclude Include="include\MonsterAI.h" />
     <ClInclude Include="include\Player.h" />
     <ClInclude Include="include\Scene.h" />
+    <ClInclude Include="include\ServerThread.h" />
     <ClInclude Include="include\Uncopyable.h" />
     <ClInclude Include="include\InstantDCSet.h" />
     <ClInclude Include="include\Weapon.h" />

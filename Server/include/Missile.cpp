@@ -17,25 +17,25 @@ void Missile::Update()
 
 }
 
-void Missile::Render(HDC scene_dc, const RECT& bit_rect) const
-{
-	int image_width = image->GetWidth();
-	int image_height = image->GetHeight();
-
-	HBITMAP hbm_rotate = RotateImage(scene_dc, image, pi / 2 - radian);
-	Image* rotate_image = new Image;
-	rotate_image->Attach(hbm_rotate);
-	rotate_image->SetTransparentColor(RGB(0, 0, 0));
-
-	if (looking_direction) {
-		rotate_image->Draw(scene_dc, pos.x, pos.y, width, height, 0, 0, image_width, image_height);
-	}
-	else {
-		DrawFlip(scene_dc, bit_rect, rotate_image, pos, width, height);
-	}
-	DeleteObject(hbm_rotate);
-	delete rotate_image;
-}
+//void Missile::Render(HDC scene_dc, const RECT& bit_rect) const
+//{
+//	int image_width = image->GetWidth();
+//	int image_height = image->GetHeight();
+//
+//	HBITMAP hbm_rotate = RotateImage(scene_dc, image, pi / 2 - radian);
+//	Image* rotate_image = new Image;
+//	rotate_image->Attach(hbm_rotate);
+//	rotate_image->SetTransparentColor(RGB(0, 0, 0));
+//
+//	if (looking_direction) {
+//		rotate_image->Draw(scene_dc, pos.x, pos.y, width, height, 0, 0, image_width, image_height);
+//	}
+//	else {
+//		DrawFlip(scene_dc, bit_rect, rotate_image, pos, width, height);
+//	}
+//	DeleteObject(hbm_rotate);
+//	delete rotate_image;
+//}
 
 bool Missile::IsOut_Left(const Dungeon* dungeon) const
 {
@@ -104,8 +104,8 @@ void MissileManager::Update(const Dungeon* dungeon)
 
 void MissileManager::Render(HDC scene_dc, const RECT& bit_rect) const
 {
-	for (auto* missile : missiles)
-		missile->Render(scene_dc, bit_rect);
+	/*for (auto* missile : missiles)
+		missile->Render(scene_dc, bit_rect);*/
 }
 
 void MissileManager::Insert(Missile* given_missile)

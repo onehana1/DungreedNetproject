@@ -56,7 +56,7 @@ public:
 	}
 
 	void Update();
-	void Render(HDC scene_dc, const RECT& bit_rect) const;
+//	void Render(HDC scene_dc, const RECT& bit_rect) const;
 
 	bool IsOut_Left(const Dungeon* dungeon) const;
 	bool IsOut_Right(const Dungeon* dungeon) const;

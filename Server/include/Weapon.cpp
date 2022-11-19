@@ -1,7 +1,7 @@
 ﻿#include "Weapon.h"
 
-Weapon::Weapon(const Scene* scene, const Player* player,const POINT mouse)
-	: width { scene->DungeonSize.x / 3}, height { scene->DungeonSize.y / 2}
+Weapon::Weapon( const Player* player, const POINT mouse)
+	: width{ 30/*scene->DungeonSize.x / 3*/ }, height{ 30/*cene->DungeonSize.y / 2*/ }
 {
 	image = start_image = new Image(L"animation/RustyGreatSwordAttack1.png");
 	Update(player,mouse);
@@ -12,10 +12,10 @@ Weapon::~Weapon()
 	delete start_image;
 }
 
-void Weapon::Init(const Scene* scene, const Player* player, const POINT mouse)
+void Weapon::Init( const Player* player, const POINT mouse)
 {
-	width = scene->DungeonSize.x / 3;
-	height = scene->DungeonSize.y / 2; //camera -> 던전 크기 계산이 필요함. 
+	width = 30.0;//scene->DungeonSize.x / 3;
+	height = 30.0;//scene->DungeonSize.y / 2; //camera -> 던전 크기 계산이 필요함. 
 	Update(player,mouse);
 }
 

@@ -12,6 +12,9 @@ extern bool MapPixelCollision(const HDC terrain_dc, const COLORREF& val, const P
 extern bool CanGoToPos(const HDC terrain_dc, const POINT pos);
 
 class Monster;
+class Dungeon;
+class Player; 
+class MissileManager;
 
 class MonsterAI {
 protected:
