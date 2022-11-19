@@ -98,7 +98,7 @@ void PrepareToDoubleBuffering()
 
 void DoubleBuffering()
 {
-	scene->Render();
+	//scene->Render();
 
 	TransmitHDCBufferToRealHDC();
 }

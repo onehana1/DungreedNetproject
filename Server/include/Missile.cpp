@@ -1,6 +1,6 @@
 #include "Missile.h"
 
-void Missile::Update(AnimationManager* animation_manager)
+void Missile::Update()
 {
 	POINT desti_pos;
 	if (looking_direction) {
@@ -12,9 +12,9 @@ void Missile::Update(AnimationManager* animation_manager)
 
 	pos = desti_pos;
 
-	atk_rect = { pos.x, pos.y, pos.x + width, pos.y + height };
+	atk_rect = { pos.x, pos.y, pos.x + width, pos.y + height }; //충돌체크용 
 
-	UpdateAnimation(animation_manager);
+
 }
 
 void Missile::Render(HDC scene_dc, const RECT& bit_rect) const
@@ -76,22 +76,6 @@ bool Missile::IsOutOfRange() const
 		return false;
 }
 
-void Missile::UpdateAnimation(AnimationManager* animation_manager)
-{
-	if (is_animation_load_requested) {
-		animation.LoadAnimation(animation_manager, animation_name);
-		animation.Play();
-		is_animation_load_requested = false;
-	}
-	else if (animation.IsPlaying()) {
-		if (animation.IsEnd())
-			animation.Stop();
-		else
-			animation.Update();
-	}
-
-	image = animation.GetImage(animation_manager);
-}
 
 void MissileManager::Init()
 {
@@ -100,7 +84,7 @@ void MissileManager::Init()
 	missiles.clear();
 }
 
-void MissileManager::Update(const Dungeon* dungeon, AnimationManager* animation_manager)
+void MissileManager::Update(const Dungeon* dungeon)
 {
 	InstantDCSet dc_set(RECT{ 0, 0, dungeon->dungeon_width, dungeon->dungeon_height });
 
@@ -108,7 +92,7 @@ void MissileManager::Update(const Dungeon* dungeon, AnimationManager* animation_
 
 	for (int i = 0; i < missiles.size(); ++i) {
 		auto* missile = missiles.at(i);
-		missile->Update(animation_manager);
+		missile->Update();
 		if (!CanGoToPos(dc_set.buf_dc, POINT{ missile->pos.x + missile->width / 2, missile->pos.y + missile->height / 2 }) || missile->IsOut_Left(dungeon) || missile->IsOut_Right(dungeon)
 			|| missile->IsOutOfRange()) {
 			delete missile;

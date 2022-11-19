@@ -3,6 +3,7 @@
 #ifndef _framework
 #define _framework
 #include "Scene.h"
+#include "Common.h"
 
 class Framework
 {
@@ -12,6 +13,7 @@ private:
 
 	int update_cnt = 0;
 
+	SOCKET sock; 
 	void ChangeScene(int);
 public:
 	Framework();

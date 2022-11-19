@@ -6,7 +6,6 @@
 #include "FileUtility.h"
 #include "Dungeon.h"
 #include "InstantDCSet.h"
-#include "Animation.h"
 
 extern HDC buf_dc;
 extern HWND h_wnd;
@@ -32,8 +31,6 @@ protected:
 	const Image* image;
 	const Image* start_image;
 
-	Animation animation;
-
 	bool is_animation_load_requested = false;
 	std::string animation_name;
 
@@ -58,8 +55,6 @@ protected:
 	int former_atk_delay = 0;
 	int atk_delay = 0;
 	int red_flash_cnt = 0;
-	char atk_sound_name[FILE_NAME_LEN];
-	float atk_sound_volume;
 
 	void Stand();
 	void RunLeft();
@@ -84,16 +79,11 @@ protected:
 public:
 	Character() = default;
 	Character(const int id, const int width, const int height, const POINT pos, const State state, const BOOL looking_direction,
-		const double x_move_px, const double jump_start_power, const std::string& start_animation_name, const TCHAR* start_image_path,
-		const int hp, const int atk, const int def, AnimationManager* animation_manager)
+		const double x_move_px, const double jump_start_power,const int hp, const int atk, const int def  )
 		: id{ id }, width {width}, height{ height }, pos{ pos }, state{ state }, looking_direction{ looking_direction },
 		x_move_px{ x_move_px }, jump_start_power{ jump_start_power },
 		hp {hp}, atk {atk}, def{def}, max_hp {hp}
-	{
-		animation.LoadAnimation(animation_manager, start_animation_name);
-		animation_name = start_animation_name;
-		image = start_image = new Image(start_image_path);
-	}
+	{}
 	~Character() { delete start_image; }
 
 	virtual void Update(const Dungeon* dungeon) {}
@@ -107,7 +97,6 @@ public:
 	void Look(const POINT& target);
 	void Look(const Character& target);
 
-	void UpdateAnimation(AnimationManager* animation_manager);
 
 	bool IsOut_Left(const Dungeon* dungeon) const;
 	bool IsOut_Right(const Dungeon* dungeon) const;

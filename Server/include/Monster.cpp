@@ -1,13 +1,12 @@
 #include "Monster.h"
 
-void Monster::Update(const Dungeon* dungeon, const Player* player, AnimationManager* animation_manager, MissileManager* missile_manager, SoundManager* sound_manager)
+void Monster::Update(const Dungeon* dungeon, const Player* player,MissileManager* missile_manager)
 {
 	if (is_appeared) {
-		AutoAction(dungeon, player, animation_manager, missile_manager, sound_manager);
+		AutoAction(dungeon, player, missile_manager);
 		// Die 루틴
 		ForceGravity(dungeon);
 		ForceGravity(dungeon);
-		UpdateAnimation(animation_manager);
 
 		if (!is_attacking && atk_delay)
 			--atk_delay;
@@ -15,10 +14,9 @@ void Monster::Update(const Dungeon* dungeon, const Player* player, AnimationMana
 	}
 }
 
-void Monster::AutoAction(const Dungeon* dungeon, const Player* player, AnimationManager* animation_manager, MissileManager* missile_manager, SoundManager* sound_manager)
+void Monster::AutoAction(const Dungeon* dungeon, const Player* player,  MissileManager* missile_manager)
 {
 	if (!remain_update_cnt_to_change_policy) {
-		animation.Stop();
 		//
 		is_attacking = false;
 		atk_delay = 0;
@@ -27,12 +25,12 @@ void Monster::AutoAction(const Dungeon* dungeon, const Player* player, Animation
 		ChooseNewPolicy();
 	}
 	else {
-		FollowPolicy(dungeon, player, animation_manager, missile_manager, sound_manager);
+		FollowPolicy(dungeon, player, missile_manager);
 		--remain_update_cnt_to_change_policy;
 	}
 }
 
-void Monster::FollowPolicy(const Dungeon* dungeon, const Player* player, AnimationManager* animation_manager, MissileManager* missile_manager, SoundManager* sound_manager)
+void Monster::FollowPolicy(const Dungeon* dungeon, const Player* player, MissileManager* missile_manager)
 {
 	MonsterAI monster_ai(this);
 
@@ -47,7 +45,7 @@ void Monster::FollowPolicy(const Dungeon* dungeon, const Player* player, Animati
 		monster_ai.MoveFromPlayer(dungeon, player);
 		break;
 	case Policy::ATTACK:
-		monster_ai.Attack(dungeon, player, animation_manager, missile_manager, sound_manager);
+		monster_ai.Attack(dungeon, player, missile_manager);
 		break;
 	}
 }
@@ -128,44 +126,44 @@ void Monster::Render(HDC scene_dc, const RECT& bit_rect)
 
 
 
-MonsterManager::MonsterManager(const Dungeon* dungeon, AnimationManager* animation_manager)
+MonsterManager::MonsterManager(const Dungeon* dungeon  )
 {
 	//
 	if (dungeon->monster_ids[0] == 4000013) {
-		InsertBoss(dungeon, dungeon->monster_ids[0], animation_manager);
+		InsertBoss(dungeon, dungeon->monster_ids[0] );
 		return;
 	}
 	//
 
 	for (int i = 0; i < MAX_MONSTER_KIND_IN_DUNGEON; ++i)
 		if (dungeon->monster_ids[i])
-			Insert(dungeon, dungeon->monster_ids[i], dungeon->monster_nums[i], animation_manager);
+			Insert(dungeon, dungeon->monster_ids[i], dungeon->monster_nums[i] );
 		else
 			break;
 }
 
-void MonsterManager::Init(const Dungeon* dungeon, AnimationManager* animation_manager)
+void MonsterManager::Init(const Dungeon* dungeon  )
 {
 	Clear();
 
 	//
 	if (dungeon->monster_ids[0] == 4000013) {
-		InsertBoss(dungeon, dungeon->monster_ids[0], animation_manager);
+		InsertBoss(dungeon, dungeon->monster_ids[0] );
 		return;
 	}
 	//
 
 	for (int i = 0; i < MAX_MONSTER_KIND_IN_DUNGEON; ++i)
 		if (dungeon->monster_ids[i])
-			Insert(dungeon, dungeon->monster_ids[i], dungeon->monster_nums[i], animation_manager);
+			Insert(dungeon, dungeon->monster_ids[i], dungeon->monster_nums[i] );
 		else
 			break;
 }
 
-void MonsterManager::Update(const Dungeon* dungeon, const Player* player, AnimationManager* animation_manager, MissileManager* missile_manager, SoundManager* sound_manager)
+void MonsterManager::Update(const Dungeon* dungeon, const Player* player  , MissileManager* missile_manager )
 {
 	for (Monster* monster : monsters) {
-		monster->Update(dungeon, player, animation_manager, missile_manager, sound_manager);
+		monster->Update(dungeon, player , missile_manager );
 		// Die 루틴 : 현재는 죽으면 그냥 출현 취소
 		if (monster->is_appeared && monster->IsDied()) {
 			monster->is_appeared = false;
@@ -186,7 +184,7 @@ MonsterManager::~MonsterManager()
 		delete monster;
 }
 
-void MonsterManager::Insert(const Dungeon* dungeon, const int monster_id, int num, AnimationManager* animation_manager)
+void MonsterManager::Insert(const Dungeon* dungeon, const int monster_id, int num  )
 {
 	auto monster_db = BuildDB();
 	POINT pos;
@@ -210,20 +208,6 @@ void MonsterManager::Insert(const Dungeon* dungeon, const int monster_id, int nu
 
 	LoadNeededAnimations();
 	
-	TCHAR start_image_path[FILE_NAME_LEN] = L"animation/";
-	lstrcat(start_image_path, stand_animation_name_tstr);
-	lstrcat(start_image_path, L"1.png");
-
-	Tstr2Str(stand_animation_name_tstr, stand_animation_name);
-	Tstr2Str(attack_animation_name_tstr, attack_animation_name);
-	Tstr2Str(move_animation_name_tstr, move_animation_name);
-
-	if (!stand_animation_name.empty())
-		animation_manager->Insert(stand_animation_name);
-	if (!attack_animation_name.empty())
-		animation_manager->Insert(attack_animation_name);
-	if (!move_animation_name.empty())
-		animation_manager->Insert(move_animation_name);
 
 	while (num--) {
 		do {
@@ -233,15 +217,14 @@ void MonsterManager::Insert(const Dungeon* dungeon, const int monster_id, int nu
 
 		Monster* monster = new Monster(monster_id, width, height, pos, x_move_px_double, jump_start_power_double,
 			hp, atk, def, is_floating, melee_attack, missile_attack,
-			stand_animation_name, attack_animation_name, move_animation_name, start_image_path,
-			policy_stand, policy_move_to_player, policy_move_from_player, policy_attack, animation_manager); // = new Monster(...)
+			policy_stand, policy_move_to_player, policy_move_from_player, policy_attack ); // = new Monster(...)
 		monsters.push_back(monster);
 	}
 
 	BufferEmpty();
 }
 
-void MonsterManager::InsertBoss(const Dungeon* dungeon, const int monster_id, AnimationManager* animation_manager)
+void MonsterManager::InsertBoss(const Dungeon* dungeon, const int monster_id  )
 {
 	auto monster_db = BuildDB();
 	POINT pos;
@@ -267,21 +250,9 @@ void MonsterManager::InsertBoss(const Dungeon* dungeon, const int monster_id, An
 	lstrcat(start_image_path, stand_animation_name_tstr);
 	lstrcat(start_image_path, L"1.png");
 
-	Tstr2Str(stand_animation_name_tstr, stand_animation_name);
-	Tstr2Str(attack_animation_name_tstr, attack_animation_name);
-	Tstr2Str(move_animation_name_tstr, move_animation_name);
-
-	if (!stand_animation_name.empty())
-		animation_manager->Insert(stand_animation_name);
-	if (!attack_animation_name.empty())
-		animation_manager->Insert(attack_animation_name);
-	if (!move_animation_name.empty())
-		animation_manager->Insert(move_animation_name);
-
 	Monster* monster = new Monster(monster_id, width, height, pos, x_move_px_double, jump_start_power_double,
 		hp, atk, def, is_floating, melee_attack, missile_attack,
-		stand_animation_name, attack_animation_name, move_animation_name, start_image_path,
-		policy_stand, policy_move_to_player, policy_move_from_player, policy_attack, animation_manager); // = new Monster(...)
+		policy_stand, policy_move_to_player, policy_move_from_player, policy_attack ); // = new Monster(...)
 	monsters.push_back(monster);
 
 	BufferEmpty();

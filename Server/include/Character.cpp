@@ -232,22 +232,8 @@ void Character::Look(const Character& target)
 		looking_direction = FALSE;
 }
 
-void Character::UpdateAnimation(AnimationManager* animation_manager)
-{
-	if (is_animation_load_requested) {
-		animation.LoadAnimation(animation_manager, animation_name);
-		animation.Play();
-		is_animation_load_requested = false;
-	}
-	else if (animation.IsPlaying()) {
-		if (animation.IsEnd())
-			animation.Stop();
-		else
-			animation.Update();
-	}
 
-	image = animation.GetImage(animation_manager);
-}
+
 
 void Character::StartAttack(const int given_former_atk_delay, const int given_atk_delay, const RECT& given_atk_rect)
 {

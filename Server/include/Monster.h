@@ -13,7 +13,6 @@
 #include <algorithm>
 #include "Player.h"
 #include "MonsterAI.h"
-#include "Animation.h"
 
 extern std::default_random_engine dre;
 constexpr int MONSTER_MAX_ANIMATION_NUM = 4;
@@ -28,6 +27,7 @@ private:
 	BOOL is_floating;
 	BOOL melee_attack;
 	BOOL missile_attack;
+	BOOL MONSTER_TIME;
 
 	const std::string stand_animation_name;
 	const std::string attack_animation_name;
@@ -50,32 +50,22 @@ private:
 
 
 	void ForceGravity(const Dungeon* dungeon);
-	void AutoAction(const Dungeon* dungeon, const Player* player, AnimationManager* animation_manager, MissileManager* missile_manager, SoundManager* sound_manager);
-	void FollowPolicy(const Dungeon* dungeon, const Player* player, AnimationManager* animation_manager, MissileManager* missile_manager, SoundManager* sound_manager);
+	void AutoAction(const Dungeon* dungeon, const Player* player, MissileManager* missile_manager);
+	void FollowPolicy(const Dungeon* dungeon, const Player* player, MissileManager* missile_manager);
 	void ChooseNewPolicy();
 
 public:
 	Monster(const int monster_id, const int width, const int height, const POINT pos,
 		const double x_move_px, const double jump_start_power,
 		const int hp, const int atk, const int def, const BOOL is_floating, const BOOL melee_attack, const BOOL missile_attack,
-		const std::string& stand_animation_name, const std::string& attack_animation_name, const std::string& move_animation_name,
-		const TCHAR* start_image_path,
-		const POINT policy_stand, const POINT policy_move_to_player, const POINT policy_move_from_player, const POINT policy_attack,
-		AnimationManager* animation_manager)
-		: Character(monster_id, width, height, pos, State::DOWN, TRUE, x_move_px, jump_start_power,
-			stand_animation_name, start_image_path, hp, atk, def, animation_manager),
+		const POINT policy_stand, const POINT policy_move_to_player, const POINT policy_move_from_player, const POINT policy_attack)
+		: Character(monster_id, width, height, pos, State::DOWN, TRUE, x_move_px, jump_start_power, hp, atk, def),
 		is_floating {is_floating}, melee_attack {melee_attack}, missile_attack {missile_attack},
 		stand_animation_name{ stand_animation_name }, attack_animation_name{ attack_animation_name }, move_animation_name{ move_animation_name },
 		policy_stand{ policy_stand }, policy_move_to_player{ policy_move_to_player }, policy_move_from_player{ policy_move_from_player },
-		policy_attack{ policy_attack } 
-	{
-		animation.LoadAnimation(animation_manager, stand_animation_name);
-		animation.Play();
-		strcpy_s(atk_sound_name, "sound\\Thunder7.ogg");
-		atk_sound_volume = 0.4;
-	}
+		policy_attack{ policy_attack } {}
 
-	void Update(const Dungeon* dungeon, const Player* player, AnimationManager* animation_manager, MissileManager* missile_manager, SoundManager* sound_manager);
+	void Update(const Dungeon* dungeon, const Player* player, MissileManager* missile_manager);
 	void Render(HDC scene_dc, const RECT& bit_rect);
 	inline bool IsAppeared() const { return is_appeared; }
 
@@ -115,8 +105,8 @@ private:
 
 	std::shared_ptr<DB::DataBase> BuildDB();
 
-	void Insert(const Dungeon* dungeon, const int monster_id, int num, AnimationManager* animation_manager);
-	void InsertBoss(const Dungeon* dungeon, const int monster_id, AnimationManager* animation_manager);
+	void Insert(const Dungeon* dungeon, const int monster_id, int num  );
+	void InsertBoss(const Dungeon* dungeon, const int monster_id  );
 	void LoadNeededAnimations();
 	void BufferEmpty();
 	void Clear();
@@ -125,12 +115,12 @@ private:
 public:
 	std::vector<Monster*> monsters;
 
-	MonsterManager(const Dungeon* dungeon, AnimationManager* animation_manager);
+	MonsterManager(const Dungeon* dungeon  );
 	~MonsterManager();
 
-	void Init(const Dungeon* dungeon, AnimationManager* animation_manager);
+	void Init(const Dungeon* dungeon  );
 	void Render(HDC scene_dc, const RECT& bit_rect) const;
-	void Update(const Dungeon* dungeon, const Player* player, AnimationManager* animation_manager, MissileManager* missile_manager, SoundManager* sound_manager);
+	void Update(const Dungeon* dungeon, const Player* player  , MissileManager* missile_manager );
 	void Appear(int num);
 	inline bool AreMonsterAllDied() const { return (remain_monster_cnt == 0) ? true : false; }
 };

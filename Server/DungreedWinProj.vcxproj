@@ -42,7 +42,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
@@ -169,6 +169,7 @@
     <ClCompile Include="include\Weapon.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Client\Protocol.h" />
     <ClInclude Include="include\Character.h" />
     <ClInclude Include="include\DataBase.h" />
     <ClInclude Include="include\Dungeon.h" />

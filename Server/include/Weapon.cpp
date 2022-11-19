@@ -1,11 +1,10 @@
 ﻿#include "Weapon.h"
 
-Weapon::Weapon(const Camera* camera, const Player* player, const Crosshair* crosshair, AnimationManager* animation_manager)
-	: width {camera->x_half_range / 3}, height {camera->y_half_range / 2}
+Weapon::Weapon(const Scene* scene, const Player* player,const POINT mouse)
+	: width { scene->DungeonSize.x / 3}, height { scene->DungeonSize.y / 2}
 {
 	image = start_image = new Image(L"animation/RustyGreatSwordAttack1.png");
-	animation.LoadAnimation(animation_manager, "RustyGreatSwordAttack");
-	Update(player, crosshair, animation_manager);
+	Update(player,mouse);
 }
 
 Weapon::~Weapon()
@@ -13,20 +12,20 @@ Weapon::~Weapon()
 	delete start_image;
 }
 
-void Weapon::Init(const Camera* camera, const Player* player, const Crosshair* crosshair, AnimationManager* animation_manager)
+void Weapon::Init(const Scene* scene, const Player* player, const POINT mouse)
 {
-	width = camera->x_half_range / 3;
-	height = camera->y_half_range / 2;
-	Update(player, crosshair, animation_manager);
+	width = scene->DungeonSize.x / 3;
+	height = scene->DungeonSize.y / 2; //camera -> 던전 크기 계산이 필요함. 
+	Update(player,mouse);
 }
 
-void Weapon::Update(const Player* player, const Crosshair* crosshair, AnimationManager* animation_manager)
+void Weapon::Update(const Player* player, const POINT mouse)
 {
 	pos = player->pos;
 	pos.x -= player->width / 4 * 5;
 	POINT player_center = { player->pos.x + (player->width / 2), player->pos.y + (player->height / 2) };
 
-	if (player_center.x <= crosshair->pos.x) {
+	if (player_center.x <=mouse.x) {
 		pos.x += player->width / 4;
 		looking_direction = TRUE;
 	}
@@ -34,28 +33,16 @@ void Weapon::Update(const Player* player, const Crosshair* crosshair, AnimationM
 		pos.x -= player->width / 4;
 		looking_direction = FALSE;
 	}
-	if (player_center.y <= crosshair->pos.y)
+	if (player_center.y <=mouse.y)
 		pos.y += player->height / 8;
 	else
 		pos.y -= player->height / 8;
 
-	angle = Degree(player_center, crosshair->pos);
-
-	UpdateAnimation(animation_manager);
-
+	angle = Degree(player_center,mouse);
 }
 
-void Weapon::UpdateAnimation(AnimationManager* animation_manager)
-{
-	if (animation.IsPlaying()) {
-		if (animation.IsEnd())
-			animation.Stop();
-		else
-			animation.Update();
 
-		image = animation.GetImage(animation_manager);
-	}
-}
+
 
 void Weapon::Render(HDC scene_dc, const RECT& bit_rect)
 {
@@ -79,12 +66,11 @@ void Weapon::Render(HDC scene_dc, const RECT& bit_rect)
 
 void Weapon::StartAttack()
 {
-	animation.Replay();
 }
 
 bool Weapon::IsAttackFinished()
 {
-	if (animation.IsEnd())
+	if (ATTACT_TIME)
 		return true;
 	else
 		return false;
