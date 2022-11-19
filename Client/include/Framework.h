@@ -1,5 +1,4 @@
 #pragma once
-#pragma once
 #ifndef _framework
 #define _framework
 #include "Scene.h"
@@ -13,7 +12,7 @@ private:
 
 	int update_cnt = 0;
 
-	SOCKET sock; 
+	//SOCKET sock; 
 	void ChangeScene(int);
 public:
 	Framework();
