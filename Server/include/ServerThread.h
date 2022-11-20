@@ -1,9 +1,13 @@
 #pragma once
 #pragma once
 #include "Common.h"
+#include "Protocol.h"
+#include "Player.h"
 
 #define SERVERPORT 9000
 #define BUFSIZE    4096
+
+std::vector<Player*> player_list(3, NULL);
 
 SOCKET Create_Listen()
 {
@@ -34,63 +38,63 @@ SOCKET Create_Listen()
 DWORD WINAPI ClientThread(LPVOID arg)
 {
 	// 클라이언트와 데이터 통신
+	int id = (int)arg;
 
-	SOCKET client_sock = (SOCKET)arg;
-	int retval;
-	SOCKADDR_IN clientaddr;
-	int addrlen;
-	int numint = 0;
-	int i = 0;
-	int readint = 0;
-	char buf[BUFSIZE + 1];
+	while (true) {
+		char buf[2];
+		DWORD recvByte{ 0 }, recvFlag{ 0 };
+		//recv(sock, buf, sizeof(buf), MSG_WAITALL);
+		int error_code = recv(player_list[id]->sock, buf, sizeof(buf), 0);
+		//if (error_code == SOCKET_ERROR) error_display("RecvSizeType");
 
-	addrlen = sizeof(clientaddr);
-	getpeername(client_sock, (SOCKADDR*)&clientaddr, &addrlen);
+		UCHAR size{ static_cast<UCHAR>(buf[0]) };
+		UCHAR type{ static_cast<UCHAR>(buf[1]) };
+		switch (type)
+		{
+		case CS_LOGIN: //로그인
+		{
+			char subBuf[sizeof(char[20])]{};
+			recv(player_list[id]->sock, subBuf, sizeof(subBuf), 0);
 
-	//system("cls");
+			printf("패킷 사이즈 :  %d\n", buf[0]);
 
+			char name[20];
+			memcpy(&name, &subBuf, sizeof(char[20]));
+			
+			player_list[id]->SetName(name);
+			int client_len;
+			struct sockaddr_in myaddr;
+			
+			printf("\n[TCP 서버] 클라이언트 로그인: id : %d 닉네임 : %s\n", id, name);
 
-	while (1) {
+			getpeername(player_list[id]->sock, (struct sockaddr*)&myaddr, &client_len);
 
-		// 데이터 받기(고정 길이) - 파일이름
-		char file_name[256];
-		ZeroMemory(file_name, sizeof(file_name));
-		retval = recv(client_sock, file_name, sizeof(file_name), MSG_WAITALL);
-		if (retval == SOCKET_ERROR) {
-			err_display("recv(1)");
+			player_list[id]->SetIp(myaddr.sin_addr);
+
+			SC_LOGIN_INFO_PACKET my_packet;
+			my_packet.size = sizeof(SC_LOGIN_INFO_PACKET);
+			my_packet.type = SC_LOGIN;
+			for (int i = 0; i < player_list.size(); ++i) {
+				my_packet.data->id = i;
+				if (player_list[id] && player_list[id]->GetState() == CONNECT) {
+					my_packet.data->state = CONNECT;
+					my_packet.data->ip = player_list[id]->GetIp();
+					char* n = player_list[i]->GetName();
+					//strcpy(my_packet.data->name, n);
+				}
+				else {
+					my_packet.data->state = UNCONNECT;
+				}
+			}
+			send(player_list[id]->sock, reinterpret_cast<char*>(&my_packet), sizeof(my_packet), NULL);
+
 			break;
 		}
-		else if (retval == 0)
-			break;
-
-		printf("\n 받을 파일 이름 :%s\n", file_name);
-
-		
-		CONSOLE_SCREEN_BUFFER_INFO presentCur;
-		// 콘솔 출력창의 정보를 담기 위해서 정의한 구조체
-		GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &presentCur);
-		//현재 커서의 위치 정보를 저장하는 함수
-
-		while (1) {
-			//retval = WaitForSingleObject(hReadEvent, INFINITE);
-			if (retval != WAIT_OBJECT_0) break;
-			printf("받음");
-
-			retval = recv(client_sock, buf, BUFSIZE, MSG_WAITALL);
-
-			//SetEvent(hReadEvent);
+		default:
+			printf("Unknown PACKET type [%d]\n", type);
 		}
-		// 받은 데이터 출력
-		printf("\n[TCP/%s:%d] %s", inet_ntoa(clientaddr.sin_addr), ntohs(clientaddr.sin_port), buf);
-
 	}
-
-	// 소켓 닫기
-	//closesocket(client_sock);
-	printf("\n[TCP 서버] 클라이언트 종료: IP 주소=%s, 포트 번호=%d\n",
-		inet_ntoa(clientaddr.sin_addr), ntohs(clientaddr.sin_port));
-	DWORD A = 0;
-	return A;
+	return 0;
 }
 
 

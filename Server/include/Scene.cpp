@@ -21,7 +21,7 @@ Scene::Scene(const int dungeon_id)
 {
 	try {
 		dungeon = new Dungeon(dungeon_id);
-		player = new Player(dungeon );
+		player = new Player(dungeon);
 		monster_manager = new MonsterManager(dungeon );
 		missile_manager = new MissileManager;
 		weapon = new Weapon( player, DungeonSize);

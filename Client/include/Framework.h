@@ -1,6 +1,7 @@
 #pragma once
 #ifndef _framework
 #define _framework
+#include <WS2tcpip.h>
 #include "Scene.h"
 #include "Common.h"
 
@@ -9,10 +10,14 @@ class Framework
 private:
 	Scene* scene;
 	PlayScene* play_scene;
+	int scene_id;
 
 	int update_cnt = 0;
 
-	//SOCKET sock; 
+	SOCKET sock; 
+	char nickname[20];
+	int count_name = 0;
+
 	void ChangeScene(int);
 public:
 	Framework();
@@ -20,5 +25,8 @@ public:
 
 	void Render() const;
 	void Update();
+
+	int GetSceneId() { return scene_id; }
+	void SetNickname(WPARAM wparam);
 };
 #endif

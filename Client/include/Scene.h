@@ -16,6 +16,7 @@
 #include "Effect.h"
 #include "Sound.h"
 #include "Missile.h"
+#include "Protocol.h"
 
 extern HWND h_wnd;
 extern void DrawBuffer(HDC instant_dc, const RECT& rect);
@@ -76,12 +77,13 @@ class StartScene : public Scene
 private:
 	Crosshair* crosshair;
 	Image* image;
-	
 
 	int update_cnt = 0;
 
+	char* nickname;
+
 public:
-	StartScene();
+	StartScene(char*);
 	~StartScene();
 
 	virtual void Render() const;
@@ -100,6 +102,7 @@ private:
 
 public:
 	LobbyScene();
+	LobbyScene(SOCKET sock, char* name);
 	~LobbyScene();
 
 	virtual void Render() const;

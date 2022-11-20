@@ -67,7 +67,7 @@ DWORD WINAPI ClientThread(SOCKET client_sock) //클라 스레드 통신담당
 		printf("Unknown PACKET type [%d]\n", type);
 	}
 }
-
+/*
 char* SERVERIP = (char*)"127.0.0.1";
 #define SERVERPORT 9000
 #define BUFSIZE    50
@@ -130,3 +130,4 @@ int main(int argc, char* argv[])
 	WSACleanup();
 	return 0;
 }
+*/

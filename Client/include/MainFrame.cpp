@@ -9,10 +9,6 @@
 #include "Framework.h"
 //#include "common.h"
 
-char* SERVERIP = (char*)"127.0.0.1";
-#define SERVERPORT 9000
-#define BUFSIZE 50
-
 RECT client;
 HWND h_wnd;
 PAINTSTRUCT ps;
@@ -72,7 +68,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdPa
 LRESULT CALLBACK WndProc(HWND h_wnd, UINT u_msg, WPARAM w_param, LPARAM l_param)
 {
 	int retval = 0;
-	SOCKET sock;
 
 	const char* testdata[] = {
 			"안녕하세요",
@@ -86,46 +81,13 @@ LRESULT CALLBACK WndProc(HWND h_wnd, UINT u_msg, WPARAM w_param, LPARAM l_param)
 		GetClientRect(h_wnd, &client);
 		framework = new Framework;
 		SetTimer(h_wnd, 1, 15, 0);
-		///// //////////////////////////////////////////
-		//윈속 초기화 
-		WSADATA wsa;
-		if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0)
-			return 1;
-
-		//소켓 생성 
-		 sock = socket(AF_INET, SOCK_STREAM, 0);
-		//if (sock == INVALID_SOCKET) err_quit2("socket()");
-
-		//connect()
-		struct sockaddr_in serveraddr;
-		memset(&serveraddr, 0, sizeof(serveraddr));
-		serveraddr.sin_family = AF_INET;
-		inet_pton(AF_INET, SERVERIP, &serveraddr.sin_addr);
-		serveraddr.sin_port = htons(SERVERPORT);
-		retval = connect(sock, (struct sockaddr*)&serveraddr, sizeof(serveraddr));
-		//if (retval == SOCKET_ERROR)err_quit2("connect()");
-
-		//데이터 통신에 사용할 변수 
-		char buf[BUFSIZE];
-		
-
-		//서버와 데이터 통신 
-		for (int i = 0; i < 4; i++) {
-			//입력 
-			memset(buf, '#', sizeof(buf));
-			strncpy(buf, testdata[i], strlen(testdata[i]));
-
-			//데이터 보내기 
-			retval = send(sock, buf, BUFSIZE, 0);
-			if (retval == SOCKET_ERROR) {
-				//err_display2("send()");
-				break;
-			}
-			printf("[TCP클라이언트} %d바이트를 보냈습니다 ,\n", retval);
+		return 0;
+	case WM_CHAR:
+		switch (framework->GetSceneId()) {
+		case 1:
+			framework->SetNickname(w_param);
+			break;
 		}
-		closesocket(sock);
-
-		WSACleanup();
 		return 0;
 	case WM_PAINT:
 		PrepareToDoubleBuffering();

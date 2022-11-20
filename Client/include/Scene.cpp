@@ -1,6 +1,5 @@
 #include "Scene.h"
 
-
 Scene::Scene()
 {
 }
@@ -253,6 +252,24 @@ LobbyScene::LobbyScene()
 	}
 }
 
+LobbyScene::LobbyScene(SOCKET sock, char* name)
+{
+	try {
+		CS_LOGIN_INFO_PACKET my_packet{};
+		my_packet.size = sizeof(CS_LOGIN_INFO_PACKET);
+		my_packet.type = CS_LOGIN;
+
+		strcpy(my_packet.name, "닉네임");
+		send(sock, reinterpret_cast<char*>(&my_packet), sizeof(my_packet), NULL);
+
+		image = new Image(L"Background\\LobbyScene.png");
+		crosshair = new Crosshair(image->GetWidth(), image->GetHeight());
+	}
+	catch (const TCHAR* error_message) {
+		MessageBox(h_wnd, error_message, L"Error", MB_OK);
+	}
+}
+
 LobbyScene::~LobbyScene()
 {
 	delete crosshair;
@@ -283,9 +300,10 @@ int LobbyScene::ChangeScene()
 
 //------------------------------------------------------------------------------------------------------------------
 
-StartScene::StartScene()
+StartScene::StartScene(char* name)
 {
 	try {
+		nickname = name;
 		image = new Image(L"Background\\StartScene.png");
 		crosshair = new Crosshair(image->GetWidth(), image->GetHeight());
 	}
@@ -318,6 +336,14 @@ void StartScene::Render() const
 
 	TextOut(dc_set.buf_dc, 10, 30, str, lstrlen(str));
 
+	// 입력하는 id 출력.
+	TCHAR name[100];
+	MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, nickname, strlen(nickname),name, 100);
+	//wsprintf(name, TEXT("닉네임 : %s"), m);
+
+	RECT rc = { client.right - 240, client.bottom - 313, client.right - 100, client.bottom - 293 };
+	DrawText(dc_set.buf_dc, name, wcslen(name), &rc, DT_SINGLELINE);
+
 	DrawBuffer(dc_set.buf_dc, RECT{ 0, 0, width, height });
 }
 
@@ -328,7 +354,7 @@ void StartScene::Update()
 
 int StartScene::ChangeScene()
 {
-	if (GetAsyncKeyState(VK_LBUTTON) & 0x8000) {	// Test 휠 누르면 LobbyScene으로 전환...
+	if (GetAsyncKeyState(VK_LBUTTON) & 0x8000) {
 		POINT pos;
 		GetCursorPos(&pos);
 		ScreenToClient(h_wnd, &pos);

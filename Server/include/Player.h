@@ -11,6 +11,10 @@
 extern HDC buf_dc;
 extern RECT client;
 
+enum state {
+	UNCONNECT, CONNECT, PLAY
+};
+
 const double PLAYER_WIDTH_PER_CAMERA_X_HALF_RANGE = 10.0;
 const double PLAYER_HEIGHT_PER_CAMERA_Y_HALF_RANGE = 5.0;
 
@@ -20,6 +24,13 @@ class Weapon;
 class Player : private Uncopyable, public Character
 {
 private:
+	char name[20];
+	in_addr ip;
+
+	int server_state;
+
+	//HANDLE thread;
+
 	double dash_power = 0;	// dash_power > 0 이면 dash중인 상태, dash_power < 0 이면 다음 dash 가능 시간까지 대기중, dash_power == 0이면 dash 가능 상태
 	double dash_radian = 0;
 
@@ -35,11 +46,14 @@ private:
 
 	
 public:
+	Player() = default;
 	Player(const Dungeon* dungeon) :
 		Character(1234567, dungeon->camera_x_half_range / PLAYER_WIDTH_PER_CAMERA_X_HALF_RANGE,
 			dungeon->camera_x_half_range / PLAYER_HEIGHT_PER_CAMERA_Y_HALF_RANGE,
 			dungeon->left_start_pos, State::DOWN, TRUE,
 			dungeon->camera_x_half_range / 60.0f, dungeon->camera_y_half_range / 32.0f, 200, 100, 50){}
+
+	SOCKET sock;
 
 	void PlaceWithDungeonLeft(const Dungeon* dungeon);
 	void PlaceWithDungeonRight(const Dungeon* dungeon);
@@ -51,6 +65,15 @@ public:
 	friend class Weapon;
 	friend class MonsterAI;
 	POINT mouse;
+
+	void SetState(int p_state) { server_state = p_state; }
+	int GetState() { return server_state; }
+
+	void SetName(char* p_name) { strcpy(name, p_name); }
+	char* GetName() { return name; }
+
+	void SetIp(in_addr p_ip) { ip = p_ip; }
+	in_addr GetIp() { return ip; }
 };
 #endif
 
