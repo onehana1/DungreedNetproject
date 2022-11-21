@@ -11,10 +11,6 @@
 extern HDC buf_dc;
 extern RECT client;
 
-enum state {
-	UNCONNECT, CONNECT, PLAY
-};
-
 const double PLAYER_WIDTH_PER_CAMERA_X_HALF_RANGE = 10.0;
 const double PLAYER_HEIGHT_PER_CAMERA_Y_HALF_RANGE = 5.0;
 
@@ -27,7 +23,7 @@ private:
 	char name[20];
 	in_addr ip;
 
-	int server_state;
+	short server_state;
 
 	//HANDLE thread;
 
@@ -66,8 +62,8 @@ public:
 	friend class MonsterAI;
 	POINT mouse;
 
-	void SetState(int p_state) { server_state = p_state; }
-	int GetState() { return server_state; }
+	void SetState(short p_state) { server_state = p_state; }
+	short GetState() { return server_state; }
 
 	void SetName(char* p_name) { strcpy(name, p_name); }
 	char* GetName() { return name; }

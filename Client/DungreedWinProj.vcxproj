@@ -190,7 +190,9 @@
     <ClInclude Include="include\Monster.h" />
     <ClInclude Include="include\MonsterAI.h" />
     <ClInclude Include="include\Player.h" />
+    <ClInclude Include="include\Protocol.h" />
     <ClInclude Include="include\Scene.h" />
+    <ClInclude Include="include\Thread.h" />
     <ClInclude Include="include\Uncopyable.h" />
     <ClInclude Include="include\InstantDCSet.h" />
     <ClInclude Include="include\Weapon.h" />

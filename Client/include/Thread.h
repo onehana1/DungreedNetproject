@@ -1,42 +1,63 @@
 #include "Common.h"
 #include "Protocol.h"
+#include "Player.h"
+#include <vector>
+#include <stdio.h>
 #define LOCALPORT 9000
 
+std::vector<Player*> player_list(3, NULL);
+DWORD WINAPI RecvThread(LPVOID arg);
 
-
-DWORD WINAPI RecvThread(SOCKET client_sock)// //클라이언트에서 Recv와 수신 후 작업을 담당하는 함수
+DWORD WINAPI RecvThread(LPVOID arg)// //클라이언트에서 Recv와 수신 후 작업을 담당하는 함수
 {
+	SOCKET sock = (SOCKET)arg;
+	int my_id = -1;
 
-	char buf[2];
-	WSABUF wsabuf{ sizeof(buf), buf };
-	DWORD recvByte{ 0 }, recvFlag{ 0 };
-	//recv(sock, buf, sizeof(buf), MSG_WAITALL);
-	int error_code = WSARecv(sock, &wsabuf, 1, &recvByte, &recvFlag, nullptr, nullptr);
-	//if (error_code == SOCKET_ERROR) error_display("RecvSizeType");
+	while (true) {
+		char buf[2];
+		DWORD recvByte{ 0 }, recvFlag{ 0 };
+		//recv(sock, buf, sizeof(buf), MSG_WAITALL);
+		int error_code = recv(sock, buf, sizeof(buf), 0);
+		//if (error_code == SOCKET_ERROR) error_display("RecvSizeType");
 
-	UCHAR size{ static_cast<UCHAR>(buf[0]) };
-	UCHAR type{ static_cast<UCHAR>(buf[1]) };
-	switch (type)
-	{
-	case SC_LOGIN_INFO: //로그인
-	{
-		char subBuf[sizeof(LOGIN_INFO)]{};
-		WSABUF wsabuf{ sizeof(subBuf), subBuf };
-		DWORD recvByte{}, recvFlag{};
-		WSARecv(sock, &wsabuf, 1, &recvByte, &recvFlag, nullptr, nullptr);
+		UCHAR size{ static_cast<UCHAR>(buf[0]) };
+		UCHAR type{ static_cast<UCHAR>(buf[1]) };
+		switch (type)
+		{
+		case SC_LOGIN: //로그인
+		{
+			char IdBuf[sizeof(short)]{};
+			char subBuf[sizeof(LOGIN_INFO[3])]{};
+			recv(sock, IdBuf, sizeof(IdBuf), 0);
+			recv(sock, subBuf, sizeof(subBuf), 0);
 
-		LOGIN_INFO loginInfo;
-		memcpy(&loginInfo, &subBuf, sizeof(LOGIN_INFO));
-		g_myid = loginInfo.id;
-		player_type = loginInfo.player_type;
-		break;
-	}
-	default:
-		printf("Unknown PACKET type [%d]\n", type);
+			short id;
+			LOGIN_INFO loginInfo[3];
+			memcpy(&id, &IdBuf, sizeof(short));
+			memcpy(&loginInfo, &subBuf, sizeof(LOGIN_INFO[3]));
+			my_id = id;
+
+			TCHAR s[80] = _T("Debug : 서버 SC_LOGI");
+			OutputDebugString(s);
+
+			for (int i = 0; i < PLAYER_NUM; ++i)
+			{
+				if (!player_list[i]) {
+					player_list[i] = new Player;
+				}
+				player_list[i]->SetIp(loginInfo[i].ip);
+				player_list[i]->SetName(loginInfo[i].name);
+				player_list[i]->SetState(loginInfo[i].state);
+			}
+			break;
+		}
+		default:
+			printf("Unknown PACKET type [%d]\n", type);
+		}
 	}
 }
 
-
+/*
 DWORD WINAPI ClientThread(SOCKET client_sock) //클라 스레드 통신담당
 {
 	char buf[2];

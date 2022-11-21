@@ -5,6 +5,8 @@
 #include "Scene.h"
 #include "Common.h"
 
+extern DWORD WINAPI RecvThread(LPVOID arg);
+
 class Framework
 {
 private:

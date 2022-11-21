@@ -64,6 +64,16 @@ Framework::Framework()
 	serveraddr.sin_port = htons(SERVERPORT);
 	retval = connect(sock, (struct sockaddr*)&serveraddr, sizeof(serveraddr));
 
+	HANDLE hThread = CreateThread(NULL, 0, RecvThread, (LPVOID)sock, 0, NULL);
+
+	if (hThread == NULL) {
+		closesocket(sock);
+	}
+	else {
+		CloseHandle(hThread);
+
+	}
+
 	scene = new StartScene(nickname);
 	scene_id = START;
 	play_scene = new PlayScene;	

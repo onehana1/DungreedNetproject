@@ -266,6 +266,9 @@ LobbyScene::LobbyScene()
 	try {
 		image = new Image(L"Background\\LobbyScene.png");
 		crosshair = new Crosshair(image->GetWidth(), image->GetHeight());
+		animation_manager = new AnimationManager;
+		animation_manager->Insert("player_stand");
+		animation_manager->Insert("player_move");
 	}
 	catch (const TCHAR* error_message) {
 		MessageBox(h_wnd, error_message, L"Error", MB_OK);
@@ -284,6 +287,14 @@ LobbyScene::LobbyScene(SOCKET sock, char* name)
 
 		image = new Image(L"Background\\LobbyScene.png");
 		crosshair = new Crosshair(image->GetWidth(), image->GetHeight());
+		animation_manager = new AnimationManager;
+		animation_manager->Insert("player_stand");
+		animation_manager->Insert("player_move");
+
+		for (int i = 0; i < PLAYER_NUM; ++i)
+		{
+			player[i] = new Player(image->GetWidth(), image->GetHeight(), {45 + 147 * i, 100}, animation_manager);
+		}
 	}
 	catch (const TCHAR* error_message) {
 		MessageBox(h_wnd, error_message, L"Error", MB_OK);
@@ -294,6 +305,8 @@ LobbyScene::~LobbyScene()
 {
 	delete crosshair;
 	delete image;
+	delete animation_manager;
+	delete[] player;
 }
 
 void LobbyScene::Render() const
@@ -310,9 +323,12 @@ void LobbyScene::Render() const
 	GetCursorPos(&pos);
 	ScreenToClient(h_wnd, &pos);
 
-	TCHAR str[128];
-	wsprintf(str, TEXT("[프로그램 기준] X: %04d, Y: %04d"), pos.x, pos.y);
-	TextOut(dc_set.buf_dc, 10, 30, str, lstrlen(str));
+	for (int i = 0; i < PLAYER_NUM; ++i)
+	{
+		if (player_list[i] && player_list[i]->GetState() == READY) {
+			player[i]->Render(dc_set.buf_dc, dc_set.bit_rect);
+		}
+	}
 
 	DrawBuffer(dc_set.buf_dc, RECT{ 0, 0, width, height });
 }
@@ -320,6 +336,12 @@ void LobbyScene::Render() const
 void LobbyScene::Update()
 {
 	crosshair->Update(image->GetWidth(), image->GetHeight());
+	for (int i = 0; i < PLAYER_NUM; ++i)
+	{
+		if (player_list[i] && player_list[i]->GetState() == READY) {
+			player[i]->UpdateAnimation(animation_manager);
+		}
+	}
 }
 
 int LobbyScene::ChangeScene()

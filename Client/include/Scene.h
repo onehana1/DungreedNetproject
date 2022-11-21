@@ -18,6 +18,7 @@
 #include "Missile.h"
 #include "Protocol.h"
 
+extern std::vector<Player*> player_list;
 extern HWND h_wnd;
 extern void DrawBuffer(HDC instant_dc, const RECT& rect);
 
@@ -97,6 +98,8 @@ class LobbyScene : public Scene
 private:
 	Crosshair* crosshair;
 	Image* image;
+	AnimationManager* animation_manager;
+	Player* player[PLAYER_NUM];
 
 	int update_cnt = 0;
 

@@ -45,6 +45,35 @@ DWORD WINAPI ClientThread(LPVOID arg)
 		DWORD recvByte{ 0 }, recvFlag{ 0 };
 		//recv(sock, buf, sizeof(buf), MSG_WAITALL);
 		int error_code = recv(player_list[id]->sock, buf, sizeof(buf), 0);
+		if (error_code <= 0) {
+			closesocket(player_list[id]->sock);
+
+			delete player_list[id];
+			player_list[id] = NULL;
+
+			SC_LOGIN_INFO_PACKET my_packet;
+			my_packet.size = sizeof(SC_LOGIN_INFO_PACKET);
+			my_packet.type = SC_LOGIN;
+			for (int i = 0; i < player_list.size(); ++i) {
+				my_packet.data[i].id = i;
+				if (player_list[i] && player_list[i]->GetState() == READY) {
+					my_packet.data[i].state = READY;
+					my_packet.data[i].ip = player_list[i]->GetIp();
+					strcpy(my_packet.data[i].name, player_list[i]->GetName());
+				}
+				else {
+					my_packet.data->state = UNCONNECT;
+				}
+			}
+
+			for (int i = 0; i < PLAYER_NUM; ++i) {
+				my_packet.your_id = i;
+				send(player_list[id]->sock, reinterpret_cast<char*>(&my_packet), sizeof(my_packet), NULL);
+			}
+
+			return 0;
+		}
+
 		//if (error_code == SOCKET_ERROR) error_display("RecvSizeType");
 
 		UCHAR size{ static_cast<UCHAR>(buf[0]) };
@@ -75,19 +104,21 @@ DWORD WINAPI ClientThread(LPVOID arg)
 			my_packet.size = sizeof(SC_LOGIN_INFO_PACKET);
 			my_packet.type = SC_LOGIN;
 			for (int i = 0; i < player_list.size(); ++i) {
-				my_packet.data->id = i;
-				if (player_list[id] && player_list[id]->GetState() == CONNECT) {
-					my_packet.data->state = CONNECT;
-					my_packet.data->ip = player_list[id]->GetIp();
-					char* n = player_list[i]->GetName();
-					//strcpy(my_packet.data->name, n);
+				my_packet.data[i].id = i;
+				if (player_list[i] && player_list[i]->GetState() == READY) {
+					my_packet.data[i].state = READY;
+					my_packet.data[i].ip = player_list[i]->GetIp();
+					strcpy(my_packet.data[i].name, player_list[i]->GetName());
 				}
 				else {
 					my_packet.data->state = UNCONNECT;
 				}
 			}
-			send(player_list[id]->sock, reinterpret_cast<char*>(&my_packet), sizeof(my_packet), NULL);
 
+			for (int i = 0; i < PLAYER_NUM; ++i) {
+				my_packet.your_id = i;
+				send(player_list[id]->sock, reinterpret_cast<char*>(&my_packet), sizeof(my_packet), NULL);
+			}
 			break;
 		}
 		case CS_PLAY:

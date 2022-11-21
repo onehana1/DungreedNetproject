@@ -7,6 +7,7 @@
 
 #include <windows.h>
 #include "Framework.h"
+#include "Thread.h"
 //#include "common.h"
 
 RECT client;
@@ -19,6 +20,7 @@ HBITMAP old_bit;
 Framework* framework;
 std::random_device rd;
 std::default_random_engine dre(rd());
+
 
 HINSTANCE g_h_inst;
 LPCTSTR lpszClass = L"Window Class Name";
