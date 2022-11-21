@@ -52,9 +52,27 @@ PlayScene::PlayScene()
 	}
 }
 
-PlayScene::PlayScene(const int dungeon_id)
+PlayScene::PlayScene(SOCKET sock, char* name, const int dungeon_id)
 {
 	try {
+		CS_PLAYER_INPUT_INFO_PACKET my_packet{};
+		my_packet.size = sizeof(CS_PLAYER_INPUT_INFO_PACKET);
+		my_packet.type = CS_PLAY;
+
+		my_packet.key.a = GetAsyncKeyState('A');
+		my_packet.key.s = GetAsyncKeyState('S');
+		my_packet.key.d = GetAsyncKeyState('D');
+		my_packet.key.space = GetAsyncKeyState(VK_SPACE);
+
+		my_packet.mouse.right = GetAsyncKeyState(VK_RBUTTON);
+		my_packet.mouse.left = GetAsyncKeyState(VK_LBUTTON);
+		my_packet.mouse.wheel = GetAsyncKeyState(VK_MBUTTON);
+		my_packet.mouse.x = crosshair->pos.x;
+		my_packet.mouse.y = crosshair->pos.y;
+		
+		strcpy(my_packet.name, "닉네임");
+		send(sock, reinterpret_cast<char*>(&my_packet), sizeof(my_packet), NULL);
+
 		animation_manager = new AnimationManager;
 		LoadPlayerAniamtion();
 
@@ -121,6 +139,8 @@ void PlayScene::Render() const
 	crosshair->Render(dc_set.buf_dc, dc_set.bit_rect);
 	weapon->Render(dc_set.buf_dc, dc_set.bit_rect);
 	effect_manager->Render(dc_set.buf_dc, dc_set.bit_rect);
+
+
 
 	DrawBuffer(dc_set.buf_dc, camera->Rect());
 }
@@ -285,6 +305,15 @@ void LobbyScene::Render() const
 	image->Draw(dc_set.buf_dc, 0, 0, dc_set.bit_rect.right, dc_set.bit_rect.bottom, 0, 0, width, height);
 	crosshair->Render(dc_set.buf_dc, dc_set.bit_rect);
 
+
+	POINT pos;
+	GetCursorPos(&pos);
+	ScreenToClient(h_wnd, &pos);
+
+	TCHAR str[128];
+	wsprintf(str, TEXT("[프로그램 기준] X: %04d, Y: %04d"), pos.x, pos.y);
+	TextOut(dc_set.buf_dc, 10, 30, str, lstrlen(str));
+
 	DrawBuffer(dc_set.buf_dc, RECT{ 0, 0, width, height });
 }
 
@@ -295,6 +324,15 @@ void LobbyScene::Update()
 
 int LobbyScene::ChangeScene()
 {
+	if (GetAsyncKeyState(VK_LBUTTON) & 0x8000) {
+		POINT pos;
+		GetCursorPos(&pos);
+		ScreenToClient(h_wnd, &pos);
+		if (pos.x > 475 && pos.x < 790 && pos.y > 25 && pos.y < 100)
+		{
+			return 3;
+		}
+	}
 	return 0;
 }
 

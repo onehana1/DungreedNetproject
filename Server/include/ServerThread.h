@@ -90,6 +90,17 @@ DWORD WINAPI ClientThread(LPVOID arg)
 
 			break;
 		}
+		case CS_PLAY:
+		{
+			char subBuf[sizeof(char[20])]{};
+			recv(player_list[id]->sock, subBuf, sizeof(subBuf), 0);
+			printf("main game\n");
+			recv(player_list[id]->sock, subBuf, sizeof(subBuf), 0);
+			printf("패킷 사이즈 :  %d\n", buf[0]);
+
+
+		}
+
 		default:
 			printf("Unknown PACKET type [%d]\n", type);
 		}

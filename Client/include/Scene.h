@@ -63,7 +63,7 @@ private:
 
 public:
 	PlayScene();
-	PlayScene(const int dungeon_id);
+	PlayScene(SOCKET sock, char* name, const int dungeon_id);
 	~PlayScene();
 
 	virtual void Render() const;

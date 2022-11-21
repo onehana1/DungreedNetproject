@@ -57,4 +57,7 @@ public:
 	//void Render() const;
 	void Update();
 };
+
+
+
 #endif

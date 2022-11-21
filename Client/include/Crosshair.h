@@ -15,9 +15,10 @@ class Crosshair
 {
 private:
 	Image* image;
-	POINT pos;
 	int half_size;
 public:
+	POINT pos;
+
 	Crosshair(int, int);
 	Crosshair(const Camera* camera);
 	~Crosshair();
