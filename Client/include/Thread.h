@@ -5,6 +5,7 @@
 #include <stdio.h>
 #define LOCALPORT 9000
 
+extern int g_myid;
 std::vector<Player*> player_list(3, NULL);
 DWORD WINAPI RecvThread(LPVOID arg);
 
@@ -35,20 +36,34 @@ DWORD WINAPI RecvThread(LPVOID arg)// //클라이언트에서 Recv와 수신 후 작업을 담�
 			LOGIN_INFO loginInfo[3];
 			memcpy(&id, &IdBuf, sizeof(short));
 			memcpy(&loginInfo, &subBuf, sizeof(LOGIN_INFO[3]));
-			my_id = id;
+			g_myid = my_id = id;
 
-			TCHAR s[80] = _T("Debug : 서버 SC_LOGI");
-			OutputDebugString(s);
+			printf("id : %d\n", my_id);
 
 			for (int i = 0; i < PLAYER_NUM; ++i)
 			{
 				if (!player_list[i]) {
 					player_list[i] = new Player;
 				}
-				player_list[i]->SetIp(loginInfo[i].ip);
+				char addr[INET_ADDRSTRLEN];
+				inet_ntop(AF_INET, &loginInfo[i].ip, addr, sizeof(addr));
+				printf("ip : %s\n", addr);
+				player_list[i]->SetIp(addr);
 				player_list[i]->SetName(loginInfo[i].name);
 				player_list[i]->SetState(loginInfo[i].state);
+
+				printf("닉네임 : %s	상태 : %d\n", player_list[i]->GetName(), player_list[i]->GetState());
 			}
+			break;
+		}
+		case SC_READY:
+		{
+			char IdBuf[sizeof(short)]{};
+			recv(sock, IdBuf, sizeof(IdBuf), 0);
+
+			short id;
+			memcpy(&id, &IdBuf, sizeof(short));
+			player_list[id]->SetState(READY);
 			break;
 		}
 		default:

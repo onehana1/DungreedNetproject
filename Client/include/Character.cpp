@@ -134,6 +134,12 @@ void Character::NoOut(const Dungeon* dungeon)
 			pos.x += 2;
 }
 
+void Character::ChangeAnimation(const char* a_name)
+{
+	animation_name = a_name;
+	is_animation_load_requested = true;
+}
+
 void Character::MovePos(Direction direction, const int px)
 {
 	switch (direction) {

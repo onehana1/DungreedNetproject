@@ -23,7 +23,7 @@ class Weapon;
 class Player : private Uncopyable, public Character
 {
 private:
-	in_addr ip;
+	char ip[22];
 	char name[20];
 	short server_state;
 
@@ -79,12 +79,16 @@ public:
 
 	void SetState(short p_state) { server_state = p_state; }
 	short GetState() { return server_state; }
-
+	
 	void SetName(char* p_name) { strcpy(name, p_name); }
 	char* GetName() { return name; }
 
-	void SetIp(in_addr p_ip) { ip = p_ip; }
-	in_addr GetIp() { return ip; }
+	void SetIp(char* p_ip) { strcpy(ip, p_ip); }
+	char* GetIp() { return ip; }
+
+	void ChangeStateToMoving();
+	void ChangeStateToStanding();
+	void MatchStateAndAnimation(AnimationManager* animation_manager, EffectManager* effect_manager);
 
 	friend class Camera;
 	friend class Weapon;

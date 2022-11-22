@@ -265,31 +265,38 @@ LobbyScene::LobbyScene()
 {
 	try {
 		image = new Image(L"Background\\LobbyScene.png");
+		start_button = new Image(L"Background\\start_button.png");
 		crosshair = new Crosshair(image->GetWidth(), image->GetHeight());
 		animation_manager = new AnimationManager;
 		animation_manager->Insert("player_stand");
 		animation_manager->Insert("player_move");
+		animation_manager->Insert("Dust");
+		effect_manager = new EffectManager;
 	}
 	catch (const TCHAR* error_message) {
 		MessageBox(h_wnd, error_message, L"Error", MB_OK);
 	}
 }
 
-LobbyScene::LobbyScene(SOCKET sock, char* name)
+LobbyScene::LobbyScene(SOCKET socket, char* name)
 {
 	try {
+		server_sock = socket;
 		CS_LOGIN_INFO_PACKET my_packet{};
 		my_packet.size = sizeof(CS_LOGIN_INFO_PACKET);
 		my_packet.type = CS_LOGIN;
 
 		strcpy(my_packet.name, "닉네임");
-		send(sock, reinterpret_cast<char*>(&my_packet), sizeof(my_packet), NULL);
+		send(server_sock, reinterpret_cast<char*>(&my_packet), sizeof(my_packet), NULL);
 
 		image = new Image(L"Background\\LobbyScene.png");
+		start_button = new Image(L"Background\\start_button.png");	// 추후 이미지 변경 필요
 		crosshair = new Crosshair(image->GetWidth(), image->GetHeight());
 		animation_manager = new AnimationManager;
 		animation_manager->Insert("player_stand");
 		animation_manager->Insert("player_move");
+		animation_manager->Insert("Dust");
+		effect_manager = new EffectManager;
 
 		for (int i = 0; i < PLAYER_NUM; ++i)
 		{
@@ -305,7 +312,9 @@ LobbyScene::~LobbyScene()
 {
 	delete crosshair;
 	delete image;
+	delete start_button;
 	delete animation_manager;
+	delete effect_manager;
 	delete[] player;
 }
 
@@ -316,19 +325,54 @@ void LobbyScene::Render() const
 	InstantDCSet dc_set(RECT{ 0, 0, width, height});
 
 	image->Draw(dc_set.buf_dc, 0, 0, dc_set.bit_rect.right, dc_set.bit_rect.bottom, 0, 0, width, height);
+	start_button->Draw(dc_set.buf_dc, dc_set.bit_rect.right - 100, dc_set.bit_rect.bottom - 70, 80, 50, 0, 0, start_button->GetWidth(), start_button->GetHeight());
 	crosshair->Render(dc_set.buf_dc, dc_set.bit_rect);
-
+	effect_manager->Render(dc_set.buf_dc, dc_set.bit_rect);
 
 	POINT pos;
 	GetCursorPos(&pos);
 	ScreenToClient(h_wnd, &pos);
+	TCHAR lpOut[100];
+	TCHAR name[50];
+	TCHAR ip[50];
+	HFONT hFont, OldFont;	// 폰트 지정
+
+	SetBkMode(dc_set.buf_dc, TRANSPARENT);	// 글자 입력시 배경 투명
+	SetTextColor(dc_set.buf_dc, RGB(255, 255, 255));	// 글자 하얀색
+	hFont = CreateFont(15, 0, 0, 0, 0, 0, 0, 0, HANGEUL_CHARSET, 0, 0, 0,
+		VARIABLE_PITCH | FF_ROMAN, TEXT("맑은 고딕"));		// 폰트 등 추후 수정
+	OldFont = (HFONT)SelectObject(dc_set.buf_dc, hFont);
+
 
 	for (int i = 0; i < PLAYER_NUM; ++i)
 	{
-		if (player_list[i] && player_list[i]->GetState() == READY) {
+		if (player_list[i] && (player_list[i]->GetState() == IN_LOBBY || player_list[i]->GetState() == READY)) {
+			ZeroMemory(lpOut, 100);
+			ZeroMemory(name, 50);
+			ZeroMemory(ip, 50);
 			player[i]->Render(dc_set.buf_dc, dc_set.bit_rect);
+
+			MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, player_list[i]->GetName(), strlen(player_list[i]->GetName()), name, 50);
+			wsprintf(lpOut, TEXT("닉네임 : %s"), name);
+			TextOut(dc_set.buf_dc, 45 + 147 * i, 280, lpOut, lstrlen(lpOut));
+			
+			MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, player_list[i]->GetIp(), strlen(player_list[i]->GetIp()), ip, 50);
+			wsprintf(lpOut, TEXT("IP : %s"), ip);
+			TextOut(dc_set.buf_dc, 45 + 147 * i, 300, lpOut, lstrlen(lpOut));
+
+			if (player_list[i]->GetState() == IN_LOBBY)
+			{
+				TextOut(dc_set.buf_dc, 45 + 147 * i, 320, TEXT("준비중..."), lstrlen(TEXT("준비중...")));
+			}
+			else 
+			{
+				TextOut(dc_set.buf_dc, 45 + 147 * i, 320, TEXT("준비 완료!"), lstrlen(TEXT("준비 완료!")));
+			}
 		}
 	}
+
+	SelectObject(dc_set.buf_dc, OldFont);
+	DeleteObject(hFont);
 
 	DrawBuffer(dc_set.buf_dc, RECT{ 0, 0, width, height });
 }
@@ -336,10 +380,35 @@ void LobbyScene::Render() const
 void LobbyScene::Update()
 {
 	crosshair->Update(image->GetWidth(), image->GetHeight());
+	effect_manager->Update(animation_manager);
 	for (int i = 0; i < PLAYER_NUM; ++i)
 	{
-		if (player_list[i] && player_list[i]->GetState() == READY) {
+		if (player_list[i] && (player_list[i]->GetState() == IN_LOBBY || player_list[i]->GetState() == READY)) {
+			if (player_list[i]->GetState() == READY) {
+				player[i]->ChangeStateToMoving();
+				player[i]->MatchStateAndAnimation(animation_manager, effect_manager);
+			}
 			player[i]->UpdateAnimation(animation_manager);
+		}
+	}
+
+	if(player_list[g_myid]->GetState() != READY){
+		if (GetAsyncKeyState(VK_MBUTTON) & 0x8000) {	// 휠 클릭tl 준비 완료 상태로 변함
+			POINT pos;
+			GetCursorPos(&pos);
+			ScreenToClient(h_wnd, &pos);
+			int width = image->GetWidth();
+			int height = image->GetHeight();
+
+			//if (pos.x > width - 100 && pos.x < width - 20 && pos.y > height - 70 && pos.y < height - 20)
+			//{
+				printf("SEND READY\n");
+				player_list[g_myid]->SetState(READY);
+				CS_READY_PACKET my_packet{};
+				my_packet.size = sizeof(CS_READY_PACKET);
+				my_packet.type = CS_READY;
+				send(server_sock, reinterpret_cast<char*>(&my_packet), sizeof(my_packet), NULL);
+			//}
 		}
 	}
 }

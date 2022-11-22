@@ -8,6 +8,7 @@
 #define BUFSIZE    4096
 
 std::vector<Player*> player_list(3, NULL);
+extern bool game_start;
 
 SOCKET Create_Listen()
 {
@@ -56,8 +57,8 @@ DWORD WINAPI ClientThread(LPVOID arg)
 			my_packet.type = SC_LOGIN;
 			for (int i = 0; i < player_list.size(); ++i) {
 				my_packet.data[i].id = i;
-				if (player_list[i] && player_list[i]->GetState() == READY) {
-					my_packet.data[i].state = READY;
+				if (player_list[i] && player_list[i]->GetState() == IN_LOBBY) {
+					my_packet.data[i].state = IN_LOBBY;
 					my_packet.data[i].ip = player_list[i]->GetIp();
 					strcpy(my_packet.data[i].name, player_list[i]->GetName());
 				}
@@ -91,8 +92,10 @@ DWORD WINAPI ClientThread(LPVOID arg)
 			memcpy(&name, &subBuf, sizeof(char[20]));
 			
 			player_list[id]->SetName(name);
-			int client_len;
+			player_list[id]->SetState(IN_LOBBY);
+			
 			struct sockaddr_in myaddr;
+			int client_len = sizeof(myaddr);
 			
 			printf("\n[TCP 서버] 클라이언트 로그인: id : %d 닉네임 : %s\n", id, name);
 
@@ -105,19 +108,54 @@ DWORD WINAPI ClientThread(LPVOID arg)
 			my_packet.type = SC_LOGIN;
 			for (int i = 0; i < player_list.size(); ++i) {
 				my_packet.data[i].id = i;
-				if (player_list[i] && player_list[i]->GetState() == READY) {
-					my_packet.data[i].state = READY;
+				if (player_list[i] && (player_list[i]->GetState() == IN_LOBBY || player_list[i]->GetState() == READY)) {		// 로비 / 레디 상태일때
+					my_packet.data[i].state = player_list[i]->GetState();
 					my_packet.data[i].ip = player_list[i]->GetIp();
 					strcpy(my_packet.data[i].name, player_list[i]->GetName());
 				}
 				else {
-					my_packet.data->state = UNCONNECT;
+					my_packet.data[i].state = UNCONNECT;
+					printf("%d : UNCONNECT\n", i);
 				}
 			}
 
 			for (int i = 0; i < PLAYER_NUM; ++i) {
-				my_packet.your_id = i;
-				send(player_list[id]->sock, reinterpret_cast<char*>(&my_packet), sizeof(my_packet), NULL);
+				if (player_list[i] && player_list[i]->GetState() >= IN_LOBBY) {
+					my_packet.your_id = i;
+					send(player_list[i]->sock, reinterpret_cast<char*>(&my_packet), sizeof(my_packet), NULL);
+				}
+			}
+			break;
+		}
+		case CS_READY:
+		{
+			printf("recv Player %d is Ready\n", id);
+			player_list[id]->SetState(READY);
+			bool play_start = true;
+
+			for (int i = 0; i < PLAYER_NUM; ++i) {
+				if (player_list[i] && player_list[i]->GetState() != READY) {
+					play_start = false;
+					break;
+				}
+			}
+
+			if (play_start) {
+				// 플레이 상태로 전환
+				game_start = true;
+				printf("game start\n", id);
+			}
+			else {
+				SC_READY_PACKET my_packet;
+				my_packet.size = sizeof(SC_READY_PACKET);
+				my_packet.type = SC_READY;
+				my_packet.ready_id = id;
+				for (int i = 0; i < PLAYER_NUM; ++i) {
+					if (player_list[i] && (player_list[i]->GetState() == IN_LOBBY || player_list[i]->GetState() == READY)) {
+						send(player_list[i]->sock, reinterpret_cast<char*>(&my_packet), sizeof(my_packet), NULL);
+					}
+				}
+				printf("send Player %d is Ready\n", id);
 			}
 			break;
 		}
@@ -128,7 +166,7 @@ DWORD WINAPI ClientThread(LPVOID arg)
 			printf("main game\n");
 			recv(player_list[id]->sock, subBuf, sizeof(subBuf), 0);
 			printf("패킷 사이즈 :  %d\n", buf[0]);
-
+			break;
 
 		}
 

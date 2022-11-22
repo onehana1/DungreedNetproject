@@ -1,3 +1,5 @@
+#pragma comment(linker, "/entry:WinMainCRTStartup /subsystem:console")
+
 #define WIN32_LEAN_AND_MEAN
 
 #include <tchar.h>
@@ -21,6 +23,7 @@ Framework* framework;
 std::random_device rd;
 std::default_random_engine dre(rd());
 
+int g_myid = -1;
 
 HINSTANCE g_h_inst;
 LPCTSTR lpszClass = L"Window Class Name";

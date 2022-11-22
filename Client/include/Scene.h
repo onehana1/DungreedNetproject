@@ -19,6 +19,7 @@
 #include "Protocol.h"
 
 extern std::vector<Player*> player_list;
+extern int g_myid;
 extern HWND h_wnd;
 extern void DrawBuffer(HDC instant_dc, const RECT& rect);
 
@@ -32,6 +33,8 @@ public:
 	virtual void Render() const;
 	virtual void Update();
 	virtual int ChangeScene();
+
+	SOCKET server_sock;
 };
 
 class PlayScene : public Scene
@@ -98,7 +101,9 @@ class LobbyScene : public Scene
 private:
 	Crosshair* crosshair;
 	Image* image;
+	Image* start_button;
 	AnimationManager* animation_manager;
+	EffectManager* effect_manager;
 	Player* player[PLAYER_NUM];
 
 	int update_cnt = 0;

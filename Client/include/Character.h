@@ -116,6 +116,9 @@ public:
 
 	inline bool IsDied() const { return (hp <= 0) ? true : false; }
 
+	void ChangeAnimation(const char* a_name);
+	std::string GetAnimationName() { return animation_name; }
+
 	friend class HitScanner;
 	friend class MonsterAI;
 };

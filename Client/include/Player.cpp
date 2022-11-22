@@ -39,6 +39,16 @@ void Player::Update(const Dungeon* dungeon, Weapon* weapon, const Crosshair* cro
 	UpdateAnimation(animation_manager);
 }
 
+void Player::ChangeStateToMoving()
+{
+	state = State::MOVING;
+}
+
+void Player::ChangeStateToStanding()
+{
+	state = State::STANDING;
+}
+
 void Player::KeyProc(const Dungeon* dungeon, MissileManager* missile_manager, SoundManager* sound_manager)
 {
 	InstantDCSet dc_set(RECT{ 0, 0, dungeon->dungeon_width, dungeon->dungeon_height });
@@ -191,6 +201,23 @@ void Player::MatchStateAndAnimation(AnimationManager* animation_manager, SoundMa
 			effect_manager->Insert(animation_manager, POINT{ pos.x + width / 6, pos.y + height / 3 * 2 }, width / 3 * 2, height / 3, "Dust", L"animation/Dust1.png");
 			if (walk_cnt % 30 == 0)
 				sound_manager->Play("sound\\walk.mp3");
+		}
+	}
+	else if ((state == State::STANDING || state == State::DOWN) && animation_name == "player_move") {
+		animation_name = "player_stand";
+		is_animation_load_requested = true;
+	}
+}
+
+void Player::MatchStateAndAnimation(AnimationManager* animation_manager, EffectManager* effect_manager)
+{
+	if (state == State::MOVING) {
+		if (animation_name == "player_stand") {
+			animation_name = "player_move";
+			is_animation_load_requested = true;
+		}
+		if (++walk_cnt % 10 == 0) {
+			effect_manager->Insert(animation_manager, POINT{ pos.x + width / 6, pos.y + height / 3 * 2 }, width / 3 * 2, height / 3, "Dust", L"animation/Dust1.png");
 		}
 	}
 	else if ((state == State::STANDING || state == State::DOWN) && animation_name == "player_move") {
