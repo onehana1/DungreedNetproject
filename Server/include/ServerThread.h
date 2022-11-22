@@ -1,8 +1,8 @@
 #pragma once
 #pragma once
 #include "Common.h"
-#include "Protocol.h"
 #include "Player.h"
+#include "Protocol.h"
 
 #define SERVERPORT 9000
 #define BUFSIZE    4096
