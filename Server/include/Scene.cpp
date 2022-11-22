@@ -83,6 +83,14 @@ void Scene::DungeonChangeProc()
 		monster_manager->Appear(5);
 }
 
+void Scene::InputUpdate(CS_PLAYER_INPUT_INFO_PACKET INFO)
+{
+	//1명의 정보를 받아 스레드로 갱신한다고 가정. 
+	player->SC_Update(dungeon,INFO.mouse, INFO.key, &Player_Info[INFO.ID].PPos); //플레이어 좌표를 갱신함
+
+	//몬스터 정보를 갱신함 
+}
+
 void Scene::HitUpdate()
 {
 	for (auto* monster : monster_manager->monsters)

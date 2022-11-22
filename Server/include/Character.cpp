@@ -152,6 +152,24 @@ void Character::MovePos(Direction direction, const int px)
 	}
 }
 
+void Character::CS_MovePos(Direction direction, const int px, POINT* PPos)
+{
+	switch (direction) {
+	case Direction::LEFT:
+		PPos->x -= px;
+		break;
+	case Direction::UP:
+		PPos->y -= px;
+		break;
+	case Direction::RIGHT:
+		PPos->x += px;
+		break;
+	case Direction::DOWN:
+		PPos->y += px;
+		break;
+	}
+}
+
 void Character::Render(HDC scene_dc, const RECT& bit_rect)
 {
 	if (looking_direction) {

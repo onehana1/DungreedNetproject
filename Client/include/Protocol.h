@@ -40,8 +40,9 @@ struct PLAYER_MOUSE {
 	bool left;
 	bool right;
 	bool wheel;
-	int x;
-	int y;
+	POINT mPos;
+	/*int x;
+	int y;*/
 };
 struct PLAYER_KEYBOARD {
 	bool a;
@@ -54,10 +55,20 @@ struct CS_PLAYER_INPUT_INFO_PACKET {
 	unsigned char size;
 	char	type;
 	char name[20];
+	short ID; //
 
 	struct PLAYER_MOUSE mouse;
 	struct PLAYER_KEYBOARD key;
 
 	
 
+};
+struct PLAYER_INFO_MANAGER {
+	POINT PPos;				//State
+	int hp;
+	int killMonster;
+
+	bool Direction;			//MOUSE - Left(0), Right(1)
+	bool IsMove;			//stand, run
+	
 };

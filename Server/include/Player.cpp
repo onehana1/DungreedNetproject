@@ -10,11 +10,7 @@ void Player::PlaceWithDungeonRight(const Dungeon* dungeon)
 	pos = dungeon->right_start_pos;
 }
 
-void Player::Init(const Dungeon* dungeon
-
-
-
-)
+void Player::Init(const Dungeon* dungeon)
 {
 	state = State::DOWN;
 	x_move_px = dungeon->camera_x_half_range / 60.0f;
@@ -37,6 +33,14 @@ void Player::Update(const Dungeon* dungeon, Weapon* weapon, MissileManager* miss
 	}
 	DashProc(Degree(mouse, pos), dungeon, dungeon->camera_x_half_range / 16  );
 
+}
+
+void Player::SC_Update(const Dungeon* dungeon, PLAYER_MOUSE mouse, PLAYER_KEYBOARD key, POINT* Ppos)
+{
+	if (!mouse.left) {
+		SC_KeyProc(dungeon, key, Ppos);
+	}
+	//SC_DashProc(Degree(mouse.mPos, *Ppos), dungeon, dungeon->camera_x_half_range / 16); //수정필요. 
 }
 
 void Player::KeyProc(const Dungeon* dungeon, MissileManager* missile_manager)
@@ -177,3 +181,88 @@ void Player::AttackProc(Weapon* weapon, MissileManager* missile_manager   )
 		StartAttack(10, 3, RECT{  });
 	}
 }
+
+void Player::SC_KeyProc(const Dungeon* dungeon, PLAYER_KEYBOARD key, POINT* Ppos)
+{
+	InstantDCSet dc_set(RECT{ 0, 0, dungeon->dungeon_width, dungeon->dungeon_height });
+
+	//dungeon->dungeon_terrain_image->Draw(dc_set.buf_dc, dc_set.bit_rect);
+	//if (state == State::MOVING && !GetAsyncKeyState('A') && !GetAsyncKeyState('D') && !GetAsyncKeyState('S') && !GetAsyncKeyState(VK_SPACE)) {
+	//	Stand();
+	//	return;
+	//}
+
+	if (key.a)
+		if (CanGoLeft(dc_set.buf_dc))
+			RunLeft();
+
+	if (key.d)
+		if (CanGoRight(dc_set.buf_dc))
+			RunRight();
+
+	if ((key.s) && (key.space)) {
+		if (CanDownJump(dc_set.buf_dc))
+			DownJump();
+	}
+	else if (key.space)
+		if (CanJump(state)) {
+			//("sound\\jump.mp3");
+			Jump();
+		}
+
+	if (IsOut_Left(dungeon) && !dungeon->CanGoPrev())
+		CS_MovePos(Direction::RIGHT, x_move_px, Ppos);
+	else if (IsOut_Right(dungeon) && !dungeon->CanGoNext())
+		CS_MovePos(Direction::LEFT, x_move_px, Ppos);
+}
+
+void Player::SC_DashProc(float radian, const Dungeon* dungeon, int* px)
+{
+	InstantDCSet dc_set(RECT{ 0, 0, dungeon->dungeon_width, dungeon->dungeon_height });
+
+	dungeon->dungeon_terrain_image->Draw(dc_set.buf_dc, dc_set.bit_rect);
+
+	if (dash_power == 0 && GetAsyncKeyState(VK_RBUTTON) & 0x8000) {
+		dash_power = dungeon->camera_y_half_range / 24.0f;
+		dash_radian = radian;
+		//Play("sound\\dash.mp3");
+	}
+
+	if (dash_power > 0) {
+		POINT old_pos = pos;
+
+		if (looking_direction) {
+			POINT desti_pos = { pos.x + *px * cos(dash_radian), pos.y - *px * sin(dash_radian) };
+			POINT desti_character_foot_pos = { desti_pos.x + width / 2, desti_pos.y + height / 5 * 4 };
+			if (CanGoToPos(dc_set.buf_dc, desti_character_foot_pos))
+				pos = desti_pos;
+		}
+		else {
+			POINT desti_pos = { pos.x - *px * cos(dash_radian), pos.y - *px * sin(dash_radian) };
+			POINT desti_character_foot_pos = { desti_pos.x + width / 2, desti_pos.y + height / 5 * 4 };
+			if (CanGoToPos(dc_set.buf_dc, desti_character_foot_pos))
+				pos = desti_pos;
+		}
+		dash_power -= 1;
+
+		if (dash_power < 0) {
+			dash_power = -50;
+			state = State::DOWN;
+		}
+
+		if (IsOut_Left(dungeon) && !dungeon->CanGoPrev())
+			pos = old_pos;
+		else if (IsOut_Right(dungeon) && !dungeon->CanGoNext())
+			pos = old_pos;
+
+	}
+
+	if (dash_power < 0) {
+		dash_power++;
+		if (dash_power >= 0) {
+			dash_power = 0;
+		}
+	}
+}
+
+

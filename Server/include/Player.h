@@ -6,6 +6,7 @@
 #include "InstantDCSet.h"
 #include "Weapon.h"
 #include "HitScan.h"
+#include "Protocol.h"
 #include <cstring>
 
 extern HDC buf_dc;
@@ -40,7 +41,8 @@ private:
 	void DashProc(float radian, const Dungeon* dungeon, const int px);
 	void AttackProc(Weapon* weapon, MissileManager* missile_manager);
 
-	
+	void SC_KeyProc(const Dungeon* dungeon, PLAYER_KEYBOARD key,POINT* Ppos);
+	void SC_DashProc(float radian, const Dungeon* dungeon, int *px);
 public:
 	Player() = default;
 	Player(const Dungeon* dungeon) :
@@ -57,6 +59,7 @@ public:
 	void Init(const Dungeon* dungeon  );
 
 	void Update(const Dungeon* dungeon, Weapon* weapon, MissileManager* missile_manager );
+	void SC_Update(const Dungeon* dungeon, PLAYER_MOUSE mouse, PLAYER_KEYBOARD key, POINT* Ppos); //
 
 	friend class Weapon;
 	friend class MonsterAI;

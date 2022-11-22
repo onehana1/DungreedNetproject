@@ -63,6 +63,7 @@ protected:
 	void Jump();
 
 	void MovePos(Direction direction, const int px);
+	void CS_MovePos(Direction direction, const int px, POINT* PPos);
 
 	bool CanGoLeft(const HDC terrain_dc);
 	bool CanGoRight(const HDC terrain_dc);

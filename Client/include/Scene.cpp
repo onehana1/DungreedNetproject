@@ -67,8 +67,8 @@ PlayScene::PlayScene(SOCKET sock, char* name, const int dungeon_id)
 		my_packet.mouse.right = GetAsyncKeyState(VK_RBUTTON);
 		my_packet.mouse.left = GetAsyncKeyState(VK_LBUTTON);
 		my_packet.mouse.wheel = GetAsyncKeyState(VK_MBUTTON);
-		my_packet.mouse.x = crosshair->pos.x;
-		my_packet.mouse.y = crosshair->pos.y;
+		my_packet.mouse.mPos.x = crosshair->pos.x;
+		my_packet.mouse.mPos.y = crosshair->pos.y;
 		
 		strcpy(my_packet.name, "´Ð³×ÀÓ");
 		send(sock, reinterpret_cast<char*>(&my_packet), sizeof(my_packet), NULL);
