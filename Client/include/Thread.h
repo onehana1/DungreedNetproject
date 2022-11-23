@@ -58,12 +58,20 @@ DWORD WINAPI RecvThread(LPVOID arg)// //클라이언트에서 Recv와 수신 후 작업을 담�
 		}
 		case SC_READY:
 		{
+			printf("ready\n");
 			char IdBuf[sizeof(short)]{};
 			recv(sock, IdBuf, sizeof(IdBuf), 0);
 
 			short id;
 			memcpy(&id, &IdBuf, sizeof(short));
 			player_list[id]->SetState(READY);
+			break;
+		}
+		case SC_PLAY:
+		{
+			printf("playing\n");
+			char PlayBuf[sizeof(CS_PLAYER_INPUT_INFO_PACKET)]{};
+			recv(sock, PlayBuf, sizeof(PlayBuf), 0);
 			break;
 		}
 		default:

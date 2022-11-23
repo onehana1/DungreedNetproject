@@ -42,7 +42,7 @@ DWORD WINAPI ClientThread(LPVOID arg)
 	int id = (int)arg;
 
 	while (true) {
-		char buf[2];
+		char buf[3];
 		DWORD recvByte{ 0 }, recvFlag{ 0 };
 		//recv(sock, buf, sizeof(buf), MSG_WAITALL);
 		int error_code = recv(player_list[id]->sock, buf, sizeof(buf), 0);
@@ -79,6 +79,10 @@ DWORD WINAPI ClientThread(LPVOID arg)
 
 		UCHAR size{ static_cast<UCHAR>(buf[0]) };
 		UCHAR type{ static_cast<UCHAR>(buf[1]) };
+		SHORT key{ static_cast<SHORT>(buf[2]) };
+
+		
+
 		switch (type)
 		{
 		case CS_LOGIN: //로그인
@@ -161,11 +165,34 @@ DWORD WINAPI ClientThread(LPVOID arg)
 		}
 		case CS_PLAY:
 		{
-			char subBuf[sizeof(char[20])]{};
-			recv(player_list[id]->sock, subBuf, sizeof(subBuf), 0);
+			PLAYER_KEYBOARD inputkey = {};
+			inputkey.a = false;
+
 			printf("main game\n");
+			player_list[id]->SetState(PLAYING);
+
+			char subBuf[sizeof(CS_PLAYER_INPUT_INFO_PACKET)]{};
 			recv(player_list[id]->sock, subBuf, sizeof(subBuf), 0);
 			printf("패킷 사이즈 :  %d\n", buf[0]);
+			
+
+		
+			SC_PLAYER_INPUT_INFO_PACKET my_packet;
+			my_packet.size = sizeof(SC_READY_PACKET);
+			my_packet.type = SC_READY;
+			my_packet.ID = id;
+
+			send(player_list[id]->sock, reinterpret_cast<char*>(&my_packet), sizeof(my_packet), NULL);
+
+
+			
+
+			/*for (int i = 0; i < PLAYER_NUM; ++i) {
+				if (player_list[i] && (player_list[i]->GetState() == PLAYING)) {
+					send(player_list[i]->sock, subBuf, sizeof(subBuf), NULL);
+				}
+			}*/
+
 			break;
 
 		}

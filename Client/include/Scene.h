@@ -18,6 +18,7 @@
 #include "Missile.h"
 #include "Protocol.h"
 
+
 extern std::vector<Player*> player_list;
 extern int g_myid;
 extern HWND h_wnd;
@@ -31,10 +32,17 @@ public:
 	~Scene();
 
 	virtual void Render() const;
-	virtual void Update();
+	virtual void Update(SOCKET socket, char* name);
 	virtual int ChangeScene();
 
 	SOCKET server_sock;
+	SOCKET sock;
+	SOCKET Psock;
+
+	
+
+
+	char* name;
 };
 
 class PlayScene : public Scene
@@ -67,11 +75,11 @@ private:
 
 public:
 	PlayScene();
-	PlayScene(SOCKET sock, char* name, const int dungeon_id);
+	PlayScene(const int dungeon_id);
 	~PlayScene();
 
 	virtual void Render() const;
-	virtual void Update();
+	virtual void Update(SOCKET socket, char* name);
 
 	virtual int ChangeScene();
 };
@@ -91,7 +99,7 @@ public:
 	~StartScene();
 
 	virtual void Render() const;
-	virtual void Update();
+	virtual void Update(SOCKET socket, char* name);
 
 	virtual int ChangeScene();
 };
@@ -114,7 +122,7 @@ public:
 	~LobbyScene();
 
 	virtual void Render() const;
-	virtual void Update();
+	virtual void Update(SOCKET socket, char* name);
 
 	virtual int ChangeScene();
 };

@@ -12,7 +12,7 @@ void Scene::Render() const
 {
 }
 
-void Scene::Update()
+void Scene::Update(SOCKET socket, char* name)
 {
 }
 
@@ -52,26 +52,11 @@ PlayScene::PlayScene()
 	}
 }
 
-PlayScene::PlayScene(SOCKET sock, char* name, const int dungeon_id)
+PlayScene::PlayScene(const int dungeon_id)
 {
 	try {
-		CS_PLAYER_INPUT_INFO_PACKET my_packet{};
-		my_packet.size = sizeof(CS_PLAYER_INPUT_INFO_PACKET);
-		my_packet.type = CS_PLAY;
-
-		my_packet.key.a = GetAsyncKeyState('A');
-		my_packet.key.s = GetAsyncKeyState('S');
-		my_packet.key.d = GetAsyncKeyState('D');
-		my_packet.key.space = GetAsyncKeyState(VK_SPACE);
-
-		my_packet.mouse.right = GetAsyncKeyState(VK_RBUTTON);
-		my_packet.mouse.left = GetAsyncKeyState(VK_LBUTTON);
-		my_packet.mouse.wheel = GetAsyncKeyState(VK_MBUTTON);
-		my_packet.mouse.mPos.x = crosshair->pos.x;
-		my_packet.mouse.mPos.y = crosshair->pos.y;
 		
-		strcpy(my_packet.name, "닉네임");
-		send(sock, reinterpret_cast<char*>(&my_packet), sizeof(my_packet), NULL);
+		SOCKET Psock;
 
 		animation_manager = new AnimationManager;
 		LoadPlayerAniamtion();
@@ -145,8 +130,28 @@ void PlayScene::Render() const
 	DrawBuffer(dc_set.buf_dc, camera->Rect());
 }
 
-void PlayScene::Update()
+void PlayScene::Update(SOCKET socket, char* name)
 {
+	server_sock = socket;
+	CS_PLAYER_INPUT_INFO_PACKET my_packet{};
+	my_packet.size = sizeof(CS_PLAYER_INPUT_INFO_PACKET);
+	my_packet.type = CS_PLAY;
+
+
+	my_packet.key.a = GetAsyncKeyState('A');
+	my_packet.key.s = GetAsyncKeyState('S');
+	my_packet.key.d = GetAsyncKeyState('D');
+	my_packet.key.space = GetAsyncKeyState(VK_SPACE);
+
+	my_packet.mouse.right = GetAsyncKeyState(VK_RBUTTON);
+	my_packet.mouse.left = GetAsyncKeyState(VK_LBUTTON);
+	my_packet.mouse.wheel = GetAsyncKeyState(VK_MBUTTON);
+	my_packet.mouse.mPos.x = crosshair->pos.x;
+	my_packet.mouse.mPos.y = crosshair->pos.y;
+
+	strcpy(my_packet.name, "닉네임");
+	send(server_sock, reinterpret_cast<char*>(&my_packet), sizeof(my_packet), NULL);
+
 	// player, monster 업데이트 루틴
 	player->Update(dungeon, weapon, crosshair, missile_manager, animation_manager, sound_manager, effect_manager);
 	monster_manager->Update(dungeon, player, animation_manager, missile_manager, sound_manager);
@@ -377,7 +382,7 @@ void LobbyScene::Render() const
 	DrawBuffer(dc_set.buf_dc, RECT{ 0, 0, width, height });
 }
 
-void LobbyScene::Update()
+void LobbyScene::Update(SOCKET socket, char* name)
 {
 	crosshair->Update(image->GetWidth(), image->GetHeight());
 	effect_manager->Update(animation_manager);
@@ -476,7 +481,7 @@ void StartScene::Render() const
 	DrawBuffer(dc_set.buf_dc, RECT{ 0, 0, width, height });
 }
 
-void StartScene::Update()
+void StartScene::Update(SOCKET socket, char* name)
 {
 	crosshair->Update(image->GetWidth(), image->GetHeight());
 }

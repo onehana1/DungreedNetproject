@@ -92,7 +92,7 @@ void Framework::Render() const
 
 void Framework::Update()
 {
-	scene->Update();
+	scene->Update(sock, nickname);
 	ChangeScene(scene->ChangeScene());
 }
 

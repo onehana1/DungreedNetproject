@@ -3,7 +3,7 @@
 #define PLAYER_NUM 3
 
 enum player_state {
-	UNCONNECT, CONNECT, IN_LOBBY, READY
+	UNCONNECT, CONNECT, IN_LOBBY, READY, PLAYING
 };
 
 // Packet ID
@@ -14,6 +14,8 @@ constexpr char CS_PLAY = 3;
 
 constexpr char SC_LOGIN = 10;
 constexpr char SC_READY = 11;
+constexpr char SC_PLAY = 12;
+
 
 struct LOGIN_INFO {
 	short id;
@@ -50,18 +52,18 @@ struct CS_READY_PACKET {
 };
 
 struct PLAYER_MOUSE {
-	bool left;
-	bool right;
-	bool wheel;
+	SHORT left = false;
+	SHORT right = false;
+	SHORT wheel = false;
 	POINT mPos;
 	/*int x;
 	int y;*/
 };
 struct PLAYER_KEYBOARD {
-	bool a;
-	bool s;
-	bool d;
-	bool space;
+	SHORT a = false;
+	SHORT s = false;
+	SHORT d = false;
+	SHORT space = false;
 };
 
 struct CS_PLAYER_INPUT_INFO_PACKET {
@@ -72,6 +74,17 @@ struct CS_PLAYER_INPUT_INFO_PACKET {
 
 	struct PLAYER_MOUSE mouse;
 	struct PLAYER_KEYBOARD key;	
+
+};
+
+struct SC_PLAYER_INPUT_INFO_PACKET {
+	unsigned char size;
+	char	type;
+	char name[20];
+	short ID; //
+
+	struct PLAYER_MOUSE mouse;
+	struct PLAYER_KEYBOARD key;
 
 };
 
