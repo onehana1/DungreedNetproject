@@ -28,8 +28,8 @@ protected:
 
 	int id;
 
-	const Image* image;
-	const Image* start_image;
+	const Image* image = NULL;
+	const Image* start_image = NULL;
 
 	bool is_animation_load_requested = false;
 	std::string animation_name;
@@ -85,7 +85,7 @@ public:
 		x_move_px{ x_move_px }, jump_start_power{ jump_start_power },
 		hp {hp}, atk {atk}, def{def}, max_hp {hp}
 	{}
-	~Character() { delete start_image; }
+	~Character() { if (start_image) { delete start_image; } }
 
 	virtual void Update(const Dungeon* dungeon) {}
 
