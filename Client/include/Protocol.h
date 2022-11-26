@@ -66,10 +66,18 @@ struct PLAYER_KEYBOARD {
 	SHORT space = false;
 };
 
+struct PLAYER_INPUT_INFO {
+	unsigned char size;
+	char	type;
+	short ID;
+
+	struct PLAYER_MOUSE mouse;
+	struct PLAYER_KEYBOARD key;
+};
+
 struct CS_PLAYER_INPUT_INFO_PACKET {
 	unsigned char size;
 	char	type;
-	char name[20];
 	short ID; //
 
 	struct PLAYER_MOUSE mouse;
@@ -80,7 +88,6 @@ struct CS_PLAYER_INPUT_INFO_PACKET {
 struct SC_PLAYER_INPUT_INFO_PACKET {
 	unsigned char size;
 	char	type;
-	char name[20];
 	short ID; //
 
 	struct PLAYER_MOUSE mouse;
