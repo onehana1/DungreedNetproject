@@ -109,6 +109,9 @@ public:
 	bool IsOut_Right(const Dungeon* dungeon) const;
 
 	void NoOut(const Dungeon* dungeon);
+	
+	bool GetDirection()const { return looking_direction; }
+	POINT GetPos() { return pos; }
 
 	inline bool IsDied() const { return (hp <= 0) ? true : false; }
 

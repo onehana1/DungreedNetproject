@@ -13,8 +13,10 @@
 #include <algorithm>
 #include "Player.h"
 #include "MonsterAI.h"
+#include "Protocol.h"
 
 extern std::default_random_engine dre;
+extern std::vector<Player*> player_list;
 constexpr int MONSTER_MAX_ANIMATION_NUM = 4;
 
 class MonsterAI;
@@ -29,6 +31,8 @@ class Monster : public Character
 {
 private:
 	enum class Policy {STAND, MOVE_TO_PLAYER, MOVE_FROM_PLAYER, ATTACK};
+	
+	short id;
 
 	BOOL is_floating;
 	BOOL melee_attack;
@@ -74,6 +78,10 @@ public:
 	void Update(const Dungeon* dungeon, const Player* player, MissileManager* missile_manager);
 	void Render(HDC scene_dc, const RECT& bit_rect);
 	inline bool IsAppeared() const { return is_appeared; }
+
+
+	void SetID(short in) { id = in; }
+	short GetID() { return id; }
 
 	friend class MonsterManager;
 	friend class MonsterAI;

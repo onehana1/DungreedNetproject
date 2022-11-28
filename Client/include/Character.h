@@ -116,6 +116,9 @@ public:
 
 	inline bool IsDied() const { return (hp <= 0) ? true : false; }
 
+	void SetPos(POINT in) { pos = in; }
+	void SetDirection(bool in) { looking_direction = in; }
+
 	void ChangeAnimation(const char* a_name);
 	std::string GetAnimationName() { return animation_name; }
 

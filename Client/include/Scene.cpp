@@ -181,8 +181,8 @@ void PlayScene::DungeonChangeProc()
 		else
 			player->NoOut(dungeon);
 
-	if (update_cnt++ % 1000 == 0)
-		monster_manager->Appear(5);
+	//if (update_cnt++ % 1000 == 0)
+	//	monster_manager->Appear(5);
 }
 
 void PlayScene::HitUpdate()

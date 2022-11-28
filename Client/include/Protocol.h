@@ -11,10 +11,10 @@ constexpr char CS_LOGIN = 1;
 constexpr char CS_READY = 2;
 constexpr char CS_PLAY = 3;
 
-
 constexpr char SC_LOGIN = 10;
 constexpr char SC_READY = 11;
 constexpr char SC_PLAY = 12;
+constexpr char SC_MAKE_MONSTER = 13;
 
 
 struct LOGIN_INFO {
@@ -110,11 +110,20 @@ struct PLAYER_INFO_MANAGER { //서버에서 관리 후 클라로 보내는 데이터
 	//딜레이용 정보가 필요하다면 추가할 것 
 };
 
-struct SC_MAKE_MONSTER {
+struct MAKE_MONSTER {
+	short ID;
+	POINT Pos;
+	bool Direction;
+};
 
+struct SC_MAKE_MONSTER_PACKET {
+	unsigned char size;
+	char	type;
+	MAKE_MONSTER monster[5];
 };
 
 struct MONSTER_INFO_MANAGER {
+	short id;
 	POINT PPos;				
 	char* Sheet;			//Monster sheet name
 

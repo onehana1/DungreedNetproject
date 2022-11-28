@@ -9,7 +9,7 @@ extern int g_myid;
 std::vector<Player*> player_list(3, NULL);
 DWORD WINAPI RecvThread(LPVOID arg);
 PLAYER_INPUT_INFO p_input[3];
-
+extern Framework* framework;
 
 DWORD WINAPI RecvThread(LPVOID arg)// //클라이언트에서 Recv와 수신 후 작업을 담당하는 함수
 {
@@ -94,6 +94,17 @@ DWORD WINAPI RecvThread(LPVOID arg)// //클라이언트에서 Recv와 수신 후 작업을 담�
 			//타임이 3이 왓다! 그러면 다음 결과 창으로 보내기
 			//결과 창 케이스를 하나 만들어서 거기서 타임 3이 왔다 그러면 다음 맵으로 보내기 
 
+			break;
+		}
+		case SC_MAKE_MONSTER:
+		{
+			char subBuf[sizeof(MAKE_MONSTER[5])]{};
+			recv(sock, subBuf, sizeof(subBuf), 0);
+
+			MAKE_MONSTER monsterInfo[5];
+			memcpy(&monsterInfo, &subBuf, sizeof(MAKE_MONSTER[5]));
+
+			framework->GetPlayScene()->GetMonsterManager()->Appear(monsterInfo);
 			break;
 		}
 		default:
