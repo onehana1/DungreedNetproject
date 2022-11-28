@@ -22,7 +22,7 @@ void Player::Init(const Dungeon* dungeon)
 	height = dungeon->camera_x_half_range / PLAYER_HEIGHT_PER_CAMERA_Y_HALF_RANGE;
 }
 
-void Player::Update(const Dungeon* dungeon, Weapon* weapon, MissileManager* missile_manager     )
+void Player::Update(const Dungeon* dungeon, Weapon* weapon, MissileManager* missile_manager )
 {	
 	if (dash_power <= 0) {
 		KeyProc(dungeon, missile_manager);
@@ -40,7 +40,19 @@ void Player::SC_Update(const Dungeon* dungeon, PLAYER_MOUSE mouse, PLAYER_KEYBOA
 	if (!mouse.left) {
 		SC_KeyProc(dungeon, key, Ppos);
 	}
-	//SC_DashProc(Degree(mouse.mPos, *Ppos), dungeon, dungeon->camera_x_half_range / 16); //수정필요. 
+	
+}//
+
+void Player::SC_Update2(const Dungeon* dungeon, Weapon* weapon, MissileManager* missile_manager, PLAYER_KEYBOARD key, PLAYER_MOUSE mouse)//
+{
+	if (dash_power <= 0) {
+		SC_KeyProc(dungeon, key, &pos);						//좌표갱신
+		SC_AttackProc(weapon, missile_manager, key,mouse);	//어택에 따른 상태, 미사일 위치, 갱신 -> 관리되는 몬스터들과의 채킹 필요 
+		ForceGravity(dungeon);
+		ForceGravity(dungeon);								//? 왜두개 
+		Look(mouse.mPos);									//마우스에 따른 방향 설정 -> AttackProc에서 사용 
+	}
+	DashProc(Degree(mouse.mPos, pos), dungeon, dungeon->camera_x_half_range / 16);
 }
 
 void Player::KeyProc(const Dungeon* dungeon, MissileManager* missile_manager)
@@ -186,11 +198,11 @@ void Player::SC_KeyProc(const Dungeon* dungeon, PLAYER_KEYBOARD key, POINT* Ppos
 {
 	InstantDCSet dc_set(RECT{ 0, 0, dungeon->dungeon_width, dungeon->dungeon_height });
 
-	//dungeon->dungeon_terrain_image->Draw(dc_set.buf_dc, dc_set.bit_rect);
-	//if (state == State::MOVING && !GetAsyncKeyState('A') && !GetAsyncKeyState('D') && !GetAsyncKeyState('S') && !GetAsyncKeyState(VK_SPACE)) {
-	//	Stand();
-	//	return;
-	//}
+	dungeon->dungeon_terrain_image->Draw(dc_set.buf_dc, dc_set.bit_rect);
+	if (state == State::MOVING && !key.a && !key.d && !key.s && !key.space) {
+		Stand();
+		return;
+	}
 
 	if (key.a)
 		if (CanGoLeft(dc_set.buf_dc))
@@ -262,6 +274,62 @@ void Player::SC_DashProc(float radian, const Dungeon* dungeon, int* px)
 		if (dash_power >= 0) {
 			dash_power = 0;
 		}
+	}
+}
+
+void Player::SC_AttackProc(Weapon* weapon, MissileManager* missile_manager, PLAYER_KEYBOARD key, PLAYER_MOUSE mouse)
+{
+
+	if (is_attacking || atk_delay) {
+		if (is_attacking) {
+
+			if (is_doing_missile_attack && former_atk_delay == 0) {
+				float radian = Degree(mouse.mPos, pos);
+
+				if (looking_direction) //미사일 업뎃장소, 보내는 거에 미사일도 필요할듯. 관리되고있는 missile vector값을 보내자.  
+					missile_manager->Insert(new Missile(this, pos, width, height / 2, radian, x_move_px * 2, 300, TRUE, 3, 70)); 
+				else
+					missile_manager->Insert(new Missile(this, pos, width, height / 2, radian, x_move_px * 2, 300, FALSE, 3, 70));
+			}
+			else if (!is_doing_missile_attack) {
+				int atk_rect_center_x;
+				int atk_rect_center_y;
+				if (looking_direction) {
+					atk_rect_center_x = pos.x + width * 1.5 * cos(atk_radian);
+				}
+				else {
+					atk_rect_center_x = pos.x - width * 0.5 * cos(atk_radian);
+				}
+
+				atk_rect_center_y = pos.y + height / 2 - width * sin(atk_radian);
+
+				atk_rect = RECT{ atk_rect_center_x - width / 2, atk_rect_center_y - height / 2, atk_rect_center_x + width / 2, atk_rect_center_y + height / 2 };
+			}
+
+			--former_atk_delay;
+
+			if (weapon->IsAttackFinished())
+				FinishAttack();
+		}
+		else
+			--atk_delay;
+	}
+	else if (mouse.wheel & 0x8000) {
+		//sound_manager->Play("sound\\swing1.mp3");
+		weapon->StartAttack();
+
+		is_doing_missile_attack = true;
+
+		StartAttack(10, 20, RECT{});
+	}
+	else if (mouse.left & 0x8000) {
+		//sound_manager->Play("sound\\swing1.mp3");
+		weapon->StartAttack();
+		atk_radian = Degree(mouse.mPos, pos);
+
+		is_doing_missile_attack = false;
+
+		StartAttack(10, 3, RECT{  });
 	}
 }
 

@@ -30,12 +30,15 @@ class Scene : private Uncopyable
 private:
 	Dungeon* dungeon;
 	Player* player;
+	Player** TestPlayer;   // 써보려는 플레이어 
+	PLAYER_INFO_MANAGER* SC_INFO;  //보낼 정보 정리 ( Server -> client) 
 	Weapon* weapon;
 
 	MonsterManager* monster_manager;
 	MissileManager* missile_manager;
 
 	int update_cnt = 0;
+	int Play_count = 0; // 플레이 중인 사람 수 
 
 	void GoNextDungeon();
 	void GoPrevDungeon();
@@ -48,6 +51,14 @@ private:
 
 	///////////////////////////////////////////////////////
 	void InputUpdate(CS_PLAYER_INPUT_INFO_PACKET INFO);
+	void UpdateInfo(int num, Player* player);
+	
+public:
+	void SetPlayer(int num) { // 들어온 인원만큼 플레이 갱신 
+		TestPlayer = new Player*[num];
+		Play_count = num; 
+		SC_INFO = new PLAYER_INFO_MANAGER[num];
+	}
 
 	PLAYER_INFO_MANAGER Player_Info[PLAYER_NUM];
 	CS_PLAYER_INPUT_INFO_PACKET CS_Player_Info[PLAYER_NUM]; // 서버에서 받으면 대체. 

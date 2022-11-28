@@ -5,6 +5,7 @@
 #include <string>
 #include "FileUtility.h"
 #include "Dungeon.h"
+#include "Protocol.h"
 #include "InstantDCSet.h"
 
 extern HDC buf_dc;
@@ -97,6 +98,11 @@ public:
 
 	void Look(const POINT& target);
 	void Look(const Character& target);
+	///////////////////////////////////////
+
+	void UpdateInfo(PLAYER_INFO_MANAGER* player);
+
+	//////////////////////////////////////
 
 
 	bool IsOut_Left(const Dungeon* dungeon) const;

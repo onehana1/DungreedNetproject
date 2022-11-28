@@ -99,11 +99,31 @@ struct SC_PLAYER_INPUT_INFO_PACKET {
 
 };
 
-struct PLAYER_INFO_MANAGER {
-	POINT PPos;				//State
+struct PLAYER_INFO_MANAGER { //서버에서 관리 후 클라로 보내는 데이터 
+	POINT PPos;				
+	short State;			
+	char* animation_name;			//character sheet name
+
 	int hp;
 	int killMonster;
 
-	bool Direction;			//MOUSE - Left(0), Right(1)
 	bool IsMove;			//stand, run
+	bool IsAttack;			// attack
+	bool IsMisile;			// Misile
+
+	//딜레이용 정보가 필요하다면 추가할 것 
+};
+
+struct SC_MAKE_MONSTER {
+
+};
+
+struct MONSTER_INFO_MANAGER {
+	POINT PPos;				
+	char* Sheet;			//Monster sheet name
+
+	int hp;
+
+	bool Direction;			// sight Dir
+	bool IsAttack;			//stand, run
 };
