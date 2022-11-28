@@ -132,6 +132,8 @@ void PlayScene::Render() const
 
 void PlayScene::Update(SOCKET socket, char* name)
 {
+
+
 	server_sock = socket;
 	CS_PLAYER_INPUT_INFO_PACKET my_packet{};
 	my_packet.size = sizeof(CS_PLAYER_INPUT_INFO_PACKET);
@@ -197,6 +199,10 @@ void PlayScene::HitUpdate()
 				else
 					HitScan(missile, player, missile_manager, sound_manager);
 		}
+}
+
+void PlayScene::GoDungeonResult()
+{
 }
 
 void PlayScene::GoNextDungeon()

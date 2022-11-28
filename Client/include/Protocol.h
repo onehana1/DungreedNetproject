@@ -6,6 +6,9 @@ enum player_state {
 	UNCONNECT, CONNECT, IN_LOBBY, READY, PLAYING
 };
 
+enum playing_State {
+	DOWN, UP, STANDING, MOVING, DOWNJUMP
+};
 // Packet ID
 constexpr char CS_LOGIN = 1;
 constexpr char CS_READY = 2;
@@ -73,6 +76,8 @@ struct PLAYER_INPUT_INFO {
 
 	struct PLAYER_MOUSE mouse;
 	struct PLAYER_KEYBOARD key;
+
+	int time =1; // 3초
 };
 
 struct CS_PLAYER_INPUT_INFO_PACKET {
@@ -93,12 +98,14 @@ struct SC_PLAYER_INPUT_INFO_PACKET {
 	struct PLAYER_MOUSE mouse;
 	struct PLAYER_KEYBOARD key;
 
+	int time= 1; // 3초
+
 };
 
 struct PLAYER_INFO_MANAGER { //서버에서 관리 후 클라로 보내는 데이터 
 	POINT PPos;				
 	short State;			
-	char* animation_name;			//character sheet name
+	std::string animation_name;			//character sheet name
 
 	int hp;
 	int killMonster;
