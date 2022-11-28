@@ -11,6 +11,7 @@ DWORD WINAPI RecvThread(LPVOID arg);
 PLAYER_INPUT_INFO p_input[3];
 
 
+
 DWORD WINAPI RecvThread(LPVOID arg)// //클라이언트에서 Recv와 수신 후 작업을 담당하는 함수
 {
 	SOCKET sock = (SOCKET)arg;
@@ -80,29 +81,40 @@ DWORD WINAPI RecvThread(LPVOID arg)// //클라이언트에서 Recv와 수신 후 작업을 담�
 			memcpy(&temp, &PlayBuf, sizeof(PLAYER_INPUT_INFO[3]));
 
 			
+			
 			for (int i = 0; i < 3; i++) {
-				p_input[temp[i].ID].ID = temp[i].ID;
+				if (temp[i].time !=0) {
+					p_input[temp[i].ID].ID = temp[i].ID;
 
-				p_input[temp[i].ID].mouse.right = temp[i].mouse.right;
-				p_input[temp[i].ID].mouse.left = temp[i].mouse.left;
-				p_input[temp[i].ID].mouse.wheel = temp[i].mouse.wheel;
-				p_input[temp[i].ID].mouse.mPos.x = temp[i].mouse.mPos.x;
-				p_input[temp[i].ID].mouse.mPos.y = temp[i].mouse.mPos.y;
+					p_input[temp[i].ID].mouse.right = temp[i].mouse.right;
+					p_input[temp[i].ID].mouse.left = temp[i].mouse.left;
+					p_input[temp[i].ID].mouse.wheel = temp[i].mouse.wheel;
+					p_input[temp[i].ID].mouse.mPos.x = temp[i].mouse.mPos.x;
+					p_input[temp[i].ID].mouse.mPos.y = temp[i].mouse.mPos.y;
 
-				p_input[temp[i].ID].key.a = temp[i].key.a;
-				p_input[temp[i].ID].key.s = temp[i].key.s;
-				p_input[temp[i].ID].key.d = temp[i].key.d;
-				p_input[temp[i].ID].key.space = temp[i].key.space;
+					p_input[temp[i].ID].key.a = temp[i].key.a;
+					p_input[temp[i].ID].key.s = temp[i].key.s;
+					p_input[temp[i].ID].key.d = temp[i].key.d;
+					p_input[temp[i].ID].key.space = temp[i].key.space;
 
-				p_input[temp[i].ID].time = temp[i].time;
-
-			}
-
-			for (int i = 0; i < PLAYER_NUM; ++i) {
-				if (player_list[i]) {
-					printf("t : %d\n", p_input[i].time);
+					p_input[temp[i].ID].time = temp[i].time;
 				}
+
 			}
+
+			//for (int i = 0; i < 3; i++) {
+			//	if (p_input[i].time == 65535) {
+			//		player_list[i]->SetState(RESULTING);
+			//		printf("패스");
+
+			//	}
+			//}
+
+			//for (int i = 0; i < PLAYER_NUM; ++i) {
+			//	if (player_list[i]) {
+			//		printf("t : %d\n", p_input[i].time);
+			//	}
+			//}
 
 
 
@@ -114,6 +126,18 @@ DWORD WINAPI RecvThread(LPVOID arg)// //클라이언트에서 Recv와 수신 후 작업을 담�
 			//타임이 3이 왓다! 그러면 다음 결과 창으로 보내기
 			//결과 창 케이스를 하나 만들어서 거기서 타임 3이 왔다 그러면 다음 맵으로 보내기 
 
+			break;
+		}
+
+		case SC_RESULT:
+		{
+			printf("result\n");
+			char IdBuf[sizeof(short)]{};
+			recv(sock, IdBuf, sizeof(IdBuf), 0);
+
+			short id;
+			memcpy(&id, &IdBuf, sizeof(short));
+			player_list[id]->SetState(RESULTING);
 			break;
 		}
 		default:

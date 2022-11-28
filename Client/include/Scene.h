@@ -130,4 +130,30 @@ public:
 
 	virtual int ChangeScene();
 };
+
+
+
+class InterimScene : public Scene
+{
+private:
+	Crosshair* crosshair;
+	Image* image;
+	Image* start_button;
+	AnimationManager* animation_manager;
+	EffectManager* effect_manager;
+	Player* player[PLAYER_NUM];
+
+	int update_cnt = 0;
+
+public:
+	InterimScene();
+	InterimScene(SOCKET sock, char* name);
+	~InterimScene();
+
+	virtual void Render() const;
+	virtual void Update(SOCKET socket, char* name);
+
+	virtual int ChangeScene();
+};
+
 #endif

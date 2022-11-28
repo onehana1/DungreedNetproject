@@ -14,7 +14,13 @@ extern bool game_start;
 int StartDun = 0;
 int StartTime;
 int EndTime;
+
+int StartRTime;
+int EndRTime;
+
 int CntTime;
+int CntRTime;
+
 
 SOCKET Create_Listen()
 {
@@ -176,12 +182,13 @@ DWORD WINAPI ClientThread(LPVOID arg)
 
 			//시간
 			if (StartDun == 0) {
-				EndTime = (unsigned)time(NULL) + 5;
+				EndTime = (unsigned)time(NULL) + 50;
 				StartDun = 1;
 			}
 			StartTime = (unsigned)time(NULL);
 			CntTime = EndTime - StartTime;
 
+			
 			//
 
 			printf("main game\n");
@@ -198,6 +205,9 @@ DWORD WINAPI ClientThread(LPVOID arg)
 			SC_PLAYER_INPUT_INFO_PACKET  my_packet{};
 			my_packet.size = sizeof(SC_PLAYER_INPUT_INFO_PACKET);
 			my_packet.type = SC_PLAY;
+			if (CntTime < 0) {
+				my_packet.type = SC_RESULT;
+			}
 			my_packet.ID = id;
 
 			my_packet.mouse.right = p_input.mouse.right;
@@ -223,7 +233,6 @@ DWORD WINAPI ClientThread(LPVOID arg)
 
 
 
-
 			
 
 			/*for (int i = 0; i < PLAYER_NUM; ++i) {
@@ -233,6 +242,14 @@ DWORD WINAPI ClientThread(LPVOID arg)
 			}*/
 
 			break;
+
+		}
+		case CS_RESULT:
+		{
+			printf("rsult\n");
+			char subBuf[sizeof(char[20])]{};
+			recv(player_list[id]->sock, subBuf, sizeof(subBuf), 0);
+			printf("패킷 사이즈 :  %d\n", buf[0]);
 
 		}
 

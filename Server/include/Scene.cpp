@@ -89,8 +89,8 @@ void Scene::InputUpdate(CS_PLAYER_INPUT_INFO_PACKET INFO)
 	// 보낼때는 배열로 4명의 정보를 한번에 보냄 ( 플레이어 클래스로 관리 후 필요한 정보만 INFO에 담굴것 ) 
 	/*player->SC_Update(dungeon, INFO.mouse, INFO.key, &Player_Info[INFO.ID].PPos); //플레이어 좌표를 갱신함 */
 
-	TestPlayer[INFO.ID]->SC_Update2(dungeon, weapon, missile_manager, INFO.key, INFO.mouse); //이 계산된 좌표를 보낸다. 받은 키, 마우스 값을 넣어 계산한다.
-	UpdateInfo(INFO.ID, player[INFO.ID])
+	//TestPlayer[INFO.ID]->SC_Update2(dungeon, weapon, missile_manager, INFO.key, INFO.mouse); //이 계산된 좌표를 보낸다. 받은 키, 마우스 값을 넣어 계산한다.
+	//UpdateInfo(INFO.ID, player[INFO.ID])
 	//몬스터 정보를 갱신함 
 }
 

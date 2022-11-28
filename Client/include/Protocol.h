@@ -3,18 +3,22 @@
 #define PLAYER_NUM 3
 
 enum player_state {
-	UNCONNECT, CONNECT, IN_LOBBY, READY, PLAYING
+	UNCONNECT, CONNECT, IN_LOBBY, READY, PLAYING, RESULTING
 };
 
 // Packet ID
 constexpr char CS_LOGIN = 1;
 constexpr char CS_READY = 2;
 constexpr char CS_PLAY = 3;
+constexpr char CS_RESULT = 4;
+
 
 
 constexpr char SC_LOGIN = 10;
 constexpr char SC_READY = 11;
 constexpr char SC_PLAY = 12;
+constexpr char SC_RESULT = 13;
+
 
 
 struct LOGIN_INFO {

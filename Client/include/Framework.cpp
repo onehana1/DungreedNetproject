@@ -27,6 +27,7 @@ void Framework::ChangeScene(int scene_num)
 		scene_id = PLAY;
 		break;
 	case RESULT:
+		new_scene = new InterimScene(sock, nickname);
 		scene_id = RESULT;
 		break;
 	case GAMEOVER:

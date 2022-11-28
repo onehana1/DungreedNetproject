@@ -252,12 +252,12 @@ void Character::Look(const Character& target)
 
 void Character::UpdateInfo(PLAYER_INFO_MANAGER* player)
 {
-	player->Ppos = pos;
-	player->State = state;
-	player->animation_name = animation_name;
-	player->hp = hp;
-	player->IsAttack = is_attacking;
-	//player->IsMove =
+	//player->Ppos = pos;
+	//player->State = state;
+	//player->animation_name = animation_name;
+	//player->hp = hp;
+	//player->IsAttack = is_attacking;
+	////player->IsMove =
 }
 
 
