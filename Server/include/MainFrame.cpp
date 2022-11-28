@@ -87,6 +87,7 @@ int main() {
 		}
 		else {	// 플레이어가 세명 모두 들어와 있을때에만 게임 시작 신호가 왔는지 체크한다
 			if (game_start) {
+				scene->SetPlayer(2); // 우선 2 .. 만들어둔 Player 연결 못하겠어서 우선 새로 만듬. 
 				break;
 			}
 		}

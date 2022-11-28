@@ -41,8 +41,9 @@ private:
 	void DashProc(float radian, const Dungeon* dungeon, const int px);
 	void AttackProc(Weapon* weapon, MissileManager* missile_manager);
 
-	void SC_KeyProc(const Dungeon* dungeon, PLAYER_KEYBOARD key,POINT* Ppos);
+	void SC_KeyProc(const Dungeon* dungeon, PLAYER_KEYBOARD key, POINT* Ppos);
 	void SC_DashProc(float radian, const Dungeon* dungeon, int *px);
+	void SC_AttackProc(Weapon* weapon, MissileManager* missile_manager, PLAYER_KEYBOARD key, PLAYER_MOUSE mouse);
 public:
 	Player() = default;
 	Player(const Dungeon* dungeon) :
@@ -60,6 +61,8 @@ public:
 
 	void Update(const Dungeon* dungeon, Weapon* weapon, MissileManager* missile_manager );
 	void SC_Update(const Dungeon* dungeon, PLAYER_MOUSE mouse, PLAYER_KEYBOARD key, POINT* Ppos); //
+	void SC_Update2(const Dungeon* dungeon, Weapon* weapon, MissileManager* missile_manager, PLAYER_KEYBOARD key, PLAYER_MOUSE mouse); //
+
 
 	friend class Weapon;
 	friend class MonsterAI;
@@ -70,6 +73,7 @@ public:
 
 	void SetName(char* p_name) { strcpy(name, p_name); }
 	char* GetName() { return name; }
+	bool GetMisile() { return is_doing_missile_attack; }
 
 	void SetIp(in_addr p_ip) { ip = p_ip; }
 	in_addr GetIp() { return ip; }

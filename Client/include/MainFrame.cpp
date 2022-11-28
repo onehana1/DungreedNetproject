@@ -22,7 +22,8 @@ HBITMAP old_bit;
 Framework* framework;
 std::random_device rd;
 std::default_random_engine dre(rd());
-
+static char name[20];
+static int count = 0;
 int g_myid = -1;
 
 HINSTANCE g_h_inst;
@@ -80,12 +81,14 @@ LRESULT CALLBACK WndProc(HWND h_wnd, UINT u_msg, WPARAM w_param, LPARAM l_param)
 			"오늘따라 할 이야기는 없네요.",
 			"당장 깨어나세요. "
 	};
+
 	switch (u_msg)
 	{
 	case WM_CREATE:
 		GetClientRect(h_wnd, &client);
 		framework = new Framework;
 		SetTimer(h_wnd, 1, 15, 0);
+		count = 0;
 		return 0;
 	case WM_CHAR:
 		switch (framework->GetSceneId()) {
@@ -93,16 +96,34 @@ LRESULT CALLBACK WndProc(HWND h_wnd, UINT u_msg, WPARAM w_param, LPARAM l_param)
 			framework->SetNickname(w_param);
 			break;
 		}
-		return 0;
+		//switch (w_param) {
+		//case 0x08: //백스페이스 (BackSpace)
+		//case 0x09: // 탭 (Tab)
+		//case 0x0A: //라인피드(Line Feed) 
+		//case 0x00: //캐리지 리턴 (Carriage Return)
+		//case 0x1B: //이스케이프(Escape)
+		//	MessageBeep((UINT)-1); //비프음
+		//	return 0;
+		//default:
+		//	name[count++] = w_param;
+		//	name[count] = '\0';
+		//	///InvalidateRect(h_wnd, NULL, TRUE);
+		//	return 0;
+		//}
 	case WM_PAINT:
 		PrepareToDoubleBuffering();
 		DoubleBuffering();
 		CleanUpAfterDoubleBuffering();
+		/*h_dc = BeginPaint(h_wnd, &ps);
+		GetClientRect(h_wnd, &client);
+
+		TextOut(h_dc, client.right / 2, client.bottom / 2,(LPWSTR)name, strlen(name));*/
+		EndPaint(h_wnd, &ps);
 		return 0;
 	case WM_TIMER:
 		framework->Update();
 		InvalidateRect(h_wnd, NULL, FALSE);
-		return 0;
+		return 0;	
 	case WM_DESTROY:
 		delete framework;
 		PostQuitMessage(0);
@@ -120,7 +141,7 @@ void PrepareToDoubleBuffering()
 }
 
 void DoubleBuffering()
-{
+{	
 	framework->Render();
 
 	TransmitHDCBufferToRealHDC();
