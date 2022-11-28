@@ -252,8 +252,18 @@ void Character::Look(const Character& target)
 
 void Character::UpdateInfo(PLAYER_INFO_MANAGER* player)
 {
-	player->Ppos = pos;
-	player->State = state;
+	player->PPos = pos;
+	switch (state) {
+	case  State::DOWN:	player->State = playing_State::DOWN; break;
+	case  State::UP:	player->State = playing_State::UP; break;
+	case  State::STANDING:player->State = playing_State::STANDING; break;
+	case  State::MOVING:player->State = playing_State::MOVING; break;
+	case  State::DOWNJUMP:player->State = playing_State::DOWNJUMP; break;
+		break;
+	default: player->State = playing_State::STANDING; break;
+
+	}
+	
 	player->animation_name = animation_name;
 	player->hp = hp;
 	player->IsAttack = is_attacking;

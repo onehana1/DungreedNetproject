@@ -90,8 +90,10 @@ void Scene::InputUpdate(CS_PLAYER_INPUT_INFO_PACKET INFO)
 	/*player->SC_Update(dungeon, INFO.mouse, INFO.key, &Player_Info[INFO.ID].PPos); //플레이어 좌표를 갱신함 */
 
 	TestPlayer[INFO.ID]->SC_Update2(dungeon, weapon, missile_manager, INFO.key, INFO.mouse); //이 계산된 좌표를 보낸다. 받은 키, 마우스 값을 넣어 계산한다.
-	UpdateInfo(INFO.ID, player[INFO.ID])
-	//몬스터 정보를 갱신함 
+	UpdateInfo(INFO.ID, TestPlayer[INFO.ID]); // 보낼 정보들 골라담기 
+	//몬스터 정보를 갱신함 -> Scene안의 monster리스트를 통해 관리 * 던전 갱신시 MakeMonster정보 전송필요. 
+
+
 }
 
 void Scene::UpdateInfo(int num, Player* player)
