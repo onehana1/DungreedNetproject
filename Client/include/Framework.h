@@ -30,5 +30,7 @@ public:
 
 	int GetSceneId() { return scene_id; }
 	void SetNickname(WPARAM wparam);
+
+	PlayScene* GetPlayScene(){ return play_scene; }
 };
 #endif

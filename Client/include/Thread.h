@@ -9,10 +9,10 @@ extern int g_myid;
 std::vector<Player*> player_list(3, NULL);
 DWORD WINAPI RecvThread(LPVOID arg);
 PLAYER_INPUT_INFO p_input[3];
+extern Framework* framework;
 
 
-
-DWORD WINAPI RecvThread(LPVOID arg)// //Å¬¶óÀÌ¾ðÆ®¿¡¼­ Recv¿Í ¼ö½Å ÈÄ ÀÛ¾÷À» ´ã´çÇÏ´Â ÇÔ¼ö
+DWORD WINAPI RecvThread(LPVOID arg)// //Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ Recvï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Û¾ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½Ô¼ï¿½
 {
 	SOCKET sock = (SOCKET)arg;
 	int my_id = -1;
@@ -28,7 +28,7 @@ DWORD WINAPI RecvThread(LPVOID arg)// //Å¬¶óÀÌ¾ðÆ®¿¡¼­ Recv¿Í ¼ö½Å ÈÄ ÀÛ¾÷À» ´ã´
 		UCHAR type{ static_cast<UCHAR>(buf[1]) };
 		switch (type)
 		{
-		case SC_LOGIN: //·Î±×ÀÎ
+		case SC_LOGIN: //ï¿½Î±ï¿½ï¿½ï¿½
 		{
 			char IdBuf[sizeof(short)]{};
 			char subBuf[sizeof(LOGIN_INFO[3])]{};
@@ -55,7 +55,7 @@ DWORD WINAPI RecvThread(LPVOID arg)// //Å¬¶óÀÌ¾ðÆ®¿¡¼­ Recv¿Í ¼ö½Å ÈÄ ÀÛ¾÷À» ´ã´
 				player_list[i]->SetName(loginInfo[i].name);
 				player_list[i]->SetState(loginInfo[i].state);
 
-				printf("´Ð³×ÀÓ : %s	»óÅÂ : %d\n", player_list[i]->GetName(), player_list[i]->GetState());
+				printf("ï¿½Ð³ï¿½ï¿½ï¿½ : %s	ï¿½ï¿½ï¿½ï¿½ : %d\n", player_list[i]->GetName(), player_list[i]->GetState());
 			}
 			break;
 		}
@@ -74,7 +74,7 @@ DWORD WINAPI RecvThread(LPVOID arg)// //Å¬¶óÀÌ¾ðÆ®¿¡¼­ Recv¿Í ¼ö½Å ÈÄ ÀÛ¾÷À» ´ã´
 			printf("playing\n");
 			char PlayBuf[sizeof(SC_PLAYER_INPUT_INFO_PACKET[3])]{};
 			recv(sock, PlayBuf, sizeof(PlayBuf), 0);
-			printf("ÆÐÅ¶ »çÀÌÁî :  %d\n", buf[0]);
+			printf("ï¿½ï¿½Å¶ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ :  %d\n", buf[0]);
 
 			PLAYER_INPUT_INFO temp[3];
 
@@ -105,7 +105,7 @@ DWORD WINAPI RecvThread(LPVOID arg)// //Å¬¶óÀÌ¾ðÆ®¿¡¼­ Recv¿Í ¼ö½Å ÈÄ ÀÛ¾÷À» ´ã´
 			//for (int i = 0; i < 3; i++) {
 			//	if (p_input[i].time == 65535) {
 			//		player_list[i]->SetState(RESULTING);
-			//		printf("ÆÐ½º");
+			//		printf("ï¿½Ð½ï¿½");
 
 			//	}
 			//}
@@ -120,11 +120,11 @@ DWORD WINAPI RecvThread(LPVOID arg)// //Å¬¶óÀÌ¾ðÆ®¿¡¼­ Recv¿Í ¼ö½Å ÈÄ ÀÛ¾÷À» ´ã´
 
 			//if (p_input[p_input[0].ID].time == 0 || p_input[p_input[1].ID].time == 0 || p_input[p_input[2].ID].time == 0)
 			//{
-			//	printf("´ÙÀ½ ¸ÊÀ¸·Î ³Ñ¾î°¡¶ó\n");
+			//	printf("ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ¾î°¡ï¿½ï¿½\n");
 			//}
 
-			//Å¸ÀÓÀÌ 3ÀÌ ¿Ó´Ù! ±×·¯¸é ´ÙÀ½ °á°ú Ã¢À¸·Î º¸³»±â
-			//°á°ú Ã¢ ÄÉÀÌ½º¸¦ ÇÏ³ª ¸¸µé¾î¼­ °Å±â¼­ Å¸ÀÓ 3ÀÌ ¿Ô´Ù ±×·¯¸é ´ÙÀ½ ¸ÊÀ¸·Î º¸³»±â 
+			//Å¸ï¿½ï¿½ï¿½ï¿½ 3ï¿½ï¿½ ï¿½Ó´ï¿½! ï¿½×·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ Ã¢ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+			//ï¿½ï¿½ï¿½ Ã¢ ï¿½ï¿½ï¿½Ì½ï¿½ï¿½ï¿½ ï¿½Ï³ï¿½ ï¿½ï¿½ï¿½ï¿½î¼­ ï¿½Å±â¼­ Å¸ï¿½ï¿½ 3ï¿½ï¿½ ï¿½Ô´ï¿½ ï¿½×·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 
 
 			break;
 		}
@@ -140,6 +140,18 @@ DWORD WINAPI RecvThread(LPVOID arg)// //Å¬¶óÀÌ¾ðÆ®¿¡¼­ Recv¿Í ¼ö½Å ÈÄ ÀÛ¾÷À» ´ã´
 			player_list[id]->SetState(RESULTING);
 			break;
 		}
+		
+		case SC_MAKE_MONSTER:
+		{
+			char subBuf[sizeof(MAKE_MONSTER[5])]{};
+			recv(sock, subBuf, sizeof(subBuf), 0);
+
+			MAKE_MONSTER monsterInfo[5];
+			memcpy(&monsterInfo, &subBuf, sizeof(MAKE_MONSTER[5]));
+
+			framework->GetPlayScene()->GetMonsterManager()->Appear(monsterInfo);
+			break;
+		}
 		default:
 			printf("Unknown PACKET type [%d]\n", type);
 		}
@@ -147,7 +159,7 @@ DWORD WINAPI RecvThread(LPVOID arg)// //Å¬¶óÀÌ¾ðÆ®¿¡¼­ Recv¿Í ¼ö½Å ÈÄ ÀÛ¾÷À» ´ã´
 }
 
 /*
-DWORD WINAPI ClientThread(SOCKET client_sock) //Å¬¶ó ½º·¹µå Åë½Å´ã´ç
+DWORD WINAPI ClientThread(SOCKET client_sock) //Å¬ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å´ï¿½ï¿½
 {
 	char buf[2];
 	WSABUF wsabuf{ sizeof(buf), buf };
@@ -160,7 +172,7 @@ DWORD WINAPI ClientThread(SOCKET client_sock) //Å¬¶ó ½º·¹µå Åë½Å´ã´ç
 	UCHAR type{ static_cast<UCHAR>(buf[1]) };
 	switch (type)
 	{
-	case SC_LOGIN_INFO: //·Î±×ÀÎ
+	case SC_LOGIN_INFO: //ï¿½Î±ï¿½ï¿½ï¿½
 	{
 		char subBuf[sizeof(LOGIN_INFO)]{};
 		WSABUF wsabuf{ sizeof(subBuf), subBuf };
@@ -186,15 +198,15 @@ int main(int argc, char* argv[])
 {
 	int retval;
 
-	// ¸í·ÉÇà ÀÎ¼ö°¡ ÀÖÀ¸¸é IP ÁÖ¼Ò·Î »ç¿ë
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Î¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ IP ï¿½Ö¼Ò·ï¿½ ï¿½ï¿½ï¿½
 	if (argc > 1) SERVERIP = argv[1];
 
-	// À©¼Ó ÃÊ±âÈ­
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½Ê±ï¿½È­
 	WSADATA wsa;
 	if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0)
 		return 1;
 
-	// ¼ÒÄÏ »ý¼º
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	SOCKET sock = socket(AF_INET, SOCK_STREAM, 0);
 	if (sock == INVALID_SOCKET) err_quit("socket()");
 
@@ -207,36 +219,36 @@ int main(int argc, char* argv[])
 	retval = connect(sock, (struct sockaddr*)&serveraddr, sizeof(serveraddr));
 	if (retval == SOCKET_ERROR) err_quit("connect()");
 
-	// µ¥ÀÌÅÍ Åë½Å¿¡ »ç¿ëÇÒ º¯¼ö
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	char buf[BUFSIZE];
 	const char* testdata[] = {
-		"¾È³çÇÏ¼¼¿ä",
-		"¹Ý°¡¿ö¿ä",
-		"¿À´Ãµû¶ó ÇÒ ÀÌ¾ß±â°¡ ¸¹À» °Í °°³×¿ä",
-		"Àúµµ ±×·¸³×¿ä",
+		"ï¿½È³ï¿½ï¿½Ï¼ï¿½ï¿½ï¿½",
+		"ï¿½Ý°ï¿½ï¿½ï¿½ï¿½ï¿½",
+		"ï¿½ï¿½ï¿½Ãµï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ì¾ß±â°¡ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½×¿ï¿½",
+		"ï¿½ï¿½ï¿½ï¿½ ï¿½×·ï¿½ï¿½×¿ï¿½",
 	};
 	int len;
 
-	// ¼­¹ö¿Í µ¥ÀÌÅÍ Åë½Å
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
 	for (int i = 0; i < 4; i++) {
-		// µ¥ÀÌÅÍ ÀÔ·Â(½Ã¹Ä·¹ÀÌ¼Ç)
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ô·ï¿½(ï¿½Ã¹Ä·ï¿½ï¿½Ì¼ï¿½)
 		len = (int)strlen(testdata[i]);
 		strncpy(buf, testdata[i], len);
 		buf[len++] = '\n';
 
-		// µ¥ÀÌÅÍ º¸³»±â
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		retval = send(sock, buf, len, 0);
 		if (retval == SOCKET_ERROR) {
 			err_display("send()");
 			break;
 		}
-		printf("[TCP Å¬¶óÀÌ¾ðÆ®] %d¹ÙÀÌÆ®¸¦ º¸³Â½À´Ï´Ù.\n", retval);
+		printf("[TCP Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ®] %dï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½Â½ï¿½ï¿½Ï´ï¿½.\n", retval);
 	}
 
-	// ¼ÒÄÏ ´Ý±â
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½Ý±ï¿½
 	closesocket(sock);
 
-	// À©¼Ó Á¾·á
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	WSACleanup();
 	return 0;
 }

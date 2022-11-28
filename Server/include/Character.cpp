@@ -1,33 +1,33 @@
 #include "Character.h"
 
-void Character::ForceGravity(const Dungeon* dungeon)	// Ä³¸¯ÅÍ »óÅÂ(LANDING, DOWN, DOWNJUMP, UP)¿¡ µû¸¥ ¿òÁ÷ÀÓ
+void Character::ForceGravity(const Dungeon* dungeon)	// Ä³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½(LANDING, DOWN, DOWNJUMP, UP)ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 {
 	InstantDCSet dc_set(RECT{ 0, 0, dungeon->dungeon_width, dungeon->dungeon_height });
 
 	dungeon->dungeon_terrain_image->Draw(dc_set.buf_dc, dc_set.bit_rect);
 
-	// Ä³¸¯ÅÍ ¹ß À§Ä¡°¡ Çã°øÀÏ °æ¿ì DOWN»óÅÂ·Î ¹Ù²Ù±â
+	// Ä³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ DOWNï¿½ï¿½ï¿½Â·ï¿½ ï¿½Ù²Ù±ï¿½
 	if ((state == State::STANDING || state == State::MOVING || state == State::DOWNJUMP) && MapPixelCollision(dc_set.buf_dc, RGB(255, 0, 255), POINT{ pos.x + width / 2, pos.y + height })) {
 		state = State::DOWN;
 		MovePos(Direction::DOWN, 5);
 	}
-	// ³«ÇÏ Áß ¶¥ ¹â°Ô µÇ¸é STANDING »óÅÂ·Î ¹Ù²Ù±â
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Ç¸ï¿½ STANDING ï¿½ï¿½ï¿½Â·ï¿½ ï¿½Ù²Ù±ï¿½
 	else if (state == State::DOWN && (MapPixelCollision(dc_set.buf_dc, RGB(255, 0, 0), POINT{ pos.x + width / 2, pos.y + height }) || MapPixelCollision(dc_set.buf_dc, RGB(0, 255, 0), POINT{ pos.x + width / 2, pos.y + height }))) {
 		state = State::STANDING;
 		jump_power = 0;
 	}
 
-	if (state == State::STANDING || state == State::MOVING) {	// ¿À¸£¸· or DOWN¿¡¼­ ÂøÁöÇßÀ» ½Ã Ä³¸¯ÅÍ°¡ ¶¥ ¹Ù·Î À§¿¡ ¼­°Ô ÇÏ·Á ¸¸µê
+	if (state == State::STANDING || state == State::MOVING) {	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ or DOWNï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ Ä³ï¿½ï¿½ï¿½Í°ï¿½ ï¿½ï¿½ ï¿½Ù·ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ï·ï¿½ ï¿½ï¿½ï¿½ï¿½
 		while (MapPixelCollision(dc_set.buf_dc, RGB(255, 0, 0), POINT{ pos.x + width / 2, pos.y + height - 1 })
 			|| MapPixelCollision(dc_set.buf_dc, RGB(0, 255, 0), POINT{ pos.x + width / 2, pos.y + height - 1 })) {
 			MovePos(Direction::UP, 1);
 		}
 	}
 
-	if (state == State::UP) {	// JUMP¿¡¼­ ¿Ã¶ó°¡°í ÀÖ´Â »óÅÂ jump_power°¡ 0ÀÌ µÇ¸é »óÅÂ°¡ DOWNÀ¸·Î ¹Ù²ï´Ù
+	if (state == State::UP) {	// JUMPï¿½ï¿½ï¿½ï¿½ ï¿½Ã¶ó°¡°ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ jump_powerï¿½ï¿½ 0ï¿½ï¿½ ï¿½Ç¸ï¿½ ï¿½ï¿½ï¿½Â°ï¿½ DOWNï¿½ï¿½ï¿½ï¿½ ï¿½Ù²ï¿½ï¿½
 		MovePos(Direction::UP, jump_power);
-		// jump_power¸¦ ³ª´©´Â ºÐ¸ð¸¦ Å°¿ì¸é Áß·ÂÀ» ´ú ¹Þ°í Æ¢¾î¿À¸£´Â ´À³¦ÀÌ °­ÇØÁø´Ù.
-		// ÀÚ¿¬½º·¯¿î ¿òÁ÷ÀÓÀ» ¸¸µå·Á¸é µÎ ºÐ¸ðÀÇ °öÀº ÃÖ´ëÇÑ À¯ÁöÇÑ´Ù. ex) 50.0f : 2000.0f, 25.0f : 4000.0f
+		// jump_powerï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ð¸ï¿½ Å°ï¿½ï¿½ï¿½ ï¿½ß·ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Þ°ï¿½ Æ¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.
+		// ï¿½Ú¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ð¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ex) 50.0f : 2000.0f, 25.0f : 4000.0f
 		jump_power -= jump_power / 25.0f + dungeon->camera_y_half_range / 4000.0f;
 		if (jump_power <= 0) {
 			state = State::DOWN;
@@ -36,9 +36,9 @@ void Character::ForceGravity(const Dungeon* dungeon)	// Ä³¸¯ÅÍ »óÅÂ(LANDING, DOW
 	else if (state == State::DOWN || state == State::DOWNJUMP) {
 		MovePos(Direction::DOWN, jump_power);
 		if (jump_power < dungeon->camera_y_half_range / 80.0f) {
-			// jump_power¸¦ ³ª´©´Â ºÐ¸ð¸¦ Å°¿ì¸é Áß·ÂÀÌ ¾àÇÑ ´À³¦ÀÌ °­ÇØÁø´Ù.
-			// ÀÚ¿¬½º·¯¿î ¿òÁ÷ÀÓÀ» À§ÇØ¼± ÈÄÀÚÀÇ ºÐ¸ð¸¦ 500~1500 »çÀÌ·Î ¼³Á¤ÇÑ´Ù. ÈÄÀÚ´Â ¶³¾îÁö°Ô´Â ÇÏ±â À§ÇÑ ÃÖ¼ÒÇÑÀÇ ¼öÄ¡´Ù.
-			// ÀÌ °ªµéÀ» Áß·Â °ü·Ã º¯¼ö·Î ¼³Á¤ÇÏ¸é ¸Ê ¸¶´Ù ´Ù¸¥ Áß·Â ±¸ÇöÀÌ °¡´ÉÇØ ¼öÁß¸Êµµ ±¸ÇöÀÌ °¡´ÉÇÒ °ÍÀÌ´Ù.
+			// jump_powerï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ð¸ï¿½ Å°ï¿½ï¿½ï¿½ ï¿½ß·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.
+			// ï¿½Ú¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ø¼ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ð¸ï¿½ 500~1500 ï¿½ï¿½ï¿½Ì·ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. ï¿½ï¿½ï¿½Ú´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô´ï¿½ ï¿½Ï±ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ö¼ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½.
+			// ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ß·ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¸ï¿½ ï¿½ß·ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ß¸Êµï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì´ï¿½.
 			jump_power += jump_power / 500.0f + dungeon->camera_y_half_range / 1000.0f;
 		}
 		else if (jump_power < dungeon->camera_y_half_range / 40.0f) {
@@ -76,7 +76,7 @@ void Character::DownJump()
 void Character::Jump()
 {
 	state = State::UP;
-	// ºÐ¸ð°¡ Ä¿Áö¸é Á¡ÇÁ·ÂÀÌ ¾àÇØÁø´Ù.
+	// ï¿½Ð¸ï¿½ Ä¿ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.
 	jump_power = jump_start_power;
 }
 
@@ -252,12 +252,28 @@ void Character::Look(const Character& target)
 
 void Character::UpdateInfo(PLAYER_INFO_MANAGER* player)
 {
-	//player->Ppos = pos;
-	//player->State = state;
-	//player->animation_name = animation_name;
-	//player->hp = hp;
-	//player->IsAttack = is_attacking;
-	////player->IsMove =
+
+	/*
+	player->PPos = pos;
+	player->State = state;
+
+	player->PPos = pos;
+	switch (state) {
+	case  State::DOWN:	player->State = playing_State::DOWN; break;
+	case  State::UP:	player->State = playing_State::UP; break;
+	case  State::STANDING:player->State = playing_State::STANDING; break;
+	case  State::MOVING:player->State = playing_State::MOVING; break;
+	case  State::DOWNJUMP:player->State = playing_State::DOWNJUMP; break;
+		break;
+	default: player->State = playing_State::STANDING; break;
+
+	}
+	
+	player->animation_name = animation_name;
+	player->hp = hp;
+	player->IsAttack = is_attacking;
+	//player->IsMove =
+	*/
 }
 
 

@@ -86,6 +86,8 @@ public:
 	virtual void Update(SOCKET socket, char* name);
 
 	virtual int ChangeScene();
+
+	MonsterManager* GetMonsterManager(){return monster_manager;};
 };
 
 class StartScene : public Scene

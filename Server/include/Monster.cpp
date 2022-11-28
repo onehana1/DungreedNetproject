@@ -186,6 +186,8 @@ MonsterManager::~MonsterManager()
 
 void MonsterManager::Insert(const Dungeon* dungeon, const int monster_id, int num  )
 {
+	Clear();	// 추가한 코드
+
 	auto monster_db = BuildDB();
 	POINT pos;
 	InstantDCSet dc_set(RECT{ 0, 0, dungeon->dungeon_width, dungeon->dungeon_height });
@@ -208,6 +210,7 @@ void MonsterManager::Insert(const Dungeon* dungeon, const int monster_id, int nu
 
 	LoadNeededAnimations();
 	
+	int id = 0;
 
 	while (num--) {
 		do {
@@ -218,6 +221,8 @@ void MonsterManager::Insert(const Dungeon* dungeon, const int monster_id, int nu
 		Monster* monster = new Monster(monster_id, width, height, pos, x_move_px_double, jump_start_power_double,
 			hp, atk, def, is_floating, melee_attack, missile_attack,
 			policy_stand, policy_move_to_player, policy_move_from_player, policy_attack ); // = new Monster(...)
+		monster->SetID(id);
+		++id;
 		monsters.push_back(monster);
 	}
 
@@ -346,11 +351,24 @@ bool MonsterManager::MapPixelCollision(const HDC terrain_dc, const COLORREF& val
 void MonsterManager::Appear(int num)
 {
 	// 일정 시간 이후 문제가 생긴다면 어쩌면 여기 문제
+	SC_MAKE_MONSTER_PACKET my_packet;
+	my_packet.size = sizeof(SC_MAKE_MONSTER_PACKET);
+	my_packet.type = SC_MAKE_MONSTER;
+
 	std::shuffle(monsters.begin(), monsters.end(), dre);
-	for (Monster* monster : monsters)
+	for (Monster* monster : monsters) {
 		if (!monster->is_appeared && !monster->IsDied()) {
 			monster->is_appeared = true;
+			my_packet.monster[num - 1].Direction = monster->GetDirection();
+			my_packet.monster[num - 1].ID = monster->GetID();
+			my_packet.monster[num - 1].Pos = monster->GetPos();
 			if (--num == 0)
 				break;
 		}
+	}
+
+	for (int i = 0; i < player_list.size(); ++i)
+	{
+		send(player_list[i]->sock, reinterpret_cast<char*>(&my_packet), sizeof(my_packet), NULL);
+	}
 }

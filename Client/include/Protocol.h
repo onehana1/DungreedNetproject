@@ -6,6 +6,9 @@ enum player_state {
 	UNCONNECT, CONNECT, IN_LOBBY, READY, PLAYING, RESULTING
 };
 
+enum playing_State {
+	DOWN, UP, STANDING, MOVING, DOWNJUMP
+};
 // Packet ID
 constexpr char CS_LOGIN = 1;
 constexpr char CS_READY = 2;
@@ -13,11 +16,12 @@ constexpr char CS_PLAY = 3;
 constexpr char CS_RESULT = 4;
 
 
-
 constexpr char SC_LOGIN = 10;
 constexpr char SC_READY = 11;
 constexpr char SC_PLAY = 12;
-constexpr char SC_RESULT = 13;
+
+constexpr char SC_RESULT = 14;
+constexpr char SC_MAKE_MONSTER = 13;
 
 
 
@@ -78,7 +82,7 @@ struct PLAYER_INPUT_INFO {
 	struct PLAYER_MOUSE mouse;
 	struct PLAYER_KEYBOARD key;
 
-	int time =1; // 3ÃÊ
+	int time =1; // 3ï¿½ï¿½
 };
 
 struct CS_PLAYER_INPUT_INFO_PACKET {
@@ -99,14 +103,14 @@ struct SC_PLAYER_INPUT_INFO_PACKET {
 	struct PLAYER_MOUSE mouse;
 	struct PLAYER_KEYBOARD key;
 
-	int time= 1; // 3ÃÊ
+	int time= 1; // 3ï¿½ï¿½
 
 };
 
-struct PLAYER_INFO_MANAGER { //¼­¹ö¿¡¼­ °ü¸® ÈÄ Å¬¶ó·Î º¸³»´Â µ¥ÀÌÅÍ 
+struct PLAYER_INFO_MANAGER { //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ Å¬ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 
 	POINT PPos;				
 	short State;			
-	char* animation_name;			//character sheet name
+	std::string animation_name;			//character sheet name
 
 	int hp;
 	int killMonster;
@@ -115,14 +119,23 @@ struct PLAYER_INFO_MANAGER { //¼­¹ö¿¡¼­ °ü¸® ÈÄ Å¬¶ó·Î º¸³»´Â µ¥ÀÌÅÍ
 	bool IsAttack;			// attack
 	bool IsMisile;			// Misile
 
-	//µô·¹ÀÌ¿ë Á¤º¸°¡ ÇÊ¿äÇÏ´Ù¸é Ãß°¡ÇÒ °Í 
+	//ï¿½ï¿½ï¿½ï¿½ï¿½Ì¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¿ï¿½ï¿½Ï´Ù¸ï¿½ ï¿½ß°ï¿½ï¿½ï¿½ ï¿½ï¿½ 
 };
 
-struct SC_MAKE_MONSTER {
+struct MAKE_MONSTER {
+	short ID;
+	POINT Pos;
+	bool Direction;
+};
 
+struct SC_MAKE_MONSTER_PACKET {
+	unsigned char size;
+	char	type;
+	MAKE_MONSTER monster[5];
 };
 
 struct MONSTER_INFO_MANAGER {
+	short id;
 	POINT PPos;				
 	char* Sheet;			//Monster sheet name
 

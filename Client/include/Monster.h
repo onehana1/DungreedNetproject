@@ -14,6 +14,7 @@
 #include "Player.h"
 #include "MonsterAI.h"
 #include "Animation.h"
+#include "Protocol.h"
 
 extern std::default_random_engine dre;
 constexpr int MONSTER_MAX_ANIMATION_NUM = 4;
@@ -132,6 +133,7 @@ public:
 	void Render(HDC scene_dc, const RECT& bit_rect) const;
 	void Update(const Dungeon* dungeon, const Player* player, AnimationManager* animation_manager, MissileManager* missile_manager, SoundManager* sound_manager);
 	void Appear(int num);
+	void Appear(MAKE_MONSTER monster[5]);
 	inline bool AreMonsterAllDied() const { return (remain_monster_cnt == 0) ? true : false; }
 };
 #endif
