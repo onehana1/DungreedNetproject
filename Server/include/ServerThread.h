@@ -178,11 +178,23 @@ DWORD WINAPI ClientThread(LPVOID arg)
 			printf("패킷 사이즈 :  %d\n", buf[0]);
 			
 
-		
-			SC_PLAYER_INPUT_INFO_PACKET my_packet;
-			my_packet.size = sizeof(SC_READY_PACKET);
-			my_packet.type = SC_READY;
-			my_packet.ID = id;
+			PLAYER_INPUT_INFO p_input;
+			memcpy(&p_input, &subBuf, sizeof(PLAYER_INPUT_INFO));
+
+			
+			SC_PLAYER_INPUT_INFO_PACKET  my_packet{};
+			my_packet.size = sizeof(SC_PLAYER_INPUT_INFO_PACKET);
+			my_packet.type = SC_PLAY;
+			my_packet.key.a = p_input.key.a;
+			my_packet.key.s = p_input.key.s;
+			my_packet.key.d = p_input.key.d;
+			my_packet.key.space = p_input.key.space;
+			my_packet.mouse.right = p_input.mouse.right;
+			my_packet.mouse.left = p_input.mouse.left;
+			my_packet.mouse.wheel = p_input.mouse.wheel;
+			my_packet.mouse.mPos.x = p_input.mouse.mPos.x;
+			my_packet.mouse.mPos.y = p_input.mouse.mPos.y;
+
 
 			send(player_list[id]->sock, reinterpret_cast<char*>(&my_packet), sizeof(my_packet), NULL);
 

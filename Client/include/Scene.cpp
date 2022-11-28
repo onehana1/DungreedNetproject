@@ -34,7 +34,7 @@ PlayScene::PlayScene()
 
 		sound_manager = new SoundManager;
 		sound_manager->Init();
-		sound_manager->PlayBgm("sound\\bgm1.mp3");
+		//sound_manager->PlayBgm("sound\\bgm1.mp3");
 		LoadBattleSound();
 
 		dungeon = new Dungeon;
@@ -66,7 +66,7 @@ PlayScene::PlayScene(const int dungeon_id)
 		sound_manager = new SoundManager;
 
 		sound_manager->Init();
-		sound_manager->PlayBgm("sound\\bgm1.mp3");
+		//sound_manager->PlayBgm("sound\\bgm1.mp3");
 		LoadBattleSound();
 
 		dungeon = new Dungeon(dungeon_id);
@@ -149,7 +149,6 @@ void PlayScene::Update(SOCKET socket, char* name)
 	my_packet.mouse.mPos.x = crosshair->pos.x;
 	my_packet.mouse.mPos.y = crosshair->pos.y;
 
-	strcpy(my_packet.name, "닉네임");
 	send(server_sock, reinterpret_cast<char*>(&my_packet), sizeof(my_packet), NULL);
 
 	// player, monster 업데이트 루틴
@@ -248,7 +247,7 @@ void PlayScene::LoadPlayerAniamtion()
 
 void PlayScene::LoadBattleSound()
 {
-	sound_manager->InsertEffectSound("sound\\walk.mp3");
+	/*sound_manager->InsertEffectSound("sound\\walk.mp3");
 	sound_manager->InsertEffectSound("sound\\dash.mp3");
 	sound_manager->InsertEffectSound("sound\\jump.mp3");
 	sound_manager->InsertEffectSound("sound\\swing1.mp3");
@@ -256,7 +255,7 @@ void PlayScene::LoadBattleSound()
 	sound_manager->InsertEffectSound("sound\\Slash8.ogg");
 	sound_manager->InsertEffectSound("sound\\Thunder7.ogg");
 	sound_manager->InsertEffectSound("sound\\Water1.ogg");
-	sound_manager->InsertEffectSound("sound\\Explosion1.ogg");
+	sound_manager->InsertEffectSound("sound\\Explosion1.ogg");*/
 }
 
 void PlayScene::LoadBattleEffect()
