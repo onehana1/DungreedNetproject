@@ -76,6 +76,8 @@ struct PLAYER_INPUT_INFO {
 
 	struct PLAYER_MOUSE mouse;
 	struct PLAYER_KEYBOARD key;
+
+	int time =1; // 3√ 
 };
 
 struct CS_PLAYER_INPUT_INFO_PACKET {
@@ -95,6 +97,8 @@ struct SC_PLAYER_INPUT_INFO_PACKET {
 
 	struct PLAYER_MOUSE mouse;
 	struct PLAYER_KEYBOARD key;
+
+	int time= 1; // 3√ 
 
 };
 

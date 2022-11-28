@@ -17,6 +17,7 @@
 #include "Sound.h"
 #include "Missile.h"
 #include "Protocol.h"
+#include "time.h"
 
 
 extern std::vector<Player*> player_list;
@@ -60,6 +61,9 @@ private:
 	MissileManager* missile_manager;
 
 	int update_cnt = 0;
+
+
+	void GoDungeonResult();
 
 	void GoNextDungeon();
 	void GoPrevDungeon();

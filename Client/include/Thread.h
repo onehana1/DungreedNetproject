@@ -71,26 +71,46 @@ DWORD WINAPI RecvThread(LPVOID arg)// //클라이언트에서 Recv와 수신 후 작업을 담�
 		case SC_PLAY:
 		{
 			printf("playing\n");
-			char PlayBuf[sizeof(SC_PLAYER_INPUT_INFO_PACKET)]{};
+			char PlayBuf[sizeof(SC_PLAYER_INPUT_INFO_PACKET[3])]{};
 			recv(sock, PlayBuf, sizeof(PlayBuf), 0);
 			printf("패킷 사이즈 :  %d\n", buf[0]);
 
 			PLAYER_INPUT_INFO temp[3];
 
 			memcpy(&temp, &PlayBuf, sizeof(PLAYER_INPUT_INFO[3]));
+
 			
 			for (int i = 0; i < 3; i++) {
 				p_input[temp[i].ID].ID = temp[i].ID;
-				p_input[temp[i].ID].key.a = temp[i].key.a;
-				p_input[temp[i].ID].key.s = temp[i].key.s;
-				p_input[temp[i].ID].key.d = temp[i].key.d;
-				p_input[temp[i].ID].key.space = temp[i].key.space;
+
 				p_input[temp[i].ID].mouse.right = temp[i].mouse.right;
 				p_input[temp[i].ID].mouse.left = temp[i].mouse.left;
 				p_input[temp[i].ID].mouse.wheel = temp[i].mouse.wheel;
 				p_input[temp[i].ID].mouse.mPos.x = temp[i].mouse.mPos.x;
 				p_input[temp[i].ID].mouse.mPos.y = temp[i].mouse.mPos.y;
+
+				p_input[temp[i].ID].key.a = temp[i].key.a;
+				p_input[temp[i].ID].key.s = temp[i].key.s;
+				p_input[temp[i].ID].key.d = temp[i].key.d;
+				p_input[temp[i].ID].key.space = temp[i].key.space;
+
+				p_input[temp[i].ID].time = temp[i].time;
+
 			}
+
+			for (int i = 0; i < PLAYER_NUM; ++i) {
+				if (player_list[i]) {
+					printf("t : %d\n", p_input[i].time);
+				}
+			}
+
+
+
+			//if (p_input[p_input[0].ID].time == 0 || p_input[p_input[1].ID].time == 0 || p_input[p_input[2].ID].time == 0)
+			//{
+			//	printf("다음 맵으로 넘어가라\n");
+			//}
+
 			//타임이 3이 왓다! 그러면 다음 결과 창으로 보내기
 			//결과 창 케이스를 하나 만들어서 거기서 타임 3이 왔다 그러면 다음 맵으로 보내기 
 
