@@ -10,6 +10,12 @@
 std::vector<Player*> player_list(3, NULL);
 extern bool game_start;
 
+
+int StartDun = 0;
+int StartTime;
+int EndTime;
+int CntTime;
+
 SOCKET Create_Listen()
 {
 	int retval;
@@ -167,8 +173,16 @@ DWORD WINAPI ClientThread(LPVOID arg)
 		}
 		case CS_PLAY:
 		{
-			PLAYER_KEYBOARD inputkey = {};
-			inputkey.a = false;
+
+			//시간
+			if (StartDun == 0) {
+				EndTime = (unsigned)time(NULL) + 5;
+				StartDun = 1;
+			}
+			StartTime = (unsigned)time(NULL);
+			CntTime = EndTime - StartTime;
+
+			//
 
 			printf("main game\n");
 			player_list[id]->SetState(PLAYING);
@@ -177,26 +191,37 @@ DWORD WINAPI ClientThread(LPVOID arg)
 			recv(player_list[id]->sock, subBuf, sizeof(subBuf), 0);
 			printf("패킷 사이즈 :  %d\n", buf[0]);
 			
-
 			PLAYER_INPUT_INFO p_input;
-			memcpy(&p_input, &subBuf, sizeof(PLAYER_INPUT_INFO));
+			memcpy(&p_input, &subBuf, sizeof(CS_PLAYER_INPUT_INFO_PACKET));
 
 			
 			SC_PLAYER_INPUT_INFO_PACKET  my_packet{};
 			my_packet.size = sizeof(SC_PLAYER_INPUT_INFO_PACKET);
 			my_packet.type = SC_PLAY;
-			my_packet.key.a = p_input.key.a;
-			my_packet.key.s = p_input.key.s;
-			my_packet.key.d = p_input.key.d;
-			my_packet.key.space = p_input.key.space;
+			my_packet.ID = id;
+
 			my_packet.mouse.right = p_input.mouse.right;
 			my_packet.mouse.left = p_input.mouse.left;
 			my_packet.mouse.wheel = p_input.mouse.wheel;
 			my_packet.mouse.mPos.x = p_input.mouse.mPos.x;
 			my_packet.mouse.mPos.y = p_input.mouse.mPos.y;
 
+			my_packet.key.a = p_input.key.a;
+			my_packet.key.s = p_input.key.s;
+			my_packet.key.d = p_input.key.d;
+			my_packet.key.space = p_input.key.space;
 
-			send(player_list[id]->sock, reinterpret_cast<char*>(&my_packet), sizeof(my_packet), NULL);
+			my_packet.time = CntTime;
+
+			for (int i = 0; i < PLAYER_NUM; ++i) {
+				if (player_list[i]) {
+					send(player_list[i]->sock, reinterpret_cast<char*>(&my_packet), sizeof(my_packet), NULL);
+				}
+			}
+
+			printf("cnttime : %d\n", my_packet.time);
+
+
 
 
 			
