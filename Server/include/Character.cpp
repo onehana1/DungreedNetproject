@@ -252,14 +252,11 @@ void Character::Look(const Character& target)
 
 void Character::UpdateInfo(PLAYER_INFO_MANAGER* player)
 {
-<<<<<<< HEAD
 
 	/*
 	player->PPos = pos;
 	player->State = state;
-=======
-=======
->>>>>>> d8f4dde5741cb29c062aac887950b0148a4863ef
+
 	player->PPos = pos;
 	switch (state) {
 	case  State::DOWN:	player->State = playing_State::DOWN; break;
