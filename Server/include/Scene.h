@@ -34,6 +34,8 @@ private:
 	PLAYER_INFO_MANAGER* SC_INFO;  //보낼 정보 정리 ( Server -> client) 
 	Weapon* weapon;
 
+	// 플레이어 3명이면 weapon도 3개 여야 함
+
 	MonsterManager* monster_manager;
 	MissileManager* missile_manager;
 

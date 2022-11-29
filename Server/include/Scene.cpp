@@ -61,7 +61,7 @@ void Scene::Update()
 	player->Update(dungeon, weapon, missile_manager);
 	monster_manager->Update(dungeon, player , missile_manager  );
 	missile_manager->Update(dungeon );
-	weapon->Update(player, { dungeon->camera_x_half_range, dungeon->camera_y_half_range });
+	weapon->Update(player, {0, 0});	// 플레이어들에게서 받은 마우스 좌표 넣어 줘야 함
 	HitUpdate();
 	DungeonChangeProc();
 }
