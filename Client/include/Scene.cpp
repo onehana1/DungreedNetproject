@@ -612,10 +612,6 @@ void InterimScene::Render() const
 			wsprintf(lpOut, TEXT("IP : %s"), ip);
 			TextOut(dc_set.buf_dc, 45 + 147 * i, 300, lpOut, lstrlen(lpOut));
 
-			if (player_list[i]->GetState() == PLAYING)
-			{
-				TextOut(dc_set.buf_dc, 45 + 147 * i, 320, TEXT("준비중..."), lstrlen(TEXT("준비중...")));
-			}
 
 		}
 	}

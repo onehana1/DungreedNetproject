@@ -55,7 +55,7 @@ DWORD WINAPI RecvThread(LPVOID arg)// //Ŭ���̾�Ʈ���� Recv��
 				player_list[i]->SetName(loginInfo[i].name);
 				player_list[i]->SetState(loginInfo[i].state);
 
-				printf("�г��� : %s	���� : %d\n", player_list[i]->GetName(), player_list[i]->GetState());
+				printf("닉네임 : %s	상태 : %d\n", player_list[i]->GetName(), player_list[i]->GetState());
 			}
 			break;
 		}
@@ -74,7 +74,7 @@ DWORD WINAPI RecvThread(LPVOID arg)// //Ŭ���̾�Ʈ���� Recv��
 			printf("playing\n");
 			char PlayBuf[sizeof(SC_PLAYER_INPUT_INFO_PACKET[3])]{};
 			recv(sock, PlayBuf, sizeof(PlayBuf), 0);
-			printf("��Ŷ ������ :  %d\n", buf[0]);
+			printf("패킷 사이즈 :  %d\n", buf[0]);
 
 			PLAYER_INPUT_INFO temp[3];
 
