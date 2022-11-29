@@ -186,8 +186,6 @@ MonsterManager::~MonsterManager()
 
 void MonsterManager::Insert(const Dungeon* dungeon, const int monster_id, int num  )
 {
-	Clear();	// 추가한 코드
-
 	auto monster_db = BuildDB();
 	POINT pos;
 	InstantDCSet dc_set(RECT{ 0, 0, dungeon->dungeon_width, dungeon->dungeon_height });
@@ -209,8 +207,6 @@ void MonsterManager::Insert(const Dungeon* dungeon, const int monster_id, int nu
 	std::uniform_int_distribution<> uid_y{ 0, dungeon->dungeon_height / 3 * 2 };
 
 	LoadNeededAnimations();
-	
-	int id = 0;
 
 	while (num--) {
 		do {
@@ -221,8 +217,7 @@ void MonsterManager::Insert(const Dungeon* dungeon, const int monster_id, int nu
 		Monster* monster = new Monster(monster_id, width, height, pos, x_move_px_double, jump_start_power_double,
 			hp, atk, def, is_floating, melee_attack, missile_attack,
 			policy_stand, policy_move_to_player, policy_move_from_player, policy_attack ); // = new Monster(...)
-		monster->SetID(id);
-		++id;
+		monster->SetID(monsters.size());
 		monsters.push_back(monster);
 	}
 
@@ -361,6 +356,7 @@ void MonsterManager::Appear(int num)
 			monster->is_appeared = true;
 			my_packet.monster[num - 1].Direction = monster->GetDirection();
 			my_packet.monster[num - 1].ID = monster->GetID();
+			printf("%d Monster ID = %d\n",num - 1, monster->GetID());
 			my_packet.monster[num - 1].Pos = monster->GetPos();
 			if (--num == 0)
 				break;
@@ -369,6 +365,8 @@ void MonsterManager::Appear(int num)
 
 	for (int i = 0; i < player_list.size(); ++i)
 	{
-		send(player_list[i]->sock, reinterpret_cast<char*>(&my_packet), sizeof(my_packet), NULL);
+		if (player_list[i]) {
+			send(player_list[i]->sock, reinterpret_cast<char*>(&my_packet), sizeof(my_packet), NULL);
+		}
 	}
 }

@@ -188,8 +188,6 @@ MonsterManager::~MonsterManager()
 
 void MonsterManager::Insert(const Dungeon* dungeon, const int monster_id, int num, AnimationManager* animation_manager)
 {
-	Clear();	// 추가한 코드
-
 	auto monster_db = BuildDB();
 	POINT pos;
 	InstantDCSet dc_set(RECT{ 0, 0, dungeon->dungeon_width, dungeon->dungeon_height });
@@ -390,6 +388,8 @@ void MonsterManager::Appear(MAKE_MONSTER monster[5])
 {
 	for (int i = 0; i < 5; ++i)
 	{
+		printf("%d size monsters\n", monsters.size());
+		printf("%d ID\n", monster[i].ID);
 		monsters[monster[i].ID]->is_appeared = true;
 		monsters[monster[i].ID]->SetDirection(monster[i].Direction);
 		monsters[monster[i].ID]->SetPos(monster[i].Pos);

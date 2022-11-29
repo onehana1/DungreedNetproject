@@ -143,11 +143,18 @@ DWORD WINAPI RecvThread(LPVOID arg)// //Ŭ���̾�Ʈ���� Recv��
 		
 		case SC_MAKE_MONSTER:
 		{
+			char Buf[2];
+			recv(sock, Buf, sizeof(Buf), 0);	// 2씩 더 받아지는 오류 대처.... 
+
 			char subBuf[sizeof(MAKE_MONSTER[5])]{};
 			recv(sock, subBuf, sizeof(subBuf), 0);
 
 			MAKE_MONSTER monsterInfo[5];
 			memcpy(&monsterInfo, &subBuf, sizeof(MAKE_MONSTER[5]));
+
+			for (int i = 0; i < 5; ++i) {
+				printf("%d monster : %d (%d, %d) %d\n", i, monsterInfo[i].ID, monsterInfo[i].Pos.x, monsterInfo[i].Pos.y, monsterInfo[i].Direction);
+			}
 
 			framework->GetPlayScene()->GetMonsterManager()->Appear(monsterInfo);
 			break;

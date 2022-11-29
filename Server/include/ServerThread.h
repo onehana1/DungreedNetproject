@@ -78,6 +78,8 @@ DWORD WINAPI ClientThread(LPVOID arg)
 					my_packet.data->state = UNCONNECT;
 				}
 			}
+
+			printf("%d player ³ª°¨\n", id);
 			
 			for (int i = 0; i < PLAYER_NUM; ++i) {
 				if (player_list[i] && (player_list[i]->GetState() == IN_LOBBY || player_list[i]->GetState() == READY)) {

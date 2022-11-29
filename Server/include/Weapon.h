@@ -14,8 +14,8 @@ class Scene;
 class Weapon
 {
 private:
-	const Image* image;
-	const Image* start_image;
+	const Image* image = NULL;
+	const Image* start_image = NULL;
 
 	POINT pos;
 	int width;
@@ -25,7 +25,7 @@ private:
 
 	int ATTACT_TIME;
 public:  
-	Weapon( const Player* player,const POINT mouse);
+	Weapon(const Dungeon* dungeon, const Player* player);
 	~Weapon();
 	void Init( const Player* player, const POINT mouse);
 	void Update(const Player* player, const POINT mouse );

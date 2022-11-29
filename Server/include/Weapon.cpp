@@ -1,15 +1,18 @@
 ﻿#include "Weapon.h"
 
-Weapon::Weapon( const Player* player, const POINT mouse)
-	: width{ 30/*scene->DungeonSize.x / 3*/ }, height{ 30/*cene->DungeonSize.y / 2*/ }
+Weapon::Weapon(const Dungeon* dungeon, const Player* player)
+	: width{ dungeon->camera_x_half_range / 3}, height{ dungeon->camera_y_half_range / 2 }
 {
-	image = start_image = new Image(L"animation/RustyGreatSwordAttack1.png");
-	Update(player,mouse);
+	
+	//image = start_image = new Image(L"animation/RustyGreatSwordAttack1.png");
+	Update(player, {0, 0});
 }
 
 Weapon::~Weapon()
 {
-	delete start_image;
+	if (start_image) {
+		delete start_image;
+	}
 }
 
 void Weapon::Init( const Player* player, const POINT mouse)

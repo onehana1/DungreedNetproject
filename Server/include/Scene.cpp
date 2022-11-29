@@ -8,7 +8,7 @@ Scene::Scene()
 		player = new Player(dungeon);
 		monster_manager = new MonsterManager(dungeon );
 		missile_manager = new MissileManager;
-		//weapon = new Weapon(camera, player, mouse);//const POINT mouse
+		weapon = new Weapon(dungeon, player);//const POINT mouse
 
 		player->PlaceWithDungeonLeft(dungeon);
 	}
@@ -24,7 +24,7 @@ Scene::Scene(const int dungeon_id)
 		player = new Player(dungeon);
 		monster_manager = new MonsterManager(dungeon );
 		missile_manager = new MissileManager;
-		weapon = new Weapon( player, DungeonSize);
+		weapon = new Weapon(dungeon, player);
 
 		player->PlaceWithDungeonLeft(dungeon);
 	}
@@ -61,7 +61,7 @@ void Scene::Update()
 	player->Update(dungeon, weapon, missile_manager);
 	monster_manager->Update(dungeon, player , missile_manager  );
 	missile_manager->Update(dungeon );
-	//weapon->Update(player, DungeonSize );
+	weapon->Update(player, { dungeon->camera_x_half_range, dungeon->camera_y_half_range });
 	HitUpdate();
 	DungeonChangeProc();
 }
