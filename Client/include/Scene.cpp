@@ -168,9 +168,10 @@ void PlayScene::Update(SOCKET socket, char* name)
 
 int PlayScene::ChangeScene()
 {
-	if (player_list[0]->GetState()==RESULTING) {
-		return 4;
-	}
+	for (int i = 0; i < PLAYER_NUM; ++i)
+		if (player_list[i]->GetState() == RESULTING) {
+			return 4;
+		}
 	return 0;
 
 
@@ -178,6 +179,9 @@ int PlayScene::ChangeScene()
 
 void PlayScene::DungeonChangeProc()
 {
+	if (player[0].GetState()==RESULTING)
+		GoNextDungeon();
+
 	if (player->IsOut_Right(dungeon))
 		if (monster_manager->AreMonsterAllDied())
 			GoNextDungeon();
@@ -532,13 +536,15 @@ InterimScene::InterimScene()
 InterimScene::InterimScene(SOCKET socket, char* name)
 {
 	try {
+		//p가 지금 result 창에 있다만 알려준다.
 		server_sock = socket;
-		CS_LOGIN_INFO_PACKET my_packet{};
-		my_packet.size = sizeof(CS_LOGIN_INFO_PACKET);
+		P_STATE my_packet{};
+		my_packet.size = sizeof(P_STATE);
 		my_packet.type = CS_RESULT;
+		my_packet.state = 1;
 
-		strcpy(my_packet.name, "닉네임");
 		send(server_sock, reinterpret_cast<char*>(&my_packet), sizeof(my_packet), NULL);
+
 
 		image = new Image(L"Background\\InterimResults.png");
 		start_button = new Image(L"Background\\start_button.png");	// 추후 이미지 변경 필요
@@ -627,25 +633,10 @@ void InterimScene::Update(SOCKET socket, char* name)
 {
 	crosshair->Update(image->GetWidth(), image->GetHeight());
 	effect_manager->Update(animation_manager);
-
-	server_sock = socket;
-	CS_PLAYER_INPUT_INFO_PACKET my_packet{};
-	my_packet.size = sizeof(CS_PLAYER_INPUT_INFO_PACKET);
-	my_packet.type = CS_RESULT;
-
-
-	my_packet.key.a = GetAsyncKeyState('A');
-	my_packet.key.s = GetAsyncKeyState('S');
-	my_packet.key.d = GetAsyncKeyState('D');
-	my_packet.key.space = GetAsyncKeyState(VK_SPACE);
-
-	my_packet.mouse.right = GetAsyncKeyState(VK_RBUTTON);
-	my_packet.mouse.left = GetAsyncKeyState(VK_LBUTTON);
-	my_packet.mouse.wheel = GetAsyncKeyState(VK_MBUTTON);
-	my_packet.mouse.mPos.x = crosshair->pos.x;
-	my_packet.mouse.mPos.y = crosshair->pos.y;
-
-	send(server_sock, reinterpret_cast<char*>(&my_packet), sizeof(my_packet), NULL);
+	/*server_sock = socket;
+	P_STATE my_packet{};
+	my_packet.state = sizeof(P_STATE);
+	send(server_sock, reinterpret_cast<char*>(&my_packet), sizeof(my_packet), NULL);*/
 
 	
 }
@@ -661,5 +652,11 @@ int InterimScene::ChangeScene()
 			return 3;
 		}
 	}
+
+	for (int i = 0; i < PLAYER_NUM; ++i)
+		if (player_list[i]->GetState() == RESULTING) {
+			return 4;
+		}
+
 	return 0;
 }

@@ -74,6 +74,12 @@ struct PLAYER_KEYBOARD {
 	SHORT space = false;
 };
 
+struct P_STATE {
+	unsigned char size;
+	char	type;
+	int state; // 0 플레이 / 1 결과
+};
+
 struct PLAYER_INPUT_INFO {
 	unsigned char size;
 	char	type;
@@ -82,7 +88,7 @@ struct PLAYER_INPUT_INFO {
 	struct PLAYER_MOUSE mouse;
 	struct PLAYER_KEYBOARD key;
 
-	int time =1; // 3��
+	int time =1;
 };
 
 struct CS_PLAYER_INPUT_INFO_PACKET {

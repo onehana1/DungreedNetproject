@@ -55,7 +55,7 @@ DWORD WINAPI RecvThread(LPVOID arg)// //Ŭ���̾�Ʈ���� Recv��
 				player_list[i]->SetName(loginInfo[i].name);
 				player_list[i]->SetState(loginInfo[i].state);
 
-				printf("닉네임 : %s	상태 : %d\n", player_list[i]->GetName(), player_list[i]->GetState());
+				printf("name : %s	state : %d\n", player_list[i]->GetName(), player_list[i]->GetState());
 			}
 			break;
 		}
@@ -72,9 +72,14 @@ DWORD WINAPI RecvThread(LPVOID arg)// //Ŭ���̾�Ʈ���� Recv��
 		case SC_PLAY:
 		{
 			printf("playing\n");
+			for (int i = 0; i < PLAYER_NUM; ++i)
+			{
+				if (player_list[i])
+					player_list[i]->SetState(PLAYING);
+			}
 			char PlayBuf[sizeof(SC_PLAYER_INPUT_INFO_PACKET[3])]{};
 			recv(sock, PlayBuf, sizeof(PlayBuf), 0);
-			printf("패킷 사이즈 :  %d\n", buf[0]);
+			printf("packet size :  %d\n", buf[0]);
 
 			PLAYER_INPUT_INFO temp[3];
 
@@ -102,42 +107,34 @@ DWORD WINAPI RecvThread(LPVOID arg)// //Ŭ���̾�Ʈ���� Recv��
 
 			}
 
-			//for (int i = 0; i < 3; i++) {
-			//	if (p_input[i].time == 65535) {
-			//		player_list[i]->SetState(RESULTING);
-			//		printf("�н�");
-
-			//	}
-			//}
-
-			//for (int i = 0; i < PLAYER_NUM; ++i) {
-			//	if (player_list[i]) {
-			//		printf("t : %d\n", p_input[i].time);
-			//	}
-			//}
-
-
-
-			//if (p_input[p_input[0].ID].time == 0 || p_input[p_input[1].ID].time == 0 || p_input[p_input[2].ID].time == 0)
-			//{
-			//	printf("���� ������ �Ѿ��\n");
-			//}
-
-			//Ÿ���� 3�� �Ӵ�! �׷��� ���� ��� â���� ������
-			//��� â ���̽��� �ϳ� ���� �ű⼭ Ÿ�� 3�� �Դ� �׷��� ���� ������ ������ 
-
+			
 			break;
 		}
 
 		case SC_RESULT:
 		{
 			printf("result\n");
-			char IdBuf[sizeof(short)]{};
+			char PlayBuf[sizeof(P_STATE[3])]{}; // 잡은 몬스터와 죽은 횟수로 수정 필요
+			recv(sock, PlayBuf, sizeof(PlayBuf), 0);
+			printf("packet size :  %d\n", buf[0]);
+
+			P_STATE temp[3];
+			memcpy(&temp, &PlayBuf, sizeof(P_STATE[3]));
+
+			for (int i = 0; i < PLAYER_NUM; ++i)
+			{
+				if (player_list[i])
+					player_list[i]->SetState(RESULTING);
+			}
+
+
+			/*char IdBuf[sizeof(short)]{};
 			recv(sock, IdBuf, sizeof(IdBuf), 0);
 
 			short id;
 			memcpy(&id, &IdBuf, sizeof(short));
-			player_list[id]->SetState(RESULTING);
+			player_list[id]->SetState(RESULTING);*/
+
 			break;
 		}
 		
