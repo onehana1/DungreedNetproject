@@ -164,6 +164,16 @@ DWORD WINAPI ClientThread(LPVOID arg)
 				// 플레이 상태로 전환
 				game_start = true;
 				printf("game start\n", id);
+
+				STATE_PACKET my_packet;
+				my_packet.size = sizeof(STATE_PACKET);
+				my_packet.type = SC_ALLREADY;
+
+				for (int i = 0; i < PLAYER_NUM; ++i) {
+					if (player_list[i]&& player_list[i]->GetState() == READY) {
+						send(player_list[i]->sock, reinterpret_cast<char*>(&my_packet), sizeof(my_packet), NULL);
+					}
+				}
 			}
 			else {
 				SC_READY_PACKET my_packet;
@@ -179,6 +189,9 @@ DWORD WINAPI ClientThread(LPVOID arg)
 			}
 			break;
 		}
+
+		
+
 		case CS_PLAY:
 		{
 

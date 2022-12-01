@@ -23,6 +23,9 @@ constexpr char SC_PLAY = 12;
 constexpr char SC_RESULT = 14;
 constexpr char SC_MAKE_MONSTER = 13;
 
+constexpr char SC_ALLREADY = 15;
+
+
 
 
 struct LOGIN_INFO {
@@ -73,6 +76,12 @@ struct PLAYER_KEYBOARD {
 	SHORT d = false;
 	SHORT space = false;
 };
+
+struct STATE_PACKET {
+	unsigned char size;
+	char	type;
+};
+
 
 struct P_STATE {
 	unsigned char size;
