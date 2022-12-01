@@ -58,8 +58,14 @@ HRESULT Scene::Init()
 void Scene::Update()
 {
 	// player, monster 업데이트 루틴
+	//
+	printf("update 시작\n");
+	for (int i = 0; i < 3; i++)
+		InputUpdate(TestPlayer[i]->info);
+	printf("update 끝\n");
 	player->Update(dungeon, weapon, missile_manager);
-	monster_manager->Update(dungeon, player , missile_manager  );
+
+	monster_manager->Update(dungeon, player, missile_manager);
 	missile_manager->Update(dungeon );
 	weapon->Update(player, {0, 0});	// 플레이어들에게서 받은 마우스 좌표 넣어 줘야 함
 	HitUpdate();
@@ -83,7 +89,7 @@ void Scene::DungeonChangeProc()
 		monster_manager->Appear(5);
 }
 
-void Scene::InputUpdate(CS_PLAYER_INPUT_INFO_PACKET INFO)
+void Scene::InputUpdate(PLAYER_INPUT_INFO INFO)
 {
 	//1명의 정보를 받아 스레드로 갱신한다고 가정. 
 	// 보낼때는 배열로 4명의 정보를 한번에 보냄 ( 플레이어 클래스로 관리 후 필요한 정보만 INFO에 담굴것 ) 
@@ -93,14 +99,16 @@ void Scene::InputUpdate(CS_PLAYER_INPUT_INFO_PACKET INFO)
 	//UpdateInfo(INFO.ID, player[INFO.ID])
 	//몬스터 정보를 갱신함 
 
-	TestPlayer[INFO.ID]->SC_Update2(dungeon, weapon, missile_manager, INFO.key, INFO.mouse); //이 계산된 좌표를 보낸다. 받은 키, 마우스 값을 넣어 계산한다.
+	 //이 계산된 좌표를 보낸다. 받은 키, 마우스 값을 넣어 계산한다.
+	TestPlayer[INFO.ID]->SC_Update2(dungeon, weapon, missile_manager, INFO.key, INFO.mouse); //TestPlayer[ID] ID가 클라정보
 	UpdateInfo(INFO.ID, TestPlayer[INFO.ID]); // 보낼 정보들 골라담기 
+	//printf("보내보기");
 	//몬스터 정보를 갱신함 -> Scene안의 monster리스트를 통해 관리 * 던전 갱신시 MakeMonster정보 전송필요. 
 }
 
 void Scene::UpdateInfo(int num, Player* player)
 {
-	SC_INFO[num].IsMisile = player->GetMisile();
+	//SC_INFO[num].IsMisile = player->GetMisile();
 	player->UpdateInfo(&SC_INFO[num]);  // 필요한 정보 쏙쏙 골라담기 
 }
 

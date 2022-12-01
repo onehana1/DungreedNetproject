@@ -2,12 +2,15 @@
 #pragma once
 #include "Common.h"
 #include "Player.h"
+#include "Scene.h"
 #include "Protocol.h"
 
 #define SERVERPORT 9000
 #define BUFSIZE    4096
 
 std::vector<Player*> player_list(3, NULL);
+//Scene* Info_Scene = new Scene;
+extern Scene* scene;
 extern bool game_start;
 
 
@@ -146,6 +149,7 @@ DWORD WINAPI ClientThread(LPVOID arg)
 				}
 			}
 			break;
+
 		}
 		case CS_READY:
 		{
@@ -203,33 +207,41 @@ DWORD WINAPI ClientThread(LPVOID arg)
 			PLAYER_INPUT_INFO p_input;
 			memcpy(&p_input, &subBuf, sizeof(CS_PLAYER_INPUT_INFO_PACKET));
 
+			memcpy(&scene->TestPlayer[id]->info, &p_input, sizeof(CS_PLAYER_INPUT_INFO_PACKET));
+			///
+
+			printf("input update");
 			
-			SC_PLAYER_INPUT_INFO_PACKET  my_packet{};
-			my_packet.size = sizeof(SC_PLAYER_INPUT_INFO_PACKET);
+			PLAYER_INFO_MANAGER  my_packet{};
+			my_packet.size = sizeof(PLAYER_INFO_MANAGER);
 			if (CntTime < 0) {
 				my_packet.type = SC_RESULT;
 				StartDun = 0;
 			}
 			else
 				my_packet.type = SC_PLAY;
+
 			my_packet.ID = id;
 
-			my_packet.mouse.right = p_input.mouse.right;
-			my_packet.mouse.left = p_input.mouse.left;
-			my_packet.mouse.wheel = p_input.mouse.wheel;
-			my_packet.mouse.mPos.x = p_input.mouse.mPos.x;
-			my_packet.mouse.mPos.y = p_input.mouse.mPos.y;
+			my_packet.PPos = scene->SC_INFO[id].PPos;
+			my_packet.State= scene->SC_INFO[id].State;
+			my_packet.animation_name = scene->SC_INFO[id].animation_name;
 
-			my_packet.key.a = p_input.key.a;
-			my_packet.key.s = p_input.key.s;
-			my_packet.key.d = p_input.key.d;
-			my_packet.key.space = p_input.key.space;
+			my_packet.hp = scene->SC_INFO[id].hp;
+			my_packet.killMonster = scene->SC_INFO[id].killMonster;
 
-			my_packet.time = CntTime;
+			my_packet.IsMove = scene->SC_INFO[id].IsMove;
+			my_packet.IsAttack = scene->SC_INFO[id].IsAttack;
+			my_packet.IsMisile = scene->SC_INFO[id].IsMisile;
 
+			printf("%d 전송했습니다\n", id);
+			//scene->SC_INFO[id];
+
+			//SC_INFO[ID]로 보낼 정보 찾고 3구역으로 흩뿌리기 
 			for (int i = 0; i < PLAYER_NUM; ++i) {
 				if (player_list[i]) {
 					send(player_list[i]->sock, reinterpret_cast<char*>(&my_packet), sizeof(my_packet), NULL);
+					//iD로 구별되니 각각 보내는 것임.. 
 				}
 			}
 

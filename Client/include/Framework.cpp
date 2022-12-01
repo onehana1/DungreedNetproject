@@ -1,6 +1,6 @@
 #include "Framework.h"
 
-char* SERVERIP = (char*)"127.0.0.1";
+char* SERVERIP = (char*)"127.0.0.1";//(char*)"127.0.0.1";
 #define SERVERPORT 9000
 #define BUFSIZE 50
 

@@ -253,9 +253,7 @@ void Character::Look(const Character& target)
 void Character::UpdateInfo(PLAYER_INFO_MANAGER* player)
 {
 
-	/*
-	player->PPos = pos;
-	player->State = state;
+	
 
 	player->PPos = pos;
 	switch (state) {
@@ -273,7 +271,7 @@ void Character::UpdateInfo(PLAYER_INFO_MANAGER* player)
 	player->hp = hp;
 	player->IsAttack = is_attacking;
 	//player->IsMove =
-	*/
+	
 }
 
 

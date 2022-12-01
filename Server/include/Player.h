@@ -62,7 +62,7 @@ public:
 	void Update(const Dungeon* dungeon, Weapon* weapon, MissileManager* missile_manager );
 	void SC_Update(const Dungeon* dungeon, PLAYER_MOUSE mouse, PLAYER_KEYBOARD key, POINT* Ppos); //
 	void SC_Update2(const Dungeon* dungeon, Weapon* weapon, MissileManager* missile_manager, PLAYER_KEYBOARD key, PLAYER_MOUSE mouse); //
-
+	PLAYER_INPUT_INFO info;
 
 	friend class Weapon;
 	friend class MonsterAI;

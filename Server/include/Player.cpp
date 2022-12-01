@@ -52,7 +52,7 @@ void Player::SC_Update2(const Dungeon* dungeon, Weapon* weapon, MissileManager* 
 		ForceGravity(dungeon);								//? 왜두개 
 		Look(mouse.mPos);									//마우스에 따른 방향 설정 -> AttackProc에서 사용 
 	}
-	DashProc(Degree(mouse.mPos, pos), dungeon, dungeon->camera_x_half_range / 16);
+	//DashProc(Degree(mouse.mPos, pos), dungeon, dungeon->camera_x_half_range / 16);
 }
 
 void Player::KeyProc(const Dungeon* dungeon, MissileManager* missile_manager)

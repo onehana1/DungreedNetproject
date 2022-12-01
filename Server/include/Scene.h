@@ -30,8 +30,8 @@ class Scene : private Uncopyable
 private:
 	Dungeon* dungeon;
 	Player* player;
-	Player** TestPlayer;   // 써보려는 플레이어 
-	PLAYER_INFO_MANAGER* SC_INFO;  //보낼 정보 정리 ( Server -> client) 
+	
+	
 	Weapon* weapon;
 
 	// 플레이어 3명이면 weapon도 3개 여야 함
@@ -45,17 +45,21 @@ private:
 	void GoNextDungeon();
 	void GoPrevDungeon();
 	void ChangeDungeon(const int dungeon_id);
-	HRESULT Init();
+	
 
 	HitScanner HitScan;
 	void HitUpdate();
 	void DungeonChangeProc();
 
 	///////////////////////////////////////////////////////
-	void InputUpdate(CS_PLAYER_INPUT_INFO_PACKET INFO);
+public:
+	Player** TestPlayer;   // 써보려는 플레이어 
+	PLAYER_INFO_MANAGER* SC_INFO;  //보낼 정보 정리 ( Server -> client) 이놈이 변경된 보낼 정보 가지고잇음
+	void InputUpdate(PLAYER_INPUT_INFO INFO);
 	void UpdateInfo(int num, Player* player);
 	
 public:
+	HRESULT Init();
 	void SetPlayer(int num) { // 들어온 인원만큼 플레이 갱신 
 		TestPlayer = new Player*[num];
 		Play_count = num; 
