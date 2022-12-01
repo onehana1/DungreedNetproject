@@ -135,12 +135,12 @@ void PlayScene::Update(SOCKET socket, char* name)
 
 
 	server_sock = socket;
-	CS_PLAYER_INPUT_INFO_PACKET my_packet{};
-	my_packet.size = sizeof(CS_PLAYER_INPUT_INFO_PACKET);
+	
+	my_packet.size = sizeof(PLAYER_INFO_MANAGER);
 	my_packet.type = CS_PLAY;
 
 
-	my_packet.key.a = GetAsyncKeyState('A');
+	/*my_packet.key.a = GetAsyncKeyState('A');
 	my_packet.key.s = GetAsyncKeyState('S');
 	my_packet.key.d = GetAsyncKeyState('D');
 	my_packet.key.space = GetAsyncKeyState(VK_SPACE);
@@ -149,7 +149,9 @@ void PlayScene::Update(SOCKET socket, char* name)
 	my_packet.mouse.left = GetAsyncKeyState(VK_LBUTTON);
 	my_packet.mouse.wheel = GetAsyncKeyState(VK_MBUTTON);
 	my_packet.mouse.mPos.x = crosshair->pos.x;
-	my_packet.mouse.mPos.y = crosshair->pos.y;
+	my_packet.mouse.mPos.y = crosshair->pos.y;*/
+
+	UpdateInfo(player);
 
 	send(server_sock, reinterpret_cast<char*>(&my_packet), sizeof(my_packet), NULL);
 
@@ -174,7 +176,28 @@ int PlayScene::ChangeScene()
 		}
 	return 0;
 
+}
 
+void PlayScene::UpdateInfo(Player* player)
+{
+	//SC_INFO[num].IsMisile = player->GetMisile();
+	player->UpdateInfo(&my_packet);  // ÇÊ¿äÇÑ Á¤º¸ ½ï½ï °ñ¶ó´ã±â 
+
+	my_packet.PPos = player->GetPos();
+	switch (player->GetState()) {
+	case  0:	my_packet.State = playing_State::DOWN; break;
+	case  1:	my_packet.State = playing_State::UP; break;
+	case  2:my_packet.State = playing_State::STANDING; break;
+	case  3:my_packet.State = playing_State::MOVING; break;
+	case 4:my_packet.State = playing_State::DOWNJUMP; break;
+	default: my_packet.State = playing_State::STANDING; break;
+
+	}
+
+	//player->animation_name = animation_name;
+	my_packet.hp = player->GetHp();
+	my_packet.IsAttack = player->GetIsAttack();
+	//player->IsMove =
 }
 
 void PlayScene::DungeonChangeProc()

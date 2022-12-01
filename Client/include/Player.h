@@ -23,6 +23,7 @@ class Weapon;
 class Player : private Uncopyable, public Character
 {
 private:
+
 	short id[3];
 	char ip[22];
 	char name[20];

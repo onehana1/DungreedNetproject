@@ -127,9 +127,9 @@ struct PLAYER_INFO_MANAGER { //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ Å¬ï¿
 	char	type;
 	short ID;
 
-	POINT PPos;				
-	short State;			
-	std::string animation_name;			//character sheet name
+	POINT PPos;		
+	short State;
+	//std::string animation_name;			//character sheet name
 
 	int hp;
 	int killMonster;

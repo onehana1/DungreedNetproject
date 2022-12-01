@@ -7,6 +7,7 @@
 #include "Dungeon.h"
 #include "InstantDCSet.h"
 #include "Animation.h"
+#include "Protocol.h"
 
 extern HDC buf_dc;
 extern HWND h_wnd;
@@ -119,10 +120,37 @@ public:
 	void SetPos(POINT in) { pos = in; }
 	void SetDirection(bool in) { looking_direction = in; }
 
+	void UpdateInfo(PLAYER_INFO_MANAGER* player)
+	{
+
+		player->PPos = pos;
+		switch (state) {
+		case  State::DOWN:	player->State = playing_State::DOWN; break;
+		case  State::UP:	player->State = playing_State::UP; break;
+		case  State::STANDING:player->State = playing_State::STANDING; break;
+		case  State::MOVING:player->State = playing_State::MOVING; break;
+		case  State::DOWNJUMP:player->State = playing_State::DOWNJUMP; break;
+		default: player->State = playing_State::STANDING; break;
+
+		}
+
+		//player->animation_name = animation_name;
+		player->hp = hp;
+		player->IsAttack = is_attacking;
+		//player->IsMove =
+
+	}
+	POINT GetPos() { return pos; }
+	int GetHp() { return hp; }
+	bool GetIsAttack() { return is_attacking; }
+	short GetState() { return (short)state; }
+
 	void ChangeAnimation(const char* a_name);
 	std::string GetAnimationName() { return animation_name; }
 
 	friend class HitScanner;
 	friend class MonsterAI;
+
+
 };
 #endif

@@ -213,14 +213,14 @@ DWORD WINAPI ClientThread(LPVOID arg)
 			printf("main game\n");
 			player_list[id]->SetState(PLAYING);
 			 
-			char subBuf[sizeof(CS_PLAYER_INPUT_INFO_PACKET)]{};
+			char subBuf[sizeof(PLAYER_INFO_MANAGER)]{};
 			recv(player_list[id]->sock, subBuf, sizeof(subBuf), 0);
 			printf("패킷 사이즈 :  %d\n", buf[0]);
 			
-			PLAYER_INPUT_INFO p_input;
-			memcpy(&p_input, &subBuf, sizeof(CS_PLAYER_INPUT_INFO_PACKET));
+			PLAYER_INFO_MANAGER p_input;
+			//memcpy(&p_input, &subBuf, sizeof(PLAYER_INFO_MANAGER));
 
-			memcpy(&scene->TestPlayer[id]->info, &p_input, sizeof(CS_PLAYER_INPUT_INFO_PACKET));
+			//memcpy(&scene->TestPlayer[id]->info, &p_input, sizeof(PLAYER_INFO_MANAGER));
 			///
 
 			printf("input update");
@@ -233,12 +233,12 @@ DWORD WINAPI ClientThread(LPVOID arg)
 			}
 			else
 				my_packet.type = SC_PLAY;
-
+			printf("%d id 출력하기\n", id);
 			my_packet.ID = id;
 
 			my_packet.PPos = scene->SC_INFO[id].PPos;
 			my_packet.State= scene->SC_INFO[id].State;
-			my_packet.animation_name = scene->SC_INFO[id].animation_name;
+			//my_packet.animation_name = scene->SC_INFO[id].animation_name;
 
 			my_packet.hp = scene->SC_INFO[id].hp;
 			my_packet.killMonster = scene->SC_INFO[id].killMonster;

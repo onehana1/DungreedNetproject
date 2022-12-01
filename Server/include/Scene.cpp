@@ -59,10 +59,10 @@ void Scene::Update()
 {
 	// player, monster 업데이트 루틴
 	//
-	printf("update 시작\n");
+	/*printf("update 시작\n");
 	for (int i = 0; i < 3; i++)
 		InputUpdate(TestPlayer[i]->info);
-	printf("update 끝\n");
+	printf("update 끝\n");*/
 	player->Update(dungeon, weapon, missile_manager);
 
 	monster_manager->Update(dungeon, player, missile_manager);

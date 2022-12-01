@@ -87,6 +87,9 @@ public:
 	virtual int ChangeScene();
 
 	MonsterManager* GetMonsterManager(){return monster_manager;};
+
+	PLAYER_INFO_MANAGER my_packet;
+	void UpdateInfo(Player* player);
 };
 
 class StartScene : public Scene
