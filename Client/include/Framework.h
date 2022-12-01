@@ -20,14 +20,14 @@ private:
 	char nickname[20];
 	int count_name = 0;
 
-	void ChangeScene(int);
+	
 public:
 	Framework();
 	~Framework();
 
 	void Render() const;
 	void Update();
-
+	void ChangeScene(int);
 	int GetSceneId() { return scene_id; }
 	void SetNickname(WPARAM wparam);
 

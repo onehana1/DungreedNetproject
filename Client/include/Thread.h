@@ -67,6 +67,19 @@ DWORD WINAPI RecvThread(LPVOID arg)// //Ŭ���̾�Ʈ���� Recv��
 			short id;
 			memcpy(&id, &IdBuf, sizeof(short));
 			player_list[id]->SetState(READY);
+
+			bool a = true;
+			for (int i = 0; i < PLAYER_NUM; ++i)
+			{
+				if (player_list[i]) {
+					if (player_list[i]->GetState() != READY)
+						a = false;
+				}
+
+			}
+			if (a)
+				framework->ChangeScene(3);
+
 			break;
 		}
 		case SC_PLAY:
