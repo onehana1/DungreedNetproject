@@ -84,35 +84,33 @@ DWORD WINAPI RecvThread(LPVOID arg)// //Ŭ���̾�Ʈ���� Recv��
 				if (player_list[i])
 					player_list[i]->SetState(PLAYING);
 			}
-			char PlayBuf[sizeof(SC_PLAYER_INPUT_INFO_PACKET[3])]{};
+
+			char PlayBuf[sizeof(PLAYER_INFO_MANAGER)]{};
 			recv(sock, PlayBuf, sizeof(PlayBuf), 0);
 			printf("packet size :  %d\n", buf[0]);
 
-			PLAYER_INPUT_INFO temp[3];
+			PLAYER_INFO_MANAGER temp;
+			memcpy(&temp, &PlayBuf, sizeof(PLAYER_INFO_MANAGER));
+			//memcpy(&framework->play_scene->Player_Info[temp.ID], &PlayBuf, sizeof(PLAYER_INFO_MANAGER));
 
-			memcpy(&temp, &PlayBuf, sizeof(PLAYER_INPUT_INFO[3]));
+			/*
+			if (temp.time != 0) {
+				framework->play_scene->Player_Info[temp.ID].ID = temp.ID;
 
-			
-			
-			for (int i = 0; i < 3; i++) {
-				if (temp[i].time !=0) {
-					p_input[temp[i].ID].ID = temp[i].ID;
+				framework->play_scene->Player_Info[temp.ID].PPos = temp.PPos;
+				framework->play_scene->Player_Info[temp.ID].State = temp.State;
+				framework->play_scene->Player_Info[temp.ID].animation_name = temp.animation_name;
 
-					p_input[temp[i].ID].mouse.right = temp[i].mouse.right;
-					p_input[temp[i].ID].mouse.left = temp[i].mouse.left;
-					p_input[temp[i].ID].mouse.wheel = temp[i].mouse.wheel;
-					p_input[temp[i].ID].mouse.mPos.x = temp[i].mouse.mPos.x;
-					p_input[temp[i].ID].mouse.mPos.y = temp[i].mouse.mPos.y;
+				framework->play_scene->Player_Info[temp.ID].hp = temp.hp;
+				framework->play_scene->Player_Info[temp.ID].killMonster = temp.killMonster;
 
-					p_input[temp[i].ID].key.a = temp[i].key.a;
-					p_input[temp[i].ID].key.s = temp[i].key.s;
-					p_input[temp[i].ID].key.d = temp[i].key.d;
-					p_input[temp[i].ID].key.space = temp[i].key.space;
+				framework->play_scene->Player_Info[temp.ID].IsMove = temp.IsMove;
+				framework->play_scene->Player_Info[temp.ID].IsAttack = temp.IsAttack;
+				framework->play_scene->Player_Info[temp.ID].IsMisile = temp.IsMisile;
 
-					p_input[temp[i].ID].time = temp[i].time;
-				}
+				framework->play_scene->Player_Info[temp.ID].time = temp.time;
+			}*/
 
-			}
 
 			
 			break;

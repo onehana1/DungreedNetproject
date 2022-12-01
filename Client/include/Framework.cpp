@@ -4,6 +4,7 @@ char* SERVERIP = (char*)"127.0.0.1";//(char*)"127.0.0.1";
 #define SERVERPORT 9000
 #define BUFSIZE 50
 
+
 enum Scene_num {
 	NONE, START, LOBBY, PLAY, RESULT, GAMEOVER, END
 };

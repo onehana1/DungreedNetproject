@@ -123,7 +123,7 @@ struct SC_PLAYER_INPUT_INFO_PACKET {
 };
 
 struct PLAYER_INFO_MANAGER { //�������� ���� �� Ŭ��� ������ ������ 
-	unsigned char size;
+	unsigned char size; 
 	char	type;
 	short ID;
 

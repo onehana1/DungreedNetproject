@@ -10,8 +10,7 @@ extern DWORD WINAPI RecvThread(LPVOID arg);
 class Framework
 {
 private:
-	Scene* scene;
-	PlayScene* play_scene;
+
 	int scene_id;
 
 	int update_cnt = 0;
@@ -22,6 +21,8 @@ private:
 
 	
 public:
+	Scene* scene;
+	PlayScene* play_scene;
 	Framework();
 	~Framework();
 

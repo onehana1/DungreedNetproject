@@ -39,9 +39,8 @@ public:
 	SOCKET server_sock;
 	SOCKET sock;
 	SOCKET Psock;
-
 	
-
+	PLAYER_INFO_MANAGER Player_Info[3];
 
 	char* name;
 };
