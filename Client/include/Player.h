@@ -78,7 +78,6 @@ public:
 	void Init(const Dungeon* dungeon, AnimationManager* animation_manager);
 
 	void Update(const Dungeon* dungeon, Weapon* weapon, const Crosshair* crosshair, MissileManager* missile_manager, AnimationManager* animation_manager, SoundManager* sound_manager, EffectManager* effect_manager);
-	void Update(AnimationManager* animation_manager,SoundManager* sound_manager, EffectManager* effect_manager);
 
 	void SetState(short p_state) { server_state = p_state; }
 	short GetState() { return server_state; }

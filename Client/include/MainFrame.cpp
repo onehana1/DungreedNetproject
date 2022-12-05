@@ -89,7 +89,6 @@ LRESULT CALLBACK WndProc(HWND h_wnd, UINT u_msg, WPARAM w_param, LPARAM l_param)
 		framework = new Framework;
 		SetTimer(h_wnd, 1, 15, 0);
 		count = 0;
-
 		return 0;
 	case WM_CHAR:
 		switch (framework->GetSceneId()) {

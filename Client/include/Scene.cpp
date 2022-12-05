@@ -46,11 +46,6 @@ PlayScene::PlayScene()
 		weapon = new Weapon(camera, player, crosshair, animation_manager);
 
 		player->PlaceWithDungeonLeft(dungeon);
-		for (int i = 0; i < PLAYER_NUM; ++i)
-		{
-			TestPlayer[i] = new Player(dungeon, animation_manager);
-			TestPlayer[i]->Init(dungeon, animation_manager);
-		}
 	}
 	catch (const TCHAR* error_message) {
 		MessageBox(h_wnd, error_message, L"Error", MB_OK);
@@ -83,7 +78,6 @@ PlayScene::PlayScene(const int dungeon_id)
 		weapon = new Weapon(camera, player, crosshair, animation_manager);
 
 		player->PlaceWithDungeonLeft(dungeon);
-		
 	}
 	catch (const TCHAR* error_message) {
 		MessageBox(h_wnd, error_message, L"Error", MB_OK);
@@ -93,8 +87,6 @@ PlayScene::PlayScene(const int dungeon_id)
 PlayScene::~PlayScene()
 {
 	delete player;
-	for (int i = 0; i < PLAYER_NUM; i++)
-		delete TestPlayer[i];
 	delete dungeon;
 	delete camera;
 	delete crosshair;
@@ -109,8 +101,6 @@ PlayScene::~PlayScene()
 HRESULT PlayScene::Init()
 {
 	player->Init(dungeon, animation_manager);
-	for (int i=0; i< PLAYER_NUM; i++)
-		TestPlayer[i]->Init(dungeon, animation_manager);
 	monster_manager->Init(dungeon, animation_manager);
 	missile_manager->Init();
 	camera->Init(dungeon, player);
@@ -134,11 +124,8 @@ void PlayScene::Render() const
 	crosshair->Render(dc_set.buf_dc, dc_set.bit_rect);
 	weapon->Render(dc_set.buf_dc, dc_set.bit_rect);
 	effect_manager->Render(dc_set.buf_dc, dc_set.bit_rect);
-	for (int i = 0; i < PLAYER_NUM; ++i)
-	{
-		TestPlayer[i]->Render(dc_set.buf_dc, dc_set.bit_rect);
-		//printf("ID: %d, x: %d, y: %d\n", TestPlayer[i]->id)
-	}
+
+
 
 	DrawBuffer(dc_set.buf_dc, camera->Rect());
 }
@@ -148,7 +135,7 @@ void PlayScene::Update(SOCKET socket, char* name)
 
 
 	server_sock = socket;
-
+	
 	my_packet.size = sizeof(PLAYER_INFO_MANAGER);
 	my_packet.type = CS_PLAY;
 
@@ -165,17 +152,11 @@ void PlayScene::Update(SOCKET socket, char* name)
 	my_packet.mouse.mPos.y = crosshair->pos.y;*/
 
 	UpdateInfo(player);
+
 	send(server_sock, reinterpret_cast<char*>(&my_packet), sizeof(my_packet), NULL);
 
 	// player, monster 업데이트 루틴
 	player->Update(dungeon, weapon, crosshair, missile_manager, animation_manager, sound_manager, effect_manager);
-	for (int i = 0; i < PLAYER_NUM; i++)
-	{
-		TestPlayer[i]->UpdateInfo(&Player_Info[i]);
-		//TestPlayer[i]->SetPos(POINT{ TestPlayer[i]->GetPos().x + 1*i,TestPlayer[i]->GetPos().y }); // 플레이어 확인용
-		TestPlayer[i]->Update(animation_manager, sound_manager, effect_manager);
-		printf("\n%d 출력중 \n", i);
-	}
 	monster_manager->Update(dungeon, player, animation_manager, missile_manager, sound_manager);
 	missile_manager->Update(dungeon, animation_manager);
 	camera->Update(dungeon, player);
@@ -200,22 +181,22 @@ int PlayScene::ChangeScene()
 void PlayScene::UpdateInfo(Player* player)
 {
 	//SC_INFO[num].IsMisile = player->GetMisile();
-	//player->UpdateInfo(&my_packet);  // 받은 패킷에서 플레이어에 정보저장
+	player->UpdateInfo(&my_packet);  // 필요한 정보 쏙쏙 골라담기 
 
-	my_packet.INFO.PPos = player->GetPos(); //본인 플레이어가 서버에 보낼 정보 저장 
+	my_packet.PPos = player->GetPos();
 	switch (player->GetState()) {
-	case  0:	my_packet.INFO.State = playing_State::DOWN; break;
-	case  1:	my_packet.INFO.State = playing_State::UP; break;
-	case  2:my_packet.INFO.State = playing_State::STANDING; break;
-	case  3:my_packet.INFO.State = playing_State::MOVING; break;
-	case 4:my_packet.INFO.State = playing_State::DOWNJUMP; break;
-	default: my_packet.INFO.State = playing_State::STANDING; break;
+	case  0:	my_packet.State = playing_State::DOWN; break;
+	case  1:	my_packet.State = playing_State::UP; break;
+	case  2:my_packet.State = playing_State::STANDING; break;
+	case  3:my_packet.State = playing_State::MOVING; break;
+	case 4:my_packet.State = playing_State::DOWNJUMP; break;
+	default: my_packet.State = playing_State::STANDING; break;
 
 	}
-	printf("\n%d 번쨰 ID 입력값 갱신 완료 \n", my_packet.INFO.ID);
+
 	//player->animation_name = animation_name;
-	my_packet.INFO.hp = player->GetHp();
-	my_packet.INFO.IsAttack = player->GetIsAttack();
+	my_packet.hp = player->GetHp();
+	my_packet.IsAttack = player->GetIsAttack();
 	//player->IsMove =
 }
 
