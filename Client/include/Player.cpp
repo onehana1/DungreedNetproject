@@ -25,18 +25,36 @@ void Player::Init(const Dungeon* dungeon, AnimationManager* animation_manager)
 	animation.Play();
 }
 
-void Player::Update(const Dungeon* dungeon, Weapon* weapon, const Crosshair* crosshair, MissileManager* missile_manager, AnimationManager* animation_manager, SoundManager* sound_manager, EffectManager* effect_manager)
+void Player::Update(const Dungeon* dungeon, Weapon* weapon, MissileManager* missile_manager, AnimationManager* animation_manager, SoundManager* sound_manager, EffectManager* effect_manager)
 {	
 	if (dash_power <= 0) {
-		KeyProc(dungeon, missile_manager, sound_manager);
-		AttackProc(weapon, crosshair, missile_manager, animation_manager, sound_manager);
-		ForceGravity(dungeon);
-		ForceGravity(dungeon);
-		Look(crosshair->pos);
+		//KeyProc(dungeon, missile_manager, sound_manager);
+		if (have_to_update) {
+			pos = info.PPos;
+			looking_direction = info.Direciton;
+			hp = info.hp;
+			kill_monster = info.killMonster;
+			if (info.isMove) {
+				state = State::MOVING;
+			}
+			else {
+				Stand();
+			}
+		}
+		AttackProc(weapon, missile_manager, animation_manager, sound_manager);
+		//ForceGravity(dungeon);
+		//ForceGravity(dungeon);
+		Look(info.MPos);
 	}
-	DashProc(Degree(crosshair->pos, pos), dungeon, dungeon->camera_x_half_range / 16, sound_manager);
+	DashProc(Degree(info.MPos, pos), dungeon, dungeon->camera_x_half_range / 16, sound_manager);
 	MatchStateAndAnimation(animation_manager, sound_manager, effect_manager);
 	UpdateAnimation(animation_manager);
+}
+
+void Player::SetPlayerInfo(PLAYER_INFO p_info)
+{
+	info = p_info;
+	have_to_update = true;
 }
 
 void Player::ChangeStateToMoving()
@@ -90,9 +108,9 @@ void Player::DashProc(float radian, const Dungeon* dungeon, const int px, SoundM
 
 	dungeon->dungeon_terrain_image->Draw(dc_set.buf_dc, dc_set.bit_rect);
 
-	if (dash_power == 0 && GetAsyncKeyState(VK_RBUTTON) & 0x8000) {
-		dash_power = dungeon->camera_y_half_range / 24.0f;
-		dash_radian = radian;
+	if (dash_power == 0 && info.isDash) {
+		//dash_power = dungeon->camera_y_half_range / 24.0f;
+		//dash_radian = radian;
 		sound_manager->Play("sound\\dash.mp3");
 	}
 
@@ -133,13 +151,13 @@ void Player::DashProc(float radian, const Dungeon* dungeon, const int px, SoundM
 	}
 }
 
-void Player::AttackProc(Weapon* weapon, const Crosshair* crosshair, MissileManager* missile_manager, AnimationManager* animation_manager, SoundManager* sound_manager)
+void Player::AttackProc(Weapon* weapon, MissileManager* missile_manager, AnimationManager* animation_manager, SoundManager* sound_manager)
 {
 	if (is_attacking || atk_delay) {
 		if (is_attacking) {
 
 			if (is_doing_missile_attack && former_atk_delay == 0) {
-				float radian = Degree(crosshair->pos, pos);
+				float radian = Degree(info.MPos, pos);
 
 				if (looking_direction)
 					missile_manager->Insert(new Missile(this, pos, width, height / 2, radian, x_move_px * 2, 300, TRUE, 3, 70,
@@ -171,7 +189,7 @@ void Player::AttackProc(Weapon* weapon, const Crosshair* crosshair, MissileManag
 		else 
 			--atk_delay;
 	}
-	else if (GetAsyncKeyState(VK_MBUTTON) & 0x8000) {
+	else if (info.isMisile) {
 		sound_manager->Play("sound\\swing1.mp3");
 		weapon->StartAttack();
 
@@ -179,10 +197,10 @@ void Player::AttackProc(Weapon* weapon, const Crosshair* crosshair, MissileManag
 		
 		StartAttack(10, 20, RECT{});
 	}
-	else if (GetAsyncKeyState(VK_LBUTTON) & 0x8000) {
+	else if (info.isAttack) {
 		sound_manager->Play("sound\\swing1.mp3");
 		weapon->StartAttack();
-		atk_radian = Degree(crosshair->pos, pos);
+		atk_radian = Degree(info.MPos, pos);
 
 		is_doing_missile_attack = false;
 

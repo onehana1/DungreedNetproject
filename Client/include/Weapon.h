@@ -33,10 +33,10 @@ private:
 	void UpdateAnimation(AnimationManager* animation_manager);
 
 public:  
-	Weapon(const Camera* camera, const Player* player, const Crosshair* crosshair, AnimationManager* animation_manager);
+	Weapon(const Camera* camera, const Player* player, const POINT mouse, AnimationManager* animation_manager);
 	~Weapon();
-	void Init(const Camera* camera, const Player* player, const Crosshair* crosshair, AnimationManager* animation_manager);
-	void Update(const Player* player, const Crosshair* crosshair, AnimationManager* animation_manager);
+	void Init(const Camera* camera, const Player* player, const POINT mouse, AnimationManager* animation_manager);
+	void Update(const Player* player, const POINT mouse, AnimationManager* animation_manager);
 	void Render(HDC scene_dc, const RECT& bit_rect);
 	void StartAttack();
 	bool IsAttackFinished();

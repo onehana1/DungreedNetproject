@@ -22,8 +22,8 @@ void HitScanner::operator()(Missile* attacker, Character* victim, MissileManager
 			attacker->AddAttackVictim(victim);
 			victim->hp -= calc_damage(attacker, victim);
 			victim->red_flash_cnt = 8;
-			if (attacker->pierce == attacker->attack_victims.size())
-				missile_manager->Delete(attacker);
+			if (attacker->pierce == attacker->attack_victims.size());
+				//missile_manager->Delete(attacker);	// 액세스 위반 수정 필요
 		}
 	}
 }

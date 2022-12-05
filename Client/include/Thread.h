@@ -78,41 +78,28 @@ DWORD WINAPI RecvThread(LPVOID arg)// //Ŭ���̾�Ʈ���� Recv��
 			
 		case SC_PLAY:
 		{
-			printf("playing\n");
+			//printf("playing\n");
 			for (int i = 0; i < PLAYER_NUM; ++i)
 			{
 				if (player_list[i])
 					player_list[i]->SetState(PLAYING);
 			}
+			char Buf[2]{};
+			recv(sock, Buf, sizeof(Buf), 0);
 
-			char PlayBuf[sizeof(PLAYER_INFO_MANAGER)]{};
+			char PlayBuf[sizeof(PLAYER_INFO[3])]{};
 			recv(sock, PlayBuf, sizeof(PlayBuf), 0);
-			printf("packet size :  %d\n", buf[0]);
+			char TimeBuf[sizeof(int)]{};
+			recv(sock, TimeBuf, sizeof(TimeBuf), 0);
+			//printf("packet size :  %d\n", buf[0]);
 
-			PLAYER_INFO_MANAGER temp;
-			memcpy(&temp, &PlayBuf, sizeof(PLAYER_INFO_MANAGER));
-			//memcpy(&framework->play_scene->Player_Info[temp.ID], &PlayBuf, sizeof(PLAYER_INFO_MANAGER));
-
-			/*
-			if (temp.time != 0) {
-				framework->play_scene->Player_Info[temp.ID].ID = temp.ID;
-
-				framework->play_scene->Player_Info[temp.ID].PPos = temp.PPos;
-				framework->play_scene->Player_Info[temp.ID].State = temp.State;
-				framework->play_scene->Player_Info[temp.ID].animation_name = temp.animation_name;
-
-				framework->play_scene->Player_Info[temp.ID].hp = temp.hp;
-				framework->play_scene->Player_Info[temp.ID].killMonster = temp.killMonster;
-
-				framework->play_scene->Player_Info[temp.ID].IsMove = temp.IsMove;
-				framework->play_scene->Player_Info[temp.ID].IsAttack = temp.IsAttack;
-				framework->play_scene->Player_Info[temp.ID].IsMisile = temp.IsMisile;
-
-				framework->play_scene->Player_Info[temp.ID].time = temp.time;
-			}*/
-
-
+			PLAYER_INFO p_info[3];
+			memcpy(&p_info, &PlayBuf, sizeof(PLAYER_INFO[3]));
 			
+			//printf("id : %d %d %d\n", p_info[0].ID, p_info[1].ID, p_info[2].ID)
+				;
+			framework->play_scene->SetPlayerInfo(p_info);
+
 			break;
 		}
 

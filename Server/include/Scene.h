@@ -29,10 +29,10 @@ class Scene : private Uncopyable
 {
 private:
 	Dungeon* dungeon;
-	Player* player;
+	Player* player[3];
 	
 	
-	Weapon* weapon;
+	Weapon* weapon[3];
 
 	// 플레이어 3명이면 weapon도 3개 여야 함
 
@@ -78,6 +78,10 @@ public:
 
 	//void Render() const;
 	void Update();
+
+	void Send();
+
+	//void UpdatePlayerInfo(short id, PLAYER_INFO p_info);
 };
 
 

@@ -27,7 +27,7 @@ private:
 public:  
 	Weapon(const Dungeon* dungeon, const Player* player);
 	~Weapon();
-	void Init( const Player* player, const POINT mouse);
+	void Init(const Dungeon* dungeon, const Player* player, const POINT mouse);
 	void Update(const Player* player, const POINT mouse );
 	void Render(HDC scene_dc, const RECT& bit_rect);
 	void StartAttack();

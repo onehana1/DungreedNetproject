@@ -1,11 +1,11 @@
 ﻿#include "Weapon.h"
 
-Weapon::Weapon(const Camera* camera, const Player* player, const Crosshair* crosshair, AnimationManager* animation_manager)
+Weapon::Weapon(const Camera* camera, const Player* player, const POINT mouse, AnimationManager* animation_manager)
 	: width {camera->x_half_range / 3}, height {camera->y_half_range / 2}
 {
 	image = start_image = new Image(L"animation/RustyGreatSwordAttack1.png");
 	animation.LoadAnimation(animation_manager, "RustyGreatSwordAttack");
-	Update(player, crosshair, animation_manager);
+	Update(player, mouse, animation_manager);
 }
 
 Weapon::~Weapon()
@@ -13,20 +13,20 @@ Weapon::~Weapon()
 	delete start_image;
 }
 
-void Weapon::Init(const Camera* camera, const Player* player, const Crosshair* crosshair, AnimationManager* animation_manager)
+void Weapon::Init(const Camera* camera, const Player* player, const POINT mouse, AnimationManager* animation_manager)
 {
 	width = camera->x_half_range / 3;
 	height = camera->y_half_range / 2;
-	Update(player, crosshair, animation_manager);
+	Update(player, mouse, animation_manager);
 }
 
-void Weapon::Update(const Player* player, const Crosshair* crosshair, AnimationManager* animation_manager)
+void Weapon::Update(const Player* player, const POINT mouse, AnimationManager* animation_manager)
 {
 	pos = player->pos;
 	pos.x -= player->width / 4 * 5;
 	POINT player_center = { player->pos.x + (player->width / 2), player->pos.y + (player->height / 2) };
 
-	if (player_center.x <= crosshair->pos.x) {
+	if (player_center.x <= mouse.x) {
 		pos.x += player->width / 4;
 		looking_direction = TRUE;
 	}
@@ -34,12 +34,12 @@ void Weapon::Update(const Player* player, const Crosshair* crosshair, AnimationM
 		pos.x -= player->width / 4;
 		looking_direction = FALSE;
 	}
-	if (player_center.y <= crosshair->pos.y)
+	if (player_center.y <= mouse.y)
 		pos.y += player->height / 8;
 	else
 		pos.y -= player->height / 8;
 
-	angle = Degree(player_center, crosshair->pos);
+	angle = Degree(player_center, mouse);
 
 	UpdateAnimation(animation_manager);
 

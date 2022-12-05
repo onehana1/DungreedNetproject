@@ -15,10 +15,10 @@ Weapon::~Weapon()
 	}
 }
 
-void Weapon::Init( const Player* player, const POINT mouse)
+void Weapon::Init(const Dungeon* dungeon, const Player* player, const POINT mouse)
 {
-	width = 30.0;//scene->DungeonSize.x / 3;
-	height = 30.0;//scene->DungeonSize.y / 2; //camera -> 던전 크기 계산이 필요함. 
+	width = dungeon->camera_x_half_range / 3;
+	height = dungeon->camera_y_half_range / 2;
 	Update(player,mouse);
 }
 

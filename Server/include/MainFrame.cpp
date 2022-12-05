@@ -7,6 +7,7 @@
 #include "Character.h"
 
 #include <random>
+#include <chrono>
 
 #include <windows.h>
 
@@ -17,7 +18,8 @@ HDC h_dc;
 HDC buf_dc;
 HBITMAP buf_bit;
 HBITMAP old_bit;
-Scene* scene;
+Scene* scene = NULL;
+std::chrono::duration<double> fps;
 SOCKET LISTEN; 
 bool game_start = false;
 std::random_device rd;
@@ -47,6 +49,8 @@ int main() {
 	int retval;
 	while (true)
 	{
+		//printf("packet : %d", sizeof(SC_PLAYER_INPUT_INFO_PACKET));
+		//printf("packet : %d", sizeof(PLAYER_INFO) * 3);
 		int num = FindEmptyInPlayerList(player_list);
 
 		if(num != -1){
@@ -87,15 +91,26 @@ int main() {
 		}
 		else {	// 플레이어가 세명 모두 들어와 있을때에만 게임 시작 신호가 왔는지 체크한다
 			if (game_start) {
-				scene->SetPlayer(3); // 우선 2 .. 만들어둔 Player 연결 못하겠어서 우선 새로 만듬. 
+				//scene->SetPlayer(3); // 우선 2 .. 만들어둔 Player 연결 못하겠어서 우선 새로 만듬. 
 				break;
 			}
 		}
 	}
-
+	auto fpsStart = std::chrono::system_clock::now();
+	auto fpsEnd = std::chrono::system_clock::now();
 	while (true) {
-		// 시간을 주고 해당 시간이 지났을 때에만 업데이트 하도록 변경 필요/////////////////
-		scene->Update();
+		fps += fpsEnd - fpsStart;
+		//cout << fps.count() << endl;
+		fpsStart = std::chrono::system_clock::now();
+
+		if (fps.count() > 0.01f) {
+			scene->Update();
+			// 클라에게 몬스터/플레이어 전송 
+			scene->Send();
+
+			fps = fpsEnd - fpsEnd;
+		}
+		fpsEnd = std::chrono::system_clock::now();		
 	}
 
 	delete scene;
@@ -147,13 +162,31 @@ void DrawBuffer(HDC instant_dc, const RECT& rect)
 
 bool MapPixelCollision(const HDC terrain_dc, const COLORREF& val, const POINT& pt)	// 지형 표시 이미지를 사용해 충돌 확인
 {
+	// 수정 필요 클라이언트 크기 찾아서 초기값으로 준 후 아래 주석처리 풀어주면 될듯
+	//if (pt.x < client.left || pt.y > client.right)
+	//	return false;
+	//if (pt.y < client.top || pt.y > client.bottom)
+	//	return false;
+	
+	if (GetPixel(terrain_dc, pt.x, pt.y) == val) {
+		return true;
+	}
+	else
+		return false;
+}
+
+
+bool MapPixelCollision(const Image* terrain_dc, const COLORREF& val, const POINT& pt)	// 지형 표시 이미지를 사용해 충돌 확인
+{
 	if (pt.x < client.left || pt.y > client.right)
 		return false;
 	if (pt.y < client.top || pt.y > client.bottom)
 		return false;
 
-	if (GetPixel(terrain_dc, pt.x, pt.y) == val)
+	if (terrain_dc->GetPixel(pt.x, pt.y) == val) {
+		printf("충돌\n");
 		return true;
+	}
 	else
 		return false;
 }

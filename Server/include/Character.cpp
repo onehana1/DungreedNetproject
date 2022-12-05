@@ -6,6 +6,8 @@ void Character::ForceGravity(const Dungeon* dungeon)	// ĳ���� ���
 
 	dungeon->dungeon_terrain_image->Draw(dc_set.buf_dc, dc_set.bit_rect);
 
+	COLORREF _color = GetPixel(dc_set.buf_dc, pos.x + width / 2, pos.y + height);
+
 	// ĳ���� �� ��ġ�� ����� ��� DOWN���·� �ٲٱ�
 	if ((state == State::STANDING || state == State::MOVING || state == State::DOWNJUMP) && MapPixelCollision(dc_set.buf_dc, RGB(255, 0, 255), POINT{ pos.x + width / 2, pos.y + height })) {
 		state = State::DOWN;
@@ -44,6 +46,10 @@ void Character::ForceGravity(const Dungeon* dungeon)	// ĳ���� ���
 		else if (jump_power < dungeon->camera_y_half_range / 40.0f) {
 			jump_power += jump_power / 50.0f;
 		}
+	}
+
+	if (pos.y > 250) {
+		state = State::STANDING;
 	}
 }
 

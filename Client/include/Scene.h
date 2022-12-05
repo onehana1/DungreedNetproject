@@ -49,8 +49,8 @@ class PlayScene : public Scene
 {
 private:
 	Dungeon* dungeon;
-	Player* player;
-	Weapon* weapon;
+	Player* player[3];
+	Weapon* weapon[3];
 	Camera* camera;
 	Crosshair* crosshair;
 	AnimationManager* animation_manager;
@@ -88,8 +88,8 @@ public:
 
 	MonsterManager* GetMonsterManager(){return monster_manager;};
 
-	PLAYER_INFO_MANAGER my_packet;
 	void UpdateInfo(Player* player);
+	void SetPlayerInfo(PLAYER_INFO[PLAYER_NUM]);
 };
 
 class StartScene : public Scene

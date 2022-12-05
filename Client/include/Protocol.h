@@ -90,8 +90,6 @@ struct P_STATE {
 };
 
 struct PLAYER_INPUT_INFO {
-	unsigned char size;
-	char	type;
 	short ID;
 
 	struct PLAYER_MOUSE mouse;
@@ -100,26 +98,37 @@ struct PLAYER_INPUT_INFO {
 	int time =1;
 };
 
+struct PLAYER_INFO {
+	short ID;
+
+	POINT PPos;
+	POINT MPos;	// Mouse position
+
+	int hp;
+	int killMonster;
+
+	bool isMove;			//stand, run
+	bool isAttack;			// attack
+	bool isMisile;			// Misile
+	bool isDash;
+
+	bool Direciton;
+};
+
 struct CS_PLAYER_INPUT_INFO_PACKET {
 	unsigned char size;
 	char	type;
-	short ID; //
 
-	struct PLAYER_MOUSE mouse;
-	struct PLAYER_KEYBOARD key;	
-
+	PLAYER_INPUT_INFO p_info;
 };
 
 struct SC_PLAYER_INPUT_INFO_PACKET {
 	unsigned char size;
 	char	type;
-	short ID; //
-
-	struct PLAYER_MOUSE mouse;
-	struct PLAYER_KEYBOARD key;
+	
+	PLAYER_INFO p_info[3];
 
 	int time= 1; // 3��
-
 };
 
 struct PLAYER_INFO_MANAGER { //�������� ���� �� Ŭ��� ������ ������ 

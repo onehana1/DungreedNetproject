@@ -5,12 +5,20 @@ Scene::Scene()
 	try {
 
 		dungeon = new Dungeon;
-		player = new Player(dungeon);
+		for (int i = 0; i < PLAYER_NUM; ++i)
+		{
+			player[i] = new Player(dungeon);
+			printf("new p");
+		}
 		monster_manager = new MonsterManager(dungeon );
 		missile_manager = new MissileManager;
-		weapon = new Weapon(dungeon, player);//const POINT mouse
-
-		player->PlaceWithDungeonLeft(dungeon);
+		for (int i = 0; i < PLAYER_NUM; ++i) {
+			weapon[i] = new Weapon(dungeon, player[i]);//const POINT mouse
+		}
+		for (int i = 0; i < PLAYER_NUM; ++i)
+		{
+			player[i]->PlaceWithDungeonLeft(dungeon);
+		}
 	}
 	catch (const TCHAR* error_message) {
 		MessageBox(h_wnd, error_message, L"Error", MB_OK);
@@ -21,12 +29,21 @@ Scene::Scene(const int dungeon_id)
 {
 	try {
 		dungeon = new Dungeon(dungeon_id);
-		player = new Player(dungeon);
+		for (int i = 0; i < PLAYER_NUM; ++i)
+		{
+			player[i] = new Player(dungeon);
+			printf("new p");
+		}
 		monster_manager = new MonsterManager(dungeon );
 		missile_manager = new MissileManager;
-		weapon = new Weapon(dungeon, player);
+		for (int i = 0; i < PLAYER_NUM; ++i) {
+			weapon[i] = new Weapon(dungeon, player[i]);//const POINT mouse
+		}
 
-		player->PlaceWithDungeonLeft(dungeon);
+		for (int i = 0; i < PLAYER_NUM; ++i)
+		{
+			player[i]->PlaceWithDungeonLeft(dungeon);
+		}
 	}
 	catch (const TCHAR* error_message) {
 		MessageBox(h_wnd, error_message, L"Error", MB_OK);
@@ -35,20 +52,25 @@ Scene::Scene(const int dungeon_id)
 
 Scene::~Scene()
 {
-	delete player;
+	delete[] player;
 	delete dungeon;
-	delete weapon;
+	delete[] weapon;
 	delete monster_manager;
 	delete missile_manager;
 }
 
 HRESULT Scene::Init()
 {
-	player->Init(dungeon );
+	for (int i = 0; i < PLAYER_NUM; ++i)
+	{
+		player[i]->Init(dungeon);
+	}
 	monster_manager->Init(dungeon );
 	missile_manager->Init();
-	weapon->Init( player, DungeonSize );
-
+	for (int i = 0; i < PLAYER_NUM; ++i)
+	{
+		weapon[i]->Init(dungeon, player[i], DungeonSize);
+	}
 	update_cnt = 0;
 
 	return S_OK;
@@ -63,17 +85,57 @@ void Scene::Update()
 	for (int i = 0; i < 3; i++)
 		InputUpdate(TestPlayer[i]->info);
 	printf("update 끝\n");*/
-	player->Update(dungeon, weapon, missile_manager);
+	for (int i = 0; i < PLAYER_NUM; ++i)
+	{
+		player[i]->Update(dungeon, weapon[i], missile_manager);
+	}
 
-	monster_manager->Update(dungeon, player, missile_manager);
+	monster_manager->Update(dungeon, player[0], missile_manager);	// 수정 필요
 	missile_manager->Update(dungeon );
-	weapon->Update(player, {0, 0});	// 플레이어들에게서 받은 마우스 좌표 넣어 줘야 함
+	for (int i = 0; i < PLAYER_NUM; ++i)
+	{
+		weapon[i]->Update(player[i], {0, 0});	// 플레이어들에게서 받은 마우스 좌표 넣어 줘야 함
+	}
+
 	HitUpdate();
 	DungeonChangeProc();
 }
 
+
+void Scene::Send()
+{
+	SC_PLAYER_INPUT_INFO_PACKET my_packet;
+	my_packet.size = sizeof(SC_PLAYER_INPUT_INFO_PACKET);
+	my_packet.type = SC_PLAY;
+	for (int i = 0; i < player_list.size(); ++i) {
+		my_packet.p_info[i].ID = i;
+		
+		my_packet.p_info[i].PPos = player[i]->GetPos();
+		my_packet.p_info[i].MPos = player[i]->GetInput().mouse.mPos;
+		
+		my_packet.p_info[i].hp = player[i]->Gethp();
+		my_packet.p_info[i].killMonster = player[i]->GetKillMonster();
+
+		my_packet.p_info[i].isMove = player[i]->isMove();
+		my_packet.p_info[i].isAttack = player[i]->GetisAttack();
+		my_packet.p_info[i].isMisile = player[i]->GetisMisile();
+		my_packet.p_info[i].isDash = player[i]->GetisDash();
+		
+		my_packet.p_info[i].Direciton = player[i]->GetDirection();
+
+		player[i]->ResetAMD();
+	}
+
+	for (int i = 0; i < PLAYER_NUM; ++i) {
+		if (player_list[i]->GetState() != UNCONNECT) {
+			send(player_list[i]->sock, reinterpret_cast<char*>(&my_packet), sizeof(my_packet), NULL);
+		}
+	}
+}
+
 void Scene::DungeonChangeProc()
 {
+	/*
 	if (player->IsOut_Right(dungeon))
 		if (monster_manager->AreMonsterAllDied())
 			GoNextDungeon();
@@ -84,26 +146,16 @@ void Scene::DungeonChangeProc()
 			GoPrevDungeon();
 		else
 			player->NoOut(dungeon);
-
+			*/
 	if (update_cnt++ % 1000 == 0)
 		monster_manager->Appear(5);
 }
 
-void Scene::InputUpdate(PLAYER_INPUT_INFO INFO)
+void Scene::InputUpdate(PLAYER_INPUT_INFO info)
 {
-	//1명의 정보를 받아 스레드로 갱신한다고 가정. 
-	// 보낼때는 배열로 4명의 정보를 한번에 보냄 ( 플레이어 클래스로 관리 후 필요한 정보만 INFO에 담굴것 ) 
-	/*player->SC_Update(dungeon, INFO.mouse, INFO.key, &Player_Info[INFO.ID].PPos); //플레이어 좌표를 갱신함 */
-
-	//TestPlayer[INFO.ID]->SC_Update2(dungeon, weapon, missile_manager, INFO.key, INFO.mouse); //이 계산된 좌표를 보낸다. 받은 키, 마우스 값을 넣어 계산한다.
-	//UpdateInfo(INFO.ID, player[INFO.ID])
-	//몬스터 정보를 갱신함 
-
-	 //이 계산된 좌표를 보낸다. 받은 키, 마우스 값을 넣어 계산한다.
-	//TestPlayer[INFO.ID]->SC_Update2(dungeon, weapon, missile_manager, INFO.key, INFO.mouse); //TestPlayer[ID] ID가 클라정보
-	//UpdateInfo(INFO.ID, TestPlayer[INFO.ID]); // 보낼 정보들 골라담기 
-	//printf("보내보기");
-	//몬스터 정보를 갱신함 -> Scene안의 monster리스트를 통해 관리 * 던전 갱신시 MakeMonster정보 전송필요. 
+	if (player[info.ID]) {
+		player[info.ID]->SetInput(info);
+	}
 }
 
 void Scene::UpdateInfo(int num, Player* player)
@@ -114,16 +166,20 @@ void Scene::UpdateInfo(int num, Player* player)
 
 void Scene::HitUpdate()
 {
-	for (auto* monster : monster_manager->monsters)
-		if (monster->IsAppeared()) {
-			HitScan(player, monster);
-			HitScan(monster, player  );
-			for (auto* missile : missile_manager->missiles)
-				if (missile->host == player)
-					HitScan(missile, monster, missile_manager  );
-				else
-					HitScan(missile, player, missile_manager  );
+	for (int i = 0; i < PLAYER_NUM; ++i) {
+		for (auto* monster : monster_manager->monsters)
+		{
+			if (monster->IsAppeared()) {
+				HitScan(player[i], monster);
+				HitScan(monster, player[i]);
+				for (auto* missile : missile_manager->missiles)
+					if (missile->host == player[i])
+						HitScan(missile, monster, missile_manager);
+					else
+						HitScan(missile, player[i], missile_manager);
+			}
 		}
+	}
 }
 
 void Scene::GoNextDungeon()
@@ -131,19 +187,22 @@ void Scene::GoNextDungeon()
 	try {
 		ChangeDungeon(dungeon->next_dungeon_id);
 		Init();
-		player->PlaceWithDungeonLeft(dungeon);
+		for (int i = 0; i < PLAYER_NUM; ++i) {
+			player[i]->PlaceWithDungeonLeft(dungeon);
+		}
 	}
 	catch (const TCHAR* error_message) {
 		MessageBox(h_wnd, error_message, L"Error", MB_OK);
 	}
 }
 
-void Scene::GoPrevDungeon()
+void Scene::GoPrevDungeon()	// 사용 안함
 {
 	try {
 		ChangeDungeon(dungeon->prev_dungeon_id);
 		Init();
-		player->PlaceWithDungeonRight(dungeon);
+		
+		//player->PlaceWithDungeonRight(dungeon);
 	}
 	catch (const TCHAR* error_message) {
 		MessageBox(h_wnd, error_message, L"Error", MB_OK);

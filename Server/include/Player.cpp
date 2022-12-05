@@ -20,18 +20,23 @@ void Player::Init(const Dungeon* dungeon)
 	dash_radian = 0;
 	width = dungeon->camera_x_half_range / PLAYER_WIDTH_PER_CAMERA_X_HALF_RANGE;
 	height = dungeon->camera_x_half_range / PLAYER_HEIGHT_PER_CAMERA_Y_HALF_RANGE;
+
+	pos.x = 500; pos.y = 100;
 }
 
 void Player::Update(const Dungeon* dungeon, Weapon* weapon, MissileManager* missile_manager )
 {	
 	if (dash_power <= 0) {
-		KeyProc(dungeon, missile_manager);
-		AttackProc(weapon,missile_manager );
+		if (have_to_update) {
+			have_to_update = false;
+			KeyProc(dungeon, missile_manager);
+		}
+		AttackProc(weapon,missile_manager);
 		ForceGravity(dungeon);
 		ForceGravity(dungeon);
-		Look(mouse);
+		Look(input.mouse.mPos);
 	}
-	DashProc(Degree(mouse, pos), dungeon, dungeon->camera_x_half_range / 16  );
+	DashProc(Degree(input.mouse.mPos, pos), dungeon, dungeon->camera_x_half_range / 16  );
 
 }
 
@@ -55,30 +60,55 @@ void Player::SC_Update2(const Dungeon* dungeon, Weapon* weapon, MissileManager* 
 	//DashProc(Degree(mouse.mPos, pos), dungeon, dungeon->camera_x_half_range / 16);
 }
 
+void Player::SetInput(PLAYER_INPUT_INFO p_input)
+{
+	input.key.a = p_input.key.a; 
+	input.key.s = p_input.key.s;
+	input.key.d = p_input.key.d;
+	input.key.space = p_input.key.space;
+
+	input.mouse.mPos = p_input.mouse.mPos;
+	input.mouse.left = p_input.mouse.left;
+	input.mouse.right = p_input.mouse.right;
+	input.mouse.wheel = p_input.mouse.wheel;
+	
+	have_to_update = true;
+}
+
+bool Player::isMove()
+{
+	if (state == State::STANDING || state == State::DOWN) {
+		return false;
+	}
+	else {
+		return true;
+	}
+}
+
 void Player::KeyProc(const Dungeon* dungeon, MissileManager* missile_manager)
 {
 	InstantDCSet dc_set(RECT{ 0, 0, dungeon->dungeon_width, dungeon->dungeon_height });
 
 	dungeon->dungeon_terrain_image->Draw(dc_set.buf_dc, dc_set.bit_rect);
 
-	if (state == State::MOVING && !GetAsyncKeyState('A') && !GetAsyncKeyState('D') && !GetAsyncKeyState('S') && !GetAsyncKeyState(VK_SPACE)) {
+	if (state == State::MOVING && !input.key.a && !input.key.d && !input.key.s && !input.key.space) {
 		Stand();
 		return;
 	}
 
-	if (GetAsyncKeyState('A'))
+	if (input.key.a)
 		if (CanGoLeft(dc_set.buf_dc))
 			RunLeft();
 
-	if (GetAsyncKeyState('D'))
+	if (input.key.d)
 		if (CanGoRight(dc_set.buf_dc))
 			RunRight();
 
-	if ((GetAsyncKeyState('S')) && (GetAsyncKeyState(VK_SPACE))) {
+	if (input.key.s && input.key.space) {
 		if (CanDownJump(dc_set.buf_dc))
 			DownJump();
 	}
-	else if (GetAsyncKeyState(VK_SPACE))
+	else if (input.key.space)
 		if (CanJump(state)) {
 			//("sound\\jump.mp3");
 			Jump();
@@ -96,7 +126,8 @@ void Player::DashProc(float radian, const Dungeon* dungeon, const int px )
 
 	dungeon->dungeon_terrain_image->Draw(dc_set.buf_dc, dc_set.bit_rect);
 
-	if (dash_power == 0 && GetAsyncKeyState(VK_RBUTTON) & 0x8000) {
+	if (dash_power == 0 && input.mouse.right) {
+		input.mouse.right = false;
 		dash_power = dungeon->camera_y_half_range / 24.0f;
 		dash_radian = radian;
 		//Play("sound\\dash.mp3");
@@ -175,19 +206,21 @@ void Player::AttackProc(Weapon* weapon, MissileManager* missile_manager   )
 		else 
 			--atk_delay;
 	}
-	else if (GetAsyncKeyState(VK_MBUTTON) & 0x8000) {
+	else if (input.mouse.wheel) {
 		//sound_manager->Play("sound\\swing1.mp3");
+		input.mouse.wheel = false;
 		weapon->StartAttack();
-
+		isMisile = true;
 		is_doing_missile_attack = true;
 		
 		StartAttack(10, 20, RECT{});
 	}
-	else if (GetAsyncKeyState(VK_LBUTTON) & 0x8000) {
+	else if (input.mouse.left) {
+		input.mouse.left = false;
 		//sound_manager->Play("sound\\swing1.mp3");
 		weapon->StartAttack();
 		atk_radian = Degree(mouse, pos);
-
+		isAttack = true;
 		is_doing_missile_attack = false;
 
 		StartAttack(10, 3, RECT{  });
@@ -234,9 +267,10 @@ void Player::SC_DashProc(float radian, const Dungeon* dungeon, int* px)
 
 	dungeon->dungeon_terrain_image->Draw(dc_set.buf_dc, dc_set.bit_rect);
 
-	if (dash_power == 0 && GetAsyncKeyState(VK_RBUTTON) & 0x8000) {
+	if (dash_power == 0 && input.mouse.right) {
 		dash_power = dungeon->camera_y_half_range / 24.0f;
 		dash_radian = radian;
+		isDash = true;
 		//Play("sound\\dash.mp3");
 	}
 
@@ -314,7 +348,7 @@ void Player::SC_AttackProc(Weapon* weapon, MissileManager* missile_manager, PLAY
 		else
 			--atk_delay;
 	}
-	else if (mouse.wheel & 0x8000) {
+	else if (mouse.wheel) {
 		//sound_manager->Play("sound\\swing1.mp3");
 		weapon->StartAttack();
 
@@ -322,7 +356,7 @@ void Player::SC_AttackProc(Weapon* weapon, MissileManager* missile_manager, PLAY
 
 		StartAttack(10, 20, RECT{});
 	}
-	else if (mouse.left & 0x8000) {
+	else if (mouse.left) {
 		//sound_manager->Play("sound\\swing1.mp3");
 		weapon->StartAttack();
 		atk_radian = Degree(mouse.mPos, pos);

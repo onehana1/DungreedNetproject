@@ -24,6 +24,8 @@ private:
 	char name[20];
 	in_addr ip;
 
+	int kill_monster;
+
 	short server_state;
 
 	//HANDLE thread;
@@ -35,7 +37,14 @@ private:
 
 	int walk_cnt = 0;
 
+	bool isAttack = false;			// attack
+	bool isMisile = false;			// Misile
+	bool isDash = false;
+
 	bool is_doing_missile_attack;
+
+	PLAYER_INPUT_INFO input;
+	bool have_to_update = false;
 
 	void KeyProc(const Dungeon* dungeon, MissileManager* missile_manager);
 	void DashProc(float radian, const Dungeon* dungeon, const int px);
@@ -77,6 +86,19 @@ public:
 
 	void SetIp(in_addr p_ip) { ip = p_ip; }
 	in_addr GetIp() { return ip; }
+
+	void SetInput(PLAYER_INPUT_INFO p_input);
+	PLAYER_INPUT_INFO GetInput() { return input; }
+
+	int GetKillMonster() { return kill_monster; }
+
+	bool isMove();
+
+	bool GetisAttack() { return isAttack; }
+	bool GetisMisile() { return isMisile; }
+	bool GetisDash() { return isDash; }
+
+	void ResetAMD() { isAttack = false; isMisile = false;	isDash = false;}
 };
 #endif
 

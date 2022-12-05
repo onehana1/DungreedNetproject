@@ -193,12 +193,8 @@ DWORD WINAPI ClientThread(LPVOID arg)
 			}
 			break;
 		}
-
-		
-
 		case CS_PLAY:
 		{
-
 			//시간
 			if (StartDun == 0) {
 				EndTime = (unsigned)time(NULL) + 20;
@@ -207,22 +203,26 @@ DWORD WINAPI ClientThread(LPVOID arg)
 			StartTime = (unsigned)time(NULL);
 			CntTime = EndTime - StartTime;
 
-			
-			//
-
-			printf("main game\n");
+			//printf("main game\n");
 			player_list[id]->SetState(PLAYING);
 			 
-			char subBuf[sizeof(PLAYER_INFO_MANAGER)]{};
+			char Buf[2]{};
+			recv(player_list[id]->sock, Buf, sizeof(Buf), 0);	//padding
+
+			char subBuf[sizeof(PLAYER_INPUT_INFO)]{};
 			recv(player_list[id]->sock, subBuf, sizeof(subBuf), 0);
-			printf("패킷 사이즈 :  %d\n", buf[0]);
 			
-			PLAYER_INFO_MANAGER p_input;
-			//memcpy(&p_input, &subBuf, sizeof(PLAYER_INFO_MANAGER));
+			PLAYER_INPUT_INFO p_input;
+			memcpy(&p_input, &subBuf, sizeof(PLAYER_INPUT_INFO));
+			p_input.ID = id;
 
-			//memcpy(&scene->TestPlayer[id]->info, &p_input, sizeof(PLAYER_INFO_MANAGER));
-			///
-
+			if (scene) {
+				scene->InputUpdate(p_input);
+			}
+			else {
+				printf("scene null\n");
+			}
+			/*
 			printf("input update");
 			
 			PLAYER_INFO_MANAGER  my_packet{};
@@ -259,7 +259,7 @@ DWORD WINAPI ClientThread(LPVOID arg)
 			}
 
 			printf("cnttime : %d\n", my_packet.time);
-
+			*/
 
 
 			

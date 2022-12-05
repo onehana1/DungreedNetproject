@@ -16,7 +16,7 @@ extern bool CanGoToPos(const HDC terrain_dc, const POINT pos);
 class Missile {
 private:
 	const Image* image;
-	const Image* start_image;
+	const Image* start_image = NULL;
 
 	bool is_animation_load_requested = false;
 	std::string animation_name;
@@ -52,7 +52,9 @@ public:
 
 	~Missile()
 	{
-		delete start_image;
+		if (start_image) {
+			delete start_image;
+		}
 	}
 
 	void Update();

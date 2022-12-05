@@ -38,14 +38,18 @@ PlayScene::PlayScene()
 		LoadBattleSound();
 
 		dungeon = new Dungeon;
-		player = new Player(dungeon, animation_manager);
+		for (int i = 0; i < PLAYER_NUM; ++i) {
+			player[i] = new Player(dungeon, animation_manager);
+		}
 		monster_manager = new MonsterManager(dungeon, animation_manager);
 		missile_manager = new MissileManager;
-		camera = new Camera(dungeon, player);
+		camera = new Camera(dungeon, player[g_myid]);
 		crosshair = new Crosshair(camera);
-		weapon = new Weapon(camera, player, crosshair, animation_manager);
+		for (int i = 0; i < PLAYER_NUM; ++i) {
+			weapon[i] = new Weapon(camera, player[i], player[i]->GetInfo().MPos, animation_manager);
+		}
 
-		player->PlaceWithDungeonLeft(dungeon);
+		//player->PlaceWithDungeonLeft(dungeon);
 	}
 	catch (const TCHAR* error_message) {
 		MessageBox(h_wnd, error_message, L"Error", MB_OK);
@@ -70,14 +74,17 @@ PlayScene::PlayScene(const int dungeon_id)
 		LoadBattleSound();
 
 		dungeon = new Dungeon(dungeon_id);
-		player = new Player(dungeon, animation_manager);
+		for (int i = 0; i < PLAYER_NUM; ++i) {
+			player[i] = new Player(dungeon, animation_manager);
+		}
 		monster_manager = new MonsterManager(dungeon, animation_manager);
 		missile_manager = new MissileManager;
-		camera = new Camera(dungeon, player);
+		camera = new Camera(dungeon, player[0]);
 		crosshair = new Crosshair(camera);
-		weapon = new Weapon(camera, player, crosshair, animation_manager);
-
-		player->PlaceWithDungeonLeft(dungeon);
+		for (int i = 0; i < PLAYER_NUM; ++i) {
+			weapon[i] = new Weapon(camera, player[i], player[i]->GetInfo().MPos, animation_manager);
+		}
+		//player->PlaceWithDungeonLeft(dungeon);
 	}
 	catch (const TCHAR* error_message) {
 		MessageBox(h_wnd, error_message, L"Error", MB_OK);
@@ -100,13 +107,17 @@ PlayScene::~PlayScene()
 
 HRESULT PlayScene::Init()
 {
-	player->Init(dungeon, animation_manager);
+	for (int i = 0; i < PLAYER_NUM; ++i) {
+		player[i]->Init(dungeon, animation_manager);
+	}
 	monster_manager->Init(dungeon, animation_manager);
 	missile_manager->Init();
-	camera->Init(dungeon, player);
+	camera->Init(dungeon, player[g_myid]);
+	
 	crosshair->Init(camera);
-	weapon->Init(camera, player, crosshair, animation_manager);
-
+	for (int i = 0; i < PLAYER_NUM; ++i) {
+		weapon[i]->Init(camera, player[i], player[i]->GetInfo().MPos, animation_manager);
+	}
 	update_cnt = 0;
 
 	return S_OK;
@@ -117,12 +128,16 @@ void PlayScene::Render() const
 	InstantDCSet dc_set(RECT{ 0, 0, dungeon->dungeon_width, dungeon->dungeon_height });
 
 	dungeon->Render(dc_set.buf_dc, dc_set.bit_rect);
-	player->Render(dc_set.buf_dc, dc_set.bit_rect);
-	player->RenderPlayerHP(dc_set.buf_dc, dc_set.bit_rect, camera->Rect());
+	for (int i = 0; i < PLAYER_NUM; ++i) {
+		player[i]->Render(dc_set.buf_dc, dc_set.bit_rect);
+		player[i]->RenderPlayerHP(dc_set.buf_dc, dc_set.bit_rect, camera->Rect());
+	}
 	monster_manager->Render(dc_set.buf_dc, dc_set.bit_rect);
 	missile_manager->Render(dc_set.buf_dc, dc_set.bit_rect);
 	crosshair->Render(dc_set.buf_dc, dc_set.bit_rect);
-	weapon->Render(dc_set.buf_dc, dc_set.bit_rect);
+	for (int i = 0; i < PLAYER_NUM; ++i) {
+		weapon[i]->Render(dc_set.buf_dc, dc_set.bit_rect);
+	}
 	effect_manager->Render(dc_set.buf_dc, dc_set.bit_rect);
 
 
@@ -132,36 +147,36 @@ void PlayScene::Render() const
 
 void PlayScene::Update(SOCKET socket, char* name)
 {
-
-
 	server_sock = socket;
-	
-	my_packet.size = sizeof(PLAYER_INFO_MANAGER);
+	CS_PLAYER_INPUT_INFO_PACKET my_packet;
+
+	my_packet.size = sizeof(CS_PLAYER_INPUT_INFO_PACKET);
 	my_packet.type = CS_PLAY;
 
+	my_packet.p_info.key.a = GetAsyncKeyState('A');
+	my_packet.p_info.key.s = GetAsyncKeyState('S');
+	my_packet.p_info.key.d = GetAsyncKeyState('D');
+	my_packet.p_info.key.space = GetAsyncKeyState(VK_SPACE);
 
-	/*my_packet.key.a = GetAsyncKeyState('A');
-	my_packet.key.s = GetAsyncKeyState('S');
-	my_packet.key.d = GetAsyncKeyState('D');
-	my_packet.key.space = GetAsyncKeyState(VK_SPACE);
-
-	my_packet.mouse.right = GetAsyncKeyState(VK_RBUTTON);
-	my_packet.mouse.left = GetAsyncKeyState(VK_LBUTTON);
-	my_packet.mouse.wheel = GetAsyncKeyState(VK_MBUTTON);
-	my_packet.mouse.mPos.x = crosshair->pos.x;
-	my_packet.mouse.mPos.y = crosshair->pos.y;*/
-
-	UpdateInfo(player);
+	my_packet.p_info.mouse.right = GetAsyncKeyState(VK_RBUTTON);
+	my_packet.p_info.mouse.left = GetAsyncKeyState(VK_LBUTTON);
+	my_packet.p_info.mouse.wheel = GetAsyncKeyState(VK_MBUTTON);
+	my_packet.p_info.mouse.mPos.x = crosshair->pos.x;
+	my_packet.p_info.mouse.mPos.y = crosshair->pos.y;
 
 	send(server_sock, reinterpret_cast<char*>(&my_packet), sizeof(my_packet), NULL);
 
 	// player, monster 업데이트 루틴
-	player->Update(dungeon, weapon, crosshair, missile_manager, animation_manager, sound_manager, effect_manager);
-	monster_manager->Update(dungeon, player, animation_manager, missile_manager, sound_manager);
+	for (int i = 0; i < PLAYER_NUM; ++i) {
+		player[i]->Update(dungeon, weapon[i], missile_manager, animation_manager, sound_manager, effect_manager);
+	}
+	monster_manager->Update(dungeon, player[0], animation_manager, missile_manager, sound_manager);
 	missile_manager->Update(dungeon, animation_manager);
-	camera->Update(dungeon, player);
+	camera->Update(dungeon, player[g_myid]);
 	crosshair->Update(camera);
-	weapon->Update(player, crosshair, animation_manager);
+	for (int i = 0; i < PLAYER_NUM; ++i) {
+		weapon[i]->Update(player[i], player[i]->GetInfo().MPos, animation_manager);
+	}
 	effect_manager->Update(animation_manager);
 	HitUpdate();
 	DungeonChangeProc();
@@ -180,6 +195,7 @@ int PlayScene::ChangeScene()
 
 void PlayScene::UpdateInfo(Player* player)
 {
+	/*
 	//SC_INFO[num].IsMisile = player->GetMisile();
 	player->UpdateInfo(&my_packet);  // 필요한 정보 쏙쏙 골라담기 
 
@@ -197,11 +213,20 @@ void PlayScene::UpdateInfo(Player* player)
 	//player->animation_name = animation_name;
 	my_packet.hp = player->GetHp();
 	my_packet.IsAttack = player->GetIsAttack();
-	//player->IsMove =
+	//player->IsMove =*/
+}
+
+void PlayScene::SetPlayerInfo(PLAYER_INFO p_info[PLAYER_NUM])
+{
+	for (int i = 0; i < PLAYER_NUM; ++i)
+	{
+		player[i]->SetPlayerInfo(p_info[i]);
+	}
 }
 
 void PlayScene::DungeonChangeProc()
 {
+	/*
 	if (player[0].GetState()==RESULTING)
 		GoNextDungeon();
 
@@ -215,7 +240,7 @@ void PlayScene::DungeonChangeProc()
 			GoPrevDungeon();
 		else
 			player->NoOut(dungeon);
-
+			*/
 	//if (update_cnt++ % 1000 == 0)
 	//	monster_manager->Appear(5);
 }
@@ -224,13 +249,15 @@ void PlayScene::HitUpdate()
 {
 	for (auto* monster : monster_manager->monsters)
 		if (monster->IsAppeared()) {
-			HitScan(player, monster, sound_manager);
-			HitScan(monster, player, sound_manager);
-			for (auto* missile : missile_manager->missiles)
-				if (missile->host == player)
-					HitScan(missile, monster, missile_manager, sound_manager);
-				else
-					HitScan(missile, player, missile_manager, sound_manager);
+			for (int i = 0; i < PLAYER_NUM; ++i) {
+				HitScan(player[i], monster, sound_manager);
+				HitScan(monster, player[i], sound_manager);
+				for (auto* missile : missile_manager->missiles)
+					if (missile->host == player[i])
+						HitScan(missile, monster, missile_manager, sound_manager);
+					else
+						HitScan(missile, player[i], missile_manager, sound_manager);
+			}
 		}
 }
 
@@ -243,7 +270,9 @@ void PlayScene::GoNextDungeon()
 	try {
 		ChangeDungeon(dungeon->next_dungeon_id);
 		Init();
-		player->PlaceWithDungeonLeft(dungeon);
+		for (int i = 0; i < PLAYER_NUM; ++i) {
+			player[i]->PlaceWithDungeonLeft(dungeon);
+		}
 	}
 	catch (const TCHAR* error_message) {
 		MessageBox(h_wnd, error_message, L"Error", MB_OK);
@@ -255,7 +284,7 @@ void PlayScene::GoPrevDungeon()
 	try {
 		ChangeDungeon(dungeon->prev_dungeon_id);
 		Init();
-		player->PlaceWithDungeonRight(dungeon);
+		//player->PlaceWithDungeonRight(dungeon);
 	}
 	catch (const TCHAR* error_message) {
 		MessageBox(h_wnd, error_message, L"Error", MB_OK);

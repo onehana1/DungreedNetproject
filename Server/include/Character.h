@@ -104,6 +104,7 @@ public:
 
 	//////////////////////////////////////
 
+	int Gethp() { return hp; }
 
 	bool IsOut_Left(const Dungeon* dungeon) const;
 	bool IsOut_Right(const Dungeon* dungeon) const;

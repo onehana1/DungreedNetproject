@@ -23,11 +23,15 @@ class Weapon;
 class Player : private Uncopyable, public Character
 {
 private:
+	PLAYER_INFO info;
+	bool have_to_update = false;
 
 	short id[3];
 	char ip[22];
 	char name[20];
 	short server_state;
+
+	int kill_monster;
 
 	double dash_power = 0;	// dash_power > 0 이면 dash중인 상태, dash_power < 0 이면 다음 dash 가능 시간까지 대기중, dash_power == 0이면 dash 가능 상태
 	double dash_radian = 0;
@@ -40,7 +44,7 @@ private:
 
 	void KeyProc(const Dungeon* dungeon, MissileManager* missile_manager, SoundManager* sound_manager);
 	void DashProc(float radian, const Dungeon* dungeon, const int px, SoundManager* sound_manager);
-	void AttackProc(Weapon* weapon, const Crosshair* crosshair, MissileManager* missile_manager, AnimationManager* animation_manager, SoundManager* sound_manager);
+	void AttackProc(Weapon* weapon, MissileManager* missile_manager, AnimationManager* animation_manager, SoundManager* sound_manager);
 
 	void MatchStateAndAnimation(AnimationManager* animation_manager, SoundManager* sound_manager, EffectManager* effect_manager);
 
@@ -77,7 +81,7 @@ public:
 
 	void Init(const Dungeon* dungeon, AnimationManager* animation_manager);
 
-	void Update(const Dungeon* dungeon, Weapon* weapon, const Crosshair* crosshair, MissileManager* missile_manager, AnimationManager* animation_manager, SoundManager* sound_manager, EffectManager* effect_manager);
+	void Update(const Dungeon* dungeon, Weapon* weapon, MissileManager* missile_manager, AnimationManager* animation_manager, SoundManager* sound_manager, EffectManager* effect_manager);
 
 	void SetState(short p_state) { server_state = p_state; }
 	short GetState() { return server_state; }
@@ -87,8 +91,10 @@ public:
 
 	void SetIp(char* p_ip) { strcpy(ip, p_ip); }
 	char* GetIp() { return ip; }
-
 	
+	PLAYER_INFO GetInfo() { return info; }
+
+	void SetPlayerInfo(PLAYER_INFO p_info);
 
 	void ChangeStateToMoving();
 	void ChangeStateToStanding();
