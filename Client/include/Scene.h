@@ -50,6 +50,7 @@ class PlayScene : public Scene
 private:
 	Dungeon* dungeon;
 	Player* player;
+	Player* TestPlayer[PLAYER_NUM];
 	Weapon* weapon;
 	Camera* camera;
 	Crosshair* crosshair;

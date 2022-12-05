@@ -123,20 +123,21 @@ public:
 	void UpdateInfo(PLAYER_INFO_MANAGER* player)
 	{
 
-		player->PPos = pos;
-		switch (state) {
-		case  State::DOWN:	player->State = playing_State::DOWN; break;
-		case  State::UP:	player->State = playing_State::UP; break;
-		case  State::STANDING:player->State = playing_State::STANDING; break;
-		case  State::MOVING:player->State = playing_State::MOVING; break;
-		case  State::DOWNJUMP:player->State = playing_State::DOWNJUMP; break;
-		default: player->State = playing_State::STANDING; break;
+		//SetPos(player->INFO.PPos);
+		pos = player->INFO.PPos;
+		switch (player->INFO.State) {
+		case  playing_State::DOWN:	state = State::DOWN; break;
+		case  playing_State::UP:	state = State::UP; break;
+		case  playing_State::STANDING:state = State::STANDING; break;
+		case  playing_State::MOVING:state = State::MOVING; break;
+		case  playing_State::DOWNJUMP:state = State::DOWNJUMP; break;
+		default: state = State::STANDING; break;
 
 		}
-
+		
 		//player->animation_name = animation_name;
-		player->hp = hp;
-		player->IsAttack = is_attacking;
+		hp = player->INFO.hp;
+		is_attacking = player->INFO.IsAttack;
 		//player->IsMove =
 
 	}

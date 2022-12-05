@@ -84,32 +84,36 @@ DWORD WINAPI RecvThread(LPVOID arg)// //Ŭ���̾�Ʈ���� Recv��
 				if (player_list[i])
 					player_list[i]->SetState(PLAYING);
 			}
+			char Buf[2];
+			recv(sock, Buf, sizeof(Buf), 0);	// 444
 
-			char PlayBuf[sizeof(PLAYER_INFO_MANAGER)]{};
+			char PlayBuf[sizeof(MANAGER_INFO)]{};
 			recv(sock, PlayBuf, sizeof(PlayBuf), 0);
 			printf("packet size :  %d\n", buf[0]);
 
 			PLAYER_INFO_MANAGER temp;
-			memcpy(&temp, &PlayBuf, sizeof(PLAYER_INFO_MANAGER));
+			memcpy(&temp.INFO, &PlayBuf, sizeof(MANAGER_INFO));
+			printf("--------------recv buffer ID : %d \n", temp.INFO.ID);
+			
 			//memcpy(&framework->play_scene->Player_Info[temp.ID], &PlayBuf, sizeof(PLAYER_INFO_MANAGER));
 
-			/*
-			if (temp.time != 0) {
-				framework->play_scene->Player_Info[temp.ID].ID = temp.ID;
+			
+			if (temp.INFO.time != 0) {
+				framework->play_scene->Player_Info[temp.INFO.ID].INFO.ID = temp.INFO.ID;
 
-				framework->play_scene->Player_Info[temp.ID].PPos = temp.PPos;
-				framework->play_scene->Player_Info[temp.ID].State = temp.State;
-				framework->play_scene->Player_Info[temp.ID].animation_name = temp.animation_name;
+				framework->play_scene->Player_Info[temp.INFO.ID].INFO.PPos = temp.INFO.PPos;
+				framework->play_scene->Player_Info[temp.INFO.ID].INFO.State = temp.INFO.State;
+				//framework->play_scene->Player_Info[temp.INFO.ID].animation_name = temp.INFO.animation_name;
 
-				framework->play_scene->Player_Info[temp.ID].hp = temp.hp;
-				framework->play_scene->Player_Info[temp.ID].killMonster = temp.killMonster;
+				framework->play_scene->Player_Info[temp.INFO.ID].INFO.hp = temp.INFO.hp;
+				framework->play_scene->Player_Info[temp.INFO.ID].INFO.killMonster = temp.INFO.killMonster;
 
-				framework->play_scene->Player_Info[temp.ID].IsMove = temp.IsMove;
-				framework->play_scene->Player_Info[temp.ID].IsAttack = temp.IsAttack;
-				framework->play_scene->Player_Info[temp.ID].IsMisile = temp.IsMisile;
+				framework->play_scene->Player_Info[temp.INFO.ID].INFO.IsMove = temp.INFO.IsMove;
+				framework->play_scene->Player_Info[temp.INFO.ID].INFO.IsAttack = temp.INFO.IsAttack;
+				framework->play_scene->Player_Info[temp.INFO.ID].INFO.IsMisile = temp.INFO.IsMisile;
 
-				framework->play_scene->Player_Info[temp.ID].time = temp.time;
-			}*/
+				framework->play_scene->Player_Info[temp.INFO.ID].INFO.time = temp.INFO.time;
+			}
 
 
 			
@@ -163,6 +167,7 @@ DWORD WINAPI RecvThread(LPVOID arg)// //Ŭ���̾�Ʈ���� Recv��
 		}
 		default:
 			printf("Unknown PACKET type [%d]\n", type);
+			printf("%d\n", sizeof(MANAGER_INFO));
 		}
 	}
 }

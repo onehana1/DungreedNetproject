@@ -121,13 +121,9 @@ struct SC_PLAYER_INPUT_INFO_PACKET {
 	int time= 1; // 3��
 
 };
-
-struct PLAYER_INFO_MANAGER { //�������� ���� �� Ŭ��� ������ ������ 
-	unsigned char size; 
-	char	type;
+struct MANAGER_INFO {
 	short ID;
-
-	POINT PPos;		
+	POINT PPos;
 	short State;
 	//std::string animation_name;			//character sheet name
 
@@ -136,9 +132,15 @@ struct PLAYER_INFO_MANAGER { //�������� ���� �� Ŭ�
 
 	bool IsMove;			//stand, run
 	bool IsAttack;			// attack
-	bool IsMisile;			// Misile
+	bool IsMisile;			// Misile 
 
 	int time = 1; // 3��
+};
+
+struct PLAYER_INFO_MANAGER { //�������� ���� �� Ŭ��� ������ ������ 
+	unsigned char size; 
+	char	type;
+	MANAGER_INFO INFO;
 
 	//�����̿� ������ �ʿ��ϴٸ� �߰��� �� 
 };

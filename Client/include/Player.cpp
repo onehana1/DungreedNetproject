@@ -39,6 +39,12 @@ void Player::Update(const Dungeon* dungeon, Weapon* weapon, const Crosshair* cro
 	UpdateAnimation(animation_manager);
 }
 
+void Player::Update(AnimationManager* animation_manager, SoundManager* sound_manager, EffectManager* effect_manager)
+{
+	MatchStateAndAnimation(animation_manager, sound_manager, effect_manager);
+	UpdateAnimation(animation_manager);
+}
+
 void Player::ChangeStateToMoving()
 {
 	state = State::MOVING;

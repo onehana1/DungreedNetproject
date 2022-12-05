@@ -233,21 +233,21 @@ DWORD WINAPI ClientThread(LPVOID arg)
 			}
 			else
 				my_packet.type = SC_PLAY;
-			printf("%d id 출력하기\n", id);
-			my_packet.ID = id;
+			printf("%d id 출력하기-----------------------\n", id);
+			my_packet.INFO.ID = id;
 
-			my_packet.PPos = scene->SC_INFO[id].PPos;
-			my_packet.State= scene->SC_INFO[id].State;
+			my_packet.INFO.PPos = scene->SC_INFO[id].INFO.PPos;
+			my_packet.INFO.State= scene->SC_INFO[id].INFO.State;
 			//my_packet.animation_name = scene->SC_INFO[id].animation_name;
 
-			my_packet.hp = scene->SC_INFO[id].hp;
-			my_packet.killMonster = scene->SC_INFO[id].killMonster;
+			my_packet.INFO.hp = scene->SC_INFO[id].INFO.hp;
+			my_packet.INFO.killMonster = scene->SC_INFO[id].INFO.killMonster;
 
-			my_packet.IsMove = scene->SC_INFO[id].IsMove;
-			my_packet.IsAttack = scene->SC_INFO[id].IsAttack;
-			my_packet.IsMisile = scene->SC_INFO[id].IsMisile;
+			my_packet.INFO.IsMove = scene->SC_INFO[id].INFO.IsMove;
+			my_packet.INFO.IsAttack = scene->SC_INFO[id].INFO.IsAttack;
+			my_packet.INFO.IsMisile = scene->SC_INFO[id].INFO.IsMisile;
 
-			printf("%d 전송했습니다\n", id);
+			printf("%d , %d전송했습니다\n", my_packet.INFO.ID,(int)sizeof(my_packet));
 			//scene->SC_INFO[id];
 
 			//SC_INFO[ID]로 보낼 정보 찾고 3구역으로 흩뿌리기 
@@ -258,7 +258,7 @@ DWORD WINAPI ClientThread(LPVOID arg)
 				}
 			}
 
-			printf("cnttime : %d\n", my_packet.time);
+			printf("cnttime : %d\n", my_packet.INFO.time);
 
 
 
