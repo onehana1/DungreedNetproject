@@ -57,6 +57,11 @@ struct SC_READY_PACKET {
 	short ready_id;
 };
 
+struct SC_RESULT_PACKET {
+	unsigned char size;
+	char	type;
+};
+
 struct CS_READY_PACKET {
 	unsigned char size;
 	char	type;

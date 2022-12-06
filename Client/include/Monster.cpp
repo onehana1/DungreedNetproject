@@ -390,8 +390,10 @@ void MonsterManager::Appear(MAKE_MONSTER monster[5])
 	{
 		printf("%d size monsters\n", monsters.size());
 		printf("%d ID\n", monster[i].ID);
-		monsters[monster[i].ID]->is_appeared = true;
-		monsters[monster[i].ID]->SetDirection(monster[i].Direction);
-		monsters[monster[i].ID]->SetPos(monster[i].Pos);
+		if (monster[i].ID != -1) {
+			monsters[monster[i].ID]->is_appeared = true;
+			monsters[monster[i].ID]->SetDirection(monster[i].Direction);
+			monsters[monster[i].ID]->SetPos(monster[i].Pos);
+		}
 	}
 }

@@ -222,17 +222,27 @@ DWORD WINAPI ClientThread(LPVOID arg)
 			else {
 				printf("scene null\n");
 			}
-			/*
-			printf("input update");
 			
-			PLAYER_INFO_MANAGER  my_packet{};
-			my_packet.size = sizeof(PLAYER_INFO_MANAGER);
+			//printf("input update");
+			
+			SC_RESULT_PACKET  my_packet{};
+			my_packet.size = sizeof(SC_RESULT_PACKET);
 			if (CntTime < 0) {
 				my_packet.type = SC_RESULT;
 				StartDun = 0;
+				for (int i = 0; i < PLAYER_NUM; ++i) {
+					if (player_list[i]) {
+						send(player_list[i]->sock, reinterpret_cast<char*>(&my_packet), sizeof(my_packet), NULL);
+						//iD로 구별되니 각각 보내는 것임.. 
+					}
+				}
 			}
-			else
-				my_packet.type = SC_PLAY;
+
+			
+
+			//else
+				//my_packet.type = SC_PLAY;
+			/*
 			printf("%d id 출력하기\n", id);
 			my_packet.ID = id;
 

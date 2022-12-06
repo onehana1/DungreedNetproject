@@ -97,7 +97,7 @@ DWORD WINAPI RecvThread(LPVOID arg)// //Ŭ���̾�Ʈ���� Recv��
 			memcpy(&p_info, &PlayBuf, sizeof(PLAYER_INFO[3]));
 			
 			//printf("id : %d %d %d\n", p_info[0].ID, p_info[1].ID, p_info[2].ID)
-				;
+			//framework->play_scene->Player_Info.time = temp.time;
 			framework->play_scene->SetPlayerInfo(p_info);
 
 			break;
@@ -106,12 +106,12 @@ DWORD WINAPI RecvThread(LPVOID arg)// //Ŭ���̾�Ʈ���� Recv��
 		case SC_RESULT:
 		{
 			printf("result\n");
-			char PlayBuf[sizeof(P_STATE[3])]{}; // 잡은 몬스터와 죽은 횟수로 수정 필요
-			recv(sock, PlayBuf, sizeof(PlayBuf), 0);
+			//char PlayBuf[sizeof(P_STATE[3])]{}; // 잡은 몬스터와 죽은 횟수로 수정 필요
+			//recv(sock, PlayBuf, sizeof(PlayBuf), 0);
 			printf("packet size :  %d\n", buf[0]);
 
-			P_STATE temp[3];
-			memcpy(&temp, &PlayBuf, sizeof(P_STATE[3]));
+			//P_STATE temp[3];
+			//memcpy(&temp, &PlayBuf, sizeof(P_STATE[3]));
 
 			for (int i = 0; i < PLAYER_NUM; ++i)
 			{

@@ -356,11 +356,15 @@ void MonsterManager::Appear(int num)
 			monster->is_appeared = true;
 			my_packet.monster[num - 1].Direction = monster->GetDirection();
 			my_packet.monster[num - 1].ID = monster->GetID();
-			printf("%d Monster ID = %d\n",num - 1, monster->GetID());
+			//printf("%d Monster ID = %d\n",num - 1, monster->GetID());
 			my_packet.monster[num - 1].Pos = monster->GetPos();
 			if (--num == 0)
 				break;
 		}
+	}
+
+	for (int i = num; i > 0; --i) {
+		my_packet.monster[i - 1].ID = -1;
 	}
 
 	for (int i = 0; i < player_list.size(); ++i)
