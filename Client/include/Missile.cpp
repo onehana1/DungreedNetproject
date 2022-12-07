@@ -113,7 +113,9 @@ void MissileManager::Update(const Dungeon* dungeon, AnimationManager* animation_
 			|| missile->IsOutOfRange()) {
 			delete missile;
 			missiles.erase(missiles.begin() + i);
-			--i;
+			if (i > 0) {
+				--i;
+			}
 		}
 	}
 }

@@ -20,10 +20,11 @@ constexpr char SC_LOGIN = 10;
 constexpr char SC_READY = 11;
 constexpr char SC_PLAY = 12;
 
-constexpr char SC_RESULT = 14;
 constexpr char SC_MAKE_MONSTER = 13;
+constexpr char SC_MONSTER = 14;
+constexpr char SC_RESULT = 15;
 
-constexpr char SC_ALLREADY = 15;
+constexpr char SC_ALLREADY = 16;
 
 
 
@@ -172,10 +173,23 @@ struct SC_MAKE_MONSTER_PACKET {
 struct MONSTER_INFO_MANAGER {
 	short id;
 	POINT PPos;				
-	char* Sheet;			//Monster sheet name
 
 	int hp;
 
+	short player_id;
+
 	bool Direction;			// sight Dir
-	bool IsAttack;			//stand, run
+	//bool isAttack;
+	bool isFormerAttack;
+	bool isMove;
+	bool isStand;
+	bool attack_animation;
+	short BossAttackID;
+};
+
+struct SC_MONSTER_PACKET {
+	unsigned char size;
+	char	type;
+
+	MONSTER_INFO_MANAGER monster[20];
 };

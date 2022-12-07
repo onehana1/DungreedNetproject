@@ -1,5 +1,6 @@
 #include "Character.h"
 
+
 void Character::ForceGravity(const Dungeon* dungeon)	// ĳ���� ����(LANDING, DOWN, DOWNJUMP, UP)�� ���� ������
 {
 	InstantDCSet dc_set(RECT{ 0, 0, dungeon->dungeon_width, dungeon->dungeon_height });
@@ -46,10 +47,6 @@ void Character::ForceGravity(const Dungeon* dungeon)	// ĳ���� ���
 		else if (jump_power < dungeon->camera_y_half_range / 40.0f) {
 			jump_power += jump_power / 50.0f;
 		}
-	}
-
-	if (pos.y > 250) {
-		state = State::STANDING;
 	}
 }
 
@@ -285,6 +282,7 @@ void Character::UpdateInfo(PLAYER_INFO_MANAGER* player)
 
 void Character::StartAttack(const int given_former_atk_delay, const int given_atk_delay, const RECT& given_atk_rect)
 {
+	attack_start = std::chrono::system_clock::now();
 	is_attacking = true;
 	former_atk_delay = given_former_atk_delay;
 	atk_delay = given_atk_delay;

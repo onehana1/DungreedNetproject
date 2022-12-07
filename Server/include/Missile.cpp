@@ -112,7 +112,6 @@ void MissileManager::Render(HDC scene_dc, const RECT& bit_rect) const
 
 void MissileManager::Insert(Missile* given_missile)
 {
-	printf("missile isert");
 	missiles.push_back(given_missile);
 }
 

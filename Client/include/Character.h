@@ -144,6 +144,8 @@ public:
 	int GetHp() { return hp; }
 	bool GetIsAttack() { return is_attacking; }
 	short GetState() { return (short)state; }
+	int GetWidth() { return width; }
+	int GetHeight() { return height; }
 
 	void ChangeAnimation(const char* a_name);
 	std::string GetAnimationName() { return animation_name; }

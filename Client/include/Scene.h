@@ -86,7 +86,10 @@ public:
 
 	virtual int ChangeScene();
 
+	Player** GetPlayer() { return player; }
 	MonsterManager* GetMonsterManager(){return monster_manager;};
+	MissileManager* GetMissileManager() { return missile_manager; };
+	AnimationManager* GetAnimationManager() { return animation_manager; };
 
 	void UpdateInfo(Player* player);
 	void SetPlayerInfo(PLAYER_INFO[PLAYER_NUM]);

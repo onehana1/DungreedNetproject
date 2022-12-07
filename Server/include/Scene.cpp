@@ -8,7 +8,6 @@ Scene::Scene()
 		for (int i = 0; i < PLAYER_NUM; ++i)
 		{
 			player[i] = new Player(dungeon);
-			printf("new p");
 		}
 		monster_manager = new MonsterManager(dungeon );
 		missile_manager = new MissileManager;
@@ -32,7 +31,6 @@ Scene::Scene(const int dungeon_id)
 		for (int i = 0; i < PLAYER_NUM; ++i)
 		{
 			player[i] = new Player(dungeon);
-			printf("new p");
 		}
 		monster_manager = new MonsterManager(dungeon );
 		missile_manager = new MissileManager;
@@ -90,8 +88,8 @@ void Scene::Update()
 		player[i]->Update(dungeon, weapon[i], missile_manager);
 	}
 
-	monster_manager->Update(dungeon, player[0], missile_manager);	// 수정 필요
-	missile_manager->Update(dungeon );
+	monster_manager->Update(dungeon, player, missile_manager);	// 수정 필요
+	missile_manager->Update(dungeon);
 	for (int i = 0; i < PLAYER_NUM; ++i)
 	{
 		weapon[i]->Update(player[i], {0, 0});	// 플레이어들에게서 받은 마우스 좌표 넣어 줘야 함
@@ -131,6 +129,8 @@ void Scene::Send()
 			send(player_list[i]->sock, reinterpret_cast<char*>(&my_packet), sizeof(my_packet), NULL);
 		}
 	}
+
+	monster_manager->Send();
 }
 
 void Scene::DungeonChangeProc()

@@ -197,7 +197,7 @@ DWORD WINAPI ClientThread(LPVOID arg)
 		{
 			//½Ã°£
 			if (StartDun == 0) {
-				EndTime = (unsigned)time(NULL) + 20;
+				EndTime = (unsigned)time(NULL) + 80;
 				StartDun = 1;
 			}
 			StartTime = (unsigned)time(NULL);

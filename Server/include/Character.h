@@ -2,6 +2,7 @@
 #ifndef _character
 #define _character
 #include <windows.h>
+#include <chrono>
 #include <string>
 #include "FileUtility.h"
 #include "Dungeon.h"
@@ -57,6 +58,8 @@ protected:
 	int atk_delay = 0;
 	int red_flash_cnt = 0;
 
+	std::chrono::system_clock::time_point attack_start;
+
 	void Stand();
 	void RunLeft();
 	void RunRight();
@@ -79,6 +82,8 @@ protected:
 	inline bool IsAttacking() const { return is_attacking; }
 
 public:
+	int type = 0;
+
 	Character() = default;
 	Character(const int id, const int width, const int height, const POINT pos, const State state, const BOOL looking_direction,
 		const double x_move_px, const double jump_start_power,const int hp, const int atk, const int def  )
@@ -105,6 +110,8 @@ public:
 	//////////////////////////////////////
 
 	int Gethp() { return hp; }
+	int GetMaxhp() { return max_hp; }
+	POINT GetPosition() { return pos; }
 
 	bool IsOut_Left(const Dungeon* dungeon) const;
 	bool IsOut_Right(const Dungeon* dungeon) const;
@@ -112,7 +119,7 @@ public:
 	void NoOut(const Dungeon* dungeon);
 	
 	bool GetDirection()const { return looking_direction; }
-	POINT GetPos() { return pos; }
+	POINT GetPos()const { return pos; }
 
 	inline bool IsDied() const { return (hp <= 0) ? true : false; }
 

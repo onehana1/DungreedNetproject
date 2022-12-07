@@ -32,8 +32,16 @@ class Monster : public Character
 private:
 	enum class Policy {STAND, MOVE_TO_PLAYER, MOVE_FROM_PLAYER, ATTACK};
 	
-	short id;
+	short m_id;
 
+	short player_id;
+
+	bool is_attack = false;	// 클라이언트 send용
+	bool is_former_attack = false;	// 미사일
+	short boss_attack_id = -1;
+	bool is_move = false;
+	bool is_stand = false;
+	bool attack_animation = false;
 	BOOL is_floating;
 	BOOL melee_attack;
 	BOOL missile_attack;
@@ -44,7 +52,6 @@ private:
 	const std::string move_animation_name;
 
 	bool is_appeared = false;
-
 
 	POINT policy_stand;					// x는 행동을 선택할 확률, y는 행동을 몇 업데이트 카운트 동안 지속할 건지
 	POINT policy_move_to_player;
@@ -73,15 +80,17 @@ public:
 		is_floating {is_floating}, melee_attack {melee_attack}, missile_attack {missile_attack},
 		stand_animation_name{ stand_animation_name }, attack_animation_name{ attack_animation_name }, move_animation_name{ move_animation_name },
 		policy_stand{ policy_stand }, policy_move_to_player{ policy_move_to_player }, policy_move_from_player{ policy_move_from_player },
-		policy_attack{ policy_attack } {}
+		policy_attack{ policy_attack } { type = 1; }
 
 	void Update(const Dungeon* dungeon, const Player* player, MissileManager* missile_manager);
 	void Render(HDC scene_dc, const RECT& bit_rect);
 	inline bool IsAppeared() const { return is_appeared; }
 
 
-	void SetID(short in) { id = in; }
-	short GetID() { return id; }
+	void SetID(short in) { m_id = in; }
+	short GetID() { return m_id; }
+
+	void ResetSendInfo();
 
 	friend class MonsterManager;
 	friend class MonsterAI;
@@ -99,6 +108,7 @@ private:
 	int hp;
 	int atk;
 	int def;
+	
 	BOOL is_floating;
 	BOOL melee_attack;
 	BOOL missile_attack;
@@ -129,13 +139,15 @@ private:
 public:
 	std::vector<Monster*> monsters;
 
-	MonsterManager(const Dungeon* dungeon  );
+	MonsterManager(const Dungeon* dungeon);
 	~MonsterManager();
 
-	void Init(const Dungeon* dungeon  );
+	void Init(const Dungeon* dungeon);
 	void Render(HDC scene_dc, const RECT& bit_rect) const;
-	void Update(const Dungeon* dungeon, const Player* player  , MissileManager* missile_manager );
+	void Update(const Dungeon* dungeon, Player* player[3], MissileManager* missile_manager);
 	void Appear(int num);
 	inline bool AreMonsterAllDied() const { return (remain_monster_cnt == 0) ? true : false; }
+
+	void Send();
 };
 #endif

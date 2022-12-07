@@ -2,6 +2,7 @@
 
 void HitScanner::operator()(Character* attacker, Character* victim, SoundManager* sound_manager)
 {
+	/*
 	if (attacker->IsAttacking() && attacker->former_atk_delay <= 0 && !attacker->HasAlreadyAttacked(victim)) {
 		RECT my_rect = { victim->pos.x, victim->pos.y, victim->pos.x + victim->width, victim->pos.y + victim->height };
 		RECT tmp;
@@ -11,11 +12,12 @@ void HitScanner::operator()(Character* attacker, Character* victim, SoundManager
 			victim->hp -= calc_damage(attacker, victim);
 			victim->red_flash_cnt = 8;
 		}
-	}
+	}*/
 }
 
 void HitScanner::operator()(Missile* attacker, Character* victim, MissileManager* missile_manager, SoundManager* sound_manager)
 {
+	/*
 	if (!attacker->HasAlreadyAttacked(victim)) {
 		RECT my_rect = { victim->pos.x, victim->pos.y, victim->pos.x + victim->width, victim->pos.y + victim->height };
 		RECT tmp;
@@ -27,7 +29,7 @@ void HitScanner::operator()(Missile* attacker, Character* victim, MissileManager
 			if (attacker->pierce == attacker->attack_victims.size())
 				missile_manager->Delete(attacker);
 		}
-	}
+	}*/
 }
 
 int HitScanner::calc_damage(const Character* attacker, const Character* victim)

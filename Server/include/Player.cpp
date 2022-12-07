@@ -1,5 +1,6 @@
 #include "Player.h"
 
+
 void Player::PlaceWithDungeonLeft(const Dungeon* dungeon)
 {
 	pos = dungeon->left_start_pos;
@@ -174,7 +175,6 @@ void Player::AttackProc(Weapon* weapon, MissileManager* missile_manager   )
 {
 	if (is_attacking || atk_delay) {
 		if (is_attacking) {
-
 			if (is_doing_missile_attack && former_atk_delay == 0) {
 				float radian = Degree(mouse, pos);
 
@@ -200,8 +200,9 @@ void Player::AttackProc(Weapon* weapon, MissileManager* missile_manager   )
 
 			--former_atk_delay;
 
-			if (weapon->IsAttackFinished())
+			if (std::chrono::duration<double>(std::chrono::system_clock::now() - attack_start).count() > 0.5) {//weapon->IsAttackFinished())
 				FinishAttack();
+			}
 		}
 		else 
 			--atk_delay;
@@ -342,7 +343,7 @@ void Player::SC_AttackProc(Weapon* weapon, MissileManager* missile_manager, PLAY
 
 			--former_atk_delay;
 
-			if (weapon->IsAttackFinished())
+			if (std::chrono::duration<double>(std::chrono::system_clock::now() - attack_start).count() > 0.5)
 				FinishAttack();
 		}
 		else

@@ -7,7 +7,6 @@ void Monster::Update(const Dungeon* dungeon, const Player* player,MissileManager
 		// Die 루틴
 		ForceGravity(dungeon);
 		ForceGravity(dungeon);
-
 		if (!is_attacking && atk_delay)
 			--atk_delay;
 		--former_atk_delay;
@@ -17,7 +16,6 @@ void Monster::Update(const Dungeon* dungeon, const Player* player,MissileManager
 void Monster::AutoAction(const Dungeon* dungeon, const Player* player,  MissileManager* missile_manager)
 {
 	if (!remain_update_cnt_to_change_policy) {
-		//
 		is_attacking = false;
 		atk_delay = 0;
 		former_atk_delay = 0;
@@ -60,16 +58,21 @@ void Monster::ChooseNewPolicy()
 		remain_update_cnt_to_change_policy = policy_stand.y;
 		animation_name = stand_animation_name;
 		is_animation_load_requested = true;
+		is_stand = true;
 		return;
 	}
 	chance -= policy_stand.x;
 	if (chance <= policy_move_to_player.x) {
 		cur_policy = Policy::MOVE_TO_PLAYER;
 		remain_update_cnt_to_change_policy = policy_move_to_player.y;
-		if (!move_animation_name.empty())
+		if (!move_animation_name.empty()) {
 			animation_name = move_animation_name;
-		else
+			is_move = true;
+		}
+		else {
 			animation_name = stand_animation_name;
+			is_stand = true;
+		}
 		is_animation_load_requested = true;
 		return;
 	}
@@ -77,17 +80,19 @@ void Monster::ChooseNewPolicy()
 	if (chance <= policy_move_from_player.x) {
 		cur_policy = Policy::MOVE_FROM_PLAYER;
 		remain_update_cnt_to_change_policy = policy_move_from_player.y;
-		if (!move_animation_name.empty())
+		if (!move_animation_name.empty()) {
+			is_move = true;
 			animation_name = move_animation_name;
-		else
+		}
+		else {
+			is_stand = true;
 			animation_name = stand_animation_name;
+		}
 		is_animation_load_requested = true;
 		return;
 	}
 	chance -= policy_move_from_player.x;
 	if (chance <= policy_attack.x) {
-		//
-
 		if (id == 4000013) {
 			std::uniform_int_distribution<> uid_chance{ 1, 100 };
 			int chance = uid_chance(dre);
@@ -101,10 +106,14 @@ void Monster::ChooseNewPolicy()
 		//
 		cur_policy = Policy::ATTACK;
 		remain_update_cnt_to_change_policy = policy_attack.y;
-		if (!attack_animation_name.empty())
+		if (!attack_animation_name.empty()) {
+			attack_animation = true;
 			animation_name = attack_animation_name;
-		else
+		}
+		else {
+			is_stand = true;
 			animation_name = stand_animation_name;
+		}
 		is_animation_load_requested = true;
 		return;
 	}
@@ -112,8 +121,9 @@ void Monster::ChooseNewPolicy()
 
 void Monster::ForceGravity(const Dungeon* dungeon)
 {
-	if (!is_floating)
+	if (!is_floating) {
 		this->Character::ForceGravity(dungeon);
+	}
 }
 
 void Monster::Render(HDC scene_dc, const RECT& bit_rect)
@@ -122,6 +132,16 @@ void Monster::Render(HDC scene_dc, const RECT& bit_rect)
 		this->Character::Render(scene_dc, bit_rect);
 		this->Character::RenderMonsterHP(scene_dc, bit_rect);
 	}
+}
+
+void Monster::ResetSendInfo()
+{
+	is_attack = false;	// 클라이언트 send용
+	is_former_attack = false;	// 미사일
+	boss_attack_id = -1;
+	is_move = false;
+	is_stand = false;
+	attack_animation = false;
 }
 
 
@@ -142,7 +162,7 @@ MonsterManager::MonsterManager(const Dungeon* dungeon  )
 			break;
 }
 
-void MonsterManager::Init(const Dungeon* dungeon  )
+void MonsterManager::Init(const Dungeon* dungeon)
 {
 	Clear();
 
@@ -160,10 +180,23 @@ void MonsterManager::Init(const Dungeon* dungeon  )
 			break;
 }
 
-void MonsterManager::Update(const Dungeon* dungeon, const Player* player  , MissileManager* missile_manager )
+void MonsterManager::Update(const Dungeon* dungeon, Player* player[3], MissileManager* missile_manager)
 {
 	for (Monster* monster : monsters) {
-		monster->Update(dungeon, player , missile_manager );
+		int min = 10000;
+		int num = 0;
+		for (int i = 0; i < PLAYER_NUM; ++i) {
+			POINT p_pos = player[i]->GetPos();
+			p_pos.x -= monster->pos.x;
+			p_pos.y -= monster->pos.y;
+			int distance = p_pos.x * p_pos.x + p_pos.y * p_pos.y;
+			if (distance < min) {
+				min = distance;
+				num = i;
+			}
+		}
+		monster->player_id = num;
+		monster->Update(dungeon, player[num], missile_manager);
 		// Die 루틴 : 현재는 죽으면 그냥 출현 취소
 		if (monster->is_appeared && monster->IsDied()) {
 			monster->is_appeared = false;
@@ -205,6 +238,7 @@ void MonsterManager::Insert(const Dungeon* dungeon, const int monster_id, int nu
 	dungeon->dungeon_terrain_image->Draw(dc_set.buf_dc, dc_set.bit_rect);
 	std::uniform_int_distribution<> uid_x{ 0, dungeon->dungeon_width - width };
 	std::uniform_int_distribution<> uid_y{ 0, dungeon->dungeon_height / 3 * 2 };
+
 
 	LoadNeededAnimations();
 
@@ -352,8 +386,9 @@ void MonsterManager::Appear(int num)
 
 	std::shuffle(monsters.begin(), monsters.end(), dre);
 	for (Monster* monster : monsters) {
-		if (!monster->is_appeared && !monster->IsDied()) {
+		if (!monster->is_appeared) {
 			monster->is_appeared = true;
+			monster->hp = monster->max_hp;
 			my_packet.monster[num - 1].Direction = monster->GetDirection();
 			my_packet.monster[num - 1].ID = monster->GetID();
 			//printf("%d Monster ID = %d\n",num - 1, monster->GetID());
@@ -370,6 +405,39 @@ void MonsterManager::Appear(int num)
 	for (int i = 0; i < player_list.size(); ++i)
 	{
 		if (player_list[i]) {
+			send(player_list[i]->sock, reinterpret_cast<char*>(&my_packet), sizeof(my_packet), NULL);
+		}
+	}
+}
+
+void MonsterManager::Send()
+{
+	SC_MONSTER_PACKET my_packet;
+	my_packet.size = sizeof(SC_MONSTER_PACKET);
+	my_packet.type = SC_MONSTER;
+	int num = 0;
+	for (int i = 0; i < monsters.size(); ++i) {
+		if (monsters[i]->IsAppeared()) {
+			my_packet.monster[num].Direction = monsters[i]->GetDirection();
+			my_packet.monster[num].hp = monsters[i]->Gethp();
+			my_packet.monster[num].id = monsters[i]->GetID();
+			my_packet.monster[num].isMove = monsters[i]->is_move;
+			my_packet.monster[num].isStand = monsters[i]->is_stand;
+			my_packet.monster[num].attack_animation = monsters[i]->attack_animation;
+			my_packet.monster[num].BossAttackID = monsters[i]->boss_attack_id;
+			my_packet.monster[num].isFormerAttack = monsters[i]->is_former_attack;
+			my_packet.monster[num].PPos = monsters[i]->GetPosition();
+			++num;
+		}
+		monsters[i]->ResetSendInfo();
+	}
+
+	for (int i = num; i < 20; ++i) {
+		my_packet.monster[i].id = -1;
+	}
+
+	for (int i = 0; i < PLAYER_NUM; ++i) {
+		if (player_list[i]->GetState() != UNCONNECT) {
 			send(player_list[i]->sock, reinterpret_cast<char*>(&my_packet), sizeof(my_packet), NULL);
 		}
 	}

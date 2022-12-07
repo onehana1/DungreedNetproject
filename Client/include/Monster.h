@@ -134,6 +134,7 @@ public:
 	void Update(const Dungeon* dungeon, const Player* player, AnimationManager* animation_manager, MissileManager* missile_manager, SoundManager* sound_manager);
 	void Appear(int num);
 	void Appear(MAKE_MONSTER monster[5]);
+	void UpdateMonsterInfo(MONSTER_INFO_MANAGER monster_info[20], Player* player[3], MissileManager* missile_manager, AnimationManager* animation_manager);
 	inline bool AreMonsterAllDied() const { return (remain_monster_cnt == 0) ? true : false; }
 };
 #endif

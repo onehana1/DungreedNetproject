@@ -7,11 +7,10 @@
 #include "Character.h"
 
 #include <random>
-#include <chrono>
 
 #include <windows.h>
 
-RECT client;
+RECT client{ 0, 0, 1264, 761 };
 HWND h_wnd;
 PAINTSTRUCT ps;
 HDC h_dc;
@@ -42,7 +41,6 @@ bool CanGoToPos(const HDC terrain_dc, const POINT pos);
 int main() {
 	//대기소켓 생성 
 	LISTEN = Create_Listen();
-	GetClientRect(h_wnd, &client);
 	scene = new Scene;
 
 	HANDLE hThread;
@@ -103,7 +101,7 @@ int main() {
 		//cout << fps.count() << endl;
 		fpsStart = std::chrono::system_clock::now();
 
-		if (fps.count() > 0.01f) {
+		if (fps.count() > 0.01f) {	// 0.01초마다 update, send
 			scene->Update();
 			// 클라에게 몬스터/플레이어 전송 
 			scene->Send();
@@ -162,11 +160,10 @@ void DrawBuffer(HDC instant_dc, const RECT& rect)
 
 bool MapPixelCollision(const HDC terrain_dc, const COLORREF& val, const POINT& pt)	// 지형 표시 이미지를 사용해 충돌 확인
 {
-	// 수정 필요 클라이언트 크기 찾아서 초기값으로 준 후 아래 주석처리 풀어주면 될듯
-	//if (pt.x < client.left || pt.y > client.right)
-	//	return false;
-	//if (pt.y < client.top || pt.y > client.bottom)
-	//	return false;
+	if (pt.x < client.left || pt.y > client.right)
+		return false;
+	if (pt.y < client.top || pt.y > client.bottom)
+		return false;
 	
 	if (GetPixel(terrain_dc, pt.x, pt.y) == val) {
 		return true;
@@ -184,7 +181,6 @@ bool MapPixelCollision(const Image* terrain_dc, const COLORREF& val, const POINT
 		return false;
 
 	if (terrain_dc->GetPixel(pt.x, pt.y) == val) {
-		printf("충돌\n");
 		return true;
 	}
 	else

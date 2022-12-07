@@ -54,6 +54,9 @@ void Player::Update(const Dungeon* dungeon, Weapon* weapon, MissileManager* miss
 void Player::SetPlayerInfo(PLAYER_INFO p_info)
 {
 	info = p_info;
+	if (hp > info.hp) {
+		red_flash_cnt = 8;
+	}
 	have_to_update = true;
 }
 
