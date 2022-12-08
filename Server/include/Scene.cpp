@@ -131,6 +131,7 @@ void Scene::Send()
 	}
 
 	monster_manager->Send();
+	missile_manager->Send();
 }
 
 void Scene::DungeonChangeProc()

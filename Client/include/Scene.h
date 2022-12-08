@@ -93,6 +93,9 @@ public:
 
 	void UpdateInfo(Player* player);
 	void SetPlayerInfo(PLAYER_INFO[PLAYER_NUM]);
+	void DeleteMissile(int id);
+	void UpdateMissile(MISSILE_INFO missile[MISSILE_NUM]);
+	
 };
 
 class StartScene : public Scene

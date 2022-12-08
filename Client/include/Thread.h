@@ -133,7 +133,7 @@ DWORD WINAPI RecvThread(LPVOID arg)// //Ŭ���̾�Ʈ���� Recv��
 		case SC_MAKE_MONSTER:
 		{
 			char Buf[2];
-			recv(sock, Buf, sizeof(Buf), 0);	// 2씩 더 받아지는 오류 대처.... 
+			recv(sock, Buf, sizeof(Buf), 0);
 
 			char subBuf[sizeof(MAKE_MONSTER[5])]{};
 			recv(sock, subBuf, sizeof(subBuf), 0);
@@ -147,7 +147,7 @@ DWORD WINAPI RecvThread(LPVOID arg)// //Ŭ���̾�Ʈ���� Recv��
 		case SC_MONSTER:
 		{
 			char Buf[2];
-			recv(sock, Buf, sizeof(Buf), 0);	// 2씩 더 받아지는 오류 대처.... 
+			recv(sock, Buf, sizeof(Buf), 0); 
 
 			char subBuf[sizeof(MONSTER_INFO_MANAGER[20])]{};
 			recv(sock, subBuf, sizeof(subBuf), 0);
@@ -156,6 +156,19 @@ DWORD WINAPI RecvThread(LPVOID arg)// //Ŭ���̾�Ʈ���� Recv��
 			memcpy(&monsterInfo, &subBuf, sizeof(MONSTER_INFO_MANAGER[20]));
 
 			framework->GetPlayScene()->GetMonsterManager()->UpdateMonsterInfo(monsterInfo, framework->GetPlayScene()->GetPlayer(), framework->GetPlayScene()->GetMissileManager(), framework->GetPlayScene()->GetAnimationManager());
+			break;
+		}
+		case SC_MISSILE:
+		{	
+			char Buf[2];
+			recv(sock, Buf, sizeof(Buf), 0);
+			char subBuf[sizeof(MISSILE_INFO[MISSILE_NUM])];
+			recv(sock, subBuf, sizeof(subBuf), 0);
+
+			MISSILE_INFO missile[MISSILE_NUM];
+			memcpy(&missile, &subBuf, sizeof(MISSILE_INFO[MISSILE_NUM]));
+
+			framework->GetPlayScene()->UpdateMissile(missile);
 			break;
 		}
 		default:

@@ -49,6 +49,7 @@ PlayScene::PlayScene()
 			weapon[i] = new Weapon(camera, player[i], player[i]->GetInfo().MPos, animation_manager);
 		}
 
+		Init();
 		//player->PlaceWithDungeonLeft(dungeon);
 	}
 	catch (const TCHAR* error_message) {
@@ -84,6 +85,8 @@ PlayScene::PlayScene(const int dungeon_id)
 		for (int i = 0; i < PLAYER_NUM; ++i) {
 			weapon[i] = new Weapon(camera, player[i], player[i]->GetInfo().MPos, animation_manager);
 		}
+
+		Init();
 		//player->PlaceWithDungeonLeft(dungeon);
 	}
 	catch (const TCHAR* error_message) {
@@ -111,7 +114,7 @@ HRESULT PlayScene::Init()
 		player[i]->Init(dungeon, animation_manager);
 	}
 	monster_manager->Init(dungeon, animation_manager);
-	missile_manager->Init();
+	missile_manager->Init(animation_manager, player[0]->GetWidth(), player[0]->GetHeight() / 2);
 	camera->Init(dungeon, player[g_myid]);
 	
 	crosshair->Init(camera);
@@ -160,7 +163,7 @@ void PlayScene::Update(SOCKET socket, char* name)
 
 	my_packet.p_info.mouse.right = GetAsyncKeyState(VK_RBUTTON);
 	my_packet.p_info.mouse.left = GetAsyncKeyState(VK_LBUTTON);
-	my_packet.p_info.mouse.wheel = GetAsyncKeyState(VK_MBUTTON);
+	my_packet.p_info.mouse.wheel = GetAsyncKeyState(VK_MBUTTON);	// 미사일 막아 놓음
 	my_packet.p_info.mouse.mPos.x = crosshair->pos.x;
 	my_packet.p_info.mouse.mPos.y = crosshair->pos.y;
 
@@ -178,7 +181,7 @@ void PlayScene::Update(SOCKET socket, char* name)
 		weapon[i]->Update(player[i], player[i]->GetInfo().MPos, animation_manager);
 	}
 	effect_manager->Update(animation_manager);
-	HitUpdate();
+	//HitUpdate();
 	DungeonChangeProc();
 }
 
@@ -224,23 +227,34 @@ void PlayScene::SetPlayerInfo(PLAYER_INFO p_info[PLAYER_NUM])
 	}
 }
 
+void PlayScene::DeleteMissile(int id)
+{
+	missile_manager->Delete(id);
+}
+
+void PlayScene::UpdateMissile(MISSILE_INFO missile[MISSILE_NUM])
+{
+	missile_manager->miss_info.clear();
+	for (int i = 0; i < MISSILE_NUM; ++i) {
+		if (missile[i].id != -1) {
+			missile_manager->miss_info.push_back(missile[i]);
+		}
+	}
+}
+
 void PlayScene::DungeonChangeProc()
 {
 	/*
-	if (player[0].GetState()==RESULTING)
+	if (player[0]->GetState()==RESULTING)
 		GoNextDungeon();
-
-	if (player->IsOut_Right(dungeon))
-		if (monster_manager->AreMonsterAllDied())
-			GoNextDungeon();
-		else
-			player->NoOut(dungeon);
-	else if (player->IsOut_Left(dungeon))
-		if (monster_manager->AreMonsterAllDied())
-			GoPrevDungeon();
-		else
-			player->NoOut(dungeon);
-			*/
+		*/
+	for (int i = 0; i < PLAYER_NUM; ++i) {
+		if (player[i]->IsOut_Right(dungeon))
+			player[i]->NoOut(dungeon);
+		else if (player[i]->IsOut_Left(dungeon))
+				player[i]->NoOut(dungeon);
+	}
+			
 	//if (update_cnt++ % 1000 == 0)
 	//	monster_manager->Appear(5);
 }
@@ -463,6 +477,8 @@ void LobbyScene::Update(SOCKET socket, char* name)
 			player[i]->UpdateAnimation(animation_manager);
 		}
 	}
+
+	if (g_myid == -1) { return; }
 
 	if(player_list[g_myid]->GetState() != READY){
 		if (GetAsyncKeyState(VK_MBUTTON) & 0x8000) {	// 휠 클릭tl 준비 완료 상태로 변함

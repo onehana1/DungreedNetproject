@@ -39,7 +39,9 @@ bool MapPixelCollision(const HDC terrain_dc, const COLORREF& val, const POINT& p
 bool CanGoToPos(const HDC terrain_dc, const POINT pos);
 
 int main() {
-	//措扁家南 积己 
+	//措扁家南 积己
+
+
 	LISTEN = Create_Listen();
 	scene = new Scene;
 
@@ -47,8 +49,6 @@ int main() {
 	int retval;
 	while (true)
 	{
-		//printf("packet : %d", sizeof(SC_PLAYER_INPUT_INFO_PACKET));
-		//printf("packet : %d", sizeof(PLAYER_INFO) * 3);
 		int num = FindEmptyInPlayerList(player_list);
 
 		if(num != -1){

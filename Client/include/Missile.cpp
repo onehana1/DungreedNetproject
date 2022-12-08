@@ -2,6 +2,7 @@
 
 void Missile::Update(AnimationManager* animation_manager)
 {
+	/*
 	POINT desti_pos;
 	if (looking_direction) {
 		desti_pos = { static_cast<LONG>(pos.x + speed * cos(radian)), static_cast<LONG>(pos.y - speed * sin(radian)) };
@@ -13,7 +14,7 @@ void Missile::Update(AnimationManager* animation_manager)
 	pos = desti_pos;
 
 	atk_rect = { pos.x, pos.y, pos.x + width, pos.y + height };
-
+	*/
 	UpdateAnimation(animation_manager);
 }
 
@@ -93,37 +94,59 @@ void Missile::UpdateAnimation(AnimationManager* animation_manager)
 	image = animation.GetImage(animation_manager);
 }
 
-void MissileManager::Init()
+void MissileManager::Init(AnimationManager* animation_manager, int w, int h)
 {
 	for (auto* missile : missiles)
 		delete missile;
 	missiles.clear();
+
+	missiles.push_back(new Missile(NULL, {0, 0}, 20, 22 / 6 * 5,
+		TRUE, L"animation/BansheeBullet1.png", "BansheeBullet", animation_manager, "sound\\Water1.ogg", 0.4));
+	missiles.push_back(new Missile(NULL, { 0, 0 }, 100 / 5, 100 / 5,
+		TRUE, L"animation/SkellBossBullet1.png", "SkellBossBullet", animation_manager, "sound\\Explosion1.ogg", 0.4));
+	missiles.push_back(new Missile(NULL, { 0, 0 }, 100 / 5, 100 / 5,
+		FALSE, L"animation/SkellBossBullet1.png", "SkellBossBullet", animation_manager, "sound\\Explosion1.ogg", 0.8));
+	missiles.push_back(new Missile(NULL, { 0, 0 }, w, h,
+		FALSE, L"animation/SwordMissile1.png", "SwordMissile", animation_manager, "sound\\Slash8.ogg", 0.4f));
+	
+	miss_info.reserve(MISSILE_NUM);
 }
 
 void MissileManager::Update(const Dungeon* dungeon, AnimationManager* animation_manager)
 {
-	InstantDCSet dc_set(RECT{ 0, 0, dungeon->dungeon_width, dungeon->dungeon_height });
-
-	dungeon->dungeon_terrain_image->Draw(dc_set.buf_dc, dc_set.bit_rect);
-
 	for (int i = 0; i < missiles.size(); ++i) {
 		auto* missile = missiles.at(i);
 		missile->Update(animation_manager);
-		if (!CanGoToPos(dc_set.buf_dc, POINT{ missile->pos.x + missile->width / 2, missile->pos.y + missile->height / 2 }) || missile->IsOut_Left(dungeon) || missile->IsOut_Right(dungeon)
-			|| missile->IsOutOfRange()) {
-			delete missile;
-			missiles.erase(missiles.begin() + i);
-			if (i > 0) {
-				--i;
-			}
+	}
+}
+
+void MissileManager::Update(POINT pos[MISSILE_NUM])
+{
+	for (int i = 0; i < missiles.size(); ++i) {
+		if (pos[i].x != -100) {
+			missiles[i]->pos = pos[i];
+
+			//printf("pos : %d %d\n", pos[i].x, pos[i].y);
+
 		}
 	}
 }
 
 void MissileManager::Render(HDC scene_dc, const RECT& bit_rect) const
 {
-	for (auto* missile : missiles)
-		missile->Render(scene_dc, bit_rect);
+	for (int i = 0; i < miss_info.size(); ++i)
+	{
+		short id = miss_info[i].id;
+		if (id >= 0 && id < missiles.size()) {
+			missiles[id]->pos = miss_info[i].pos;
+			missiles[id]->looking_direction = miss_info[i].direction;
+			missiles[id]->radian = miss_info[i].radian;
+			missiles[id]->Render(scene_dc, bit_rect);
+		}
+	}
+
+	//for (auto* missile : missiles)
+		//missile->Render(scene_dc, bit_rect);
 }
 
 void MissileManager::Insert(Missile* given_missile)
@@ -139,4 +162,11 @@ void MissileManager::Delete(Missile* given_missile)
 			missiles.erase(missiles.begin() + i);
 			break;
 		}
+}
+
+void MissileManager::Delete(int id)
+{
+	auto* missile = missiles.at(id);
+	delete missile;
+	missiles.erase(missiles.begin() + id);
 }

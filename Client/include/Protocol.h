@@ -1,6 +1,7 @@
 #pragma once
 
 #define PLAYER_NUM 3
+#define MISSILE_NUM 50
 
 enum player_state {
 	UNCONNECT, CONNECT, IN_LOBBY, READY, PLAYING, RESULTING
@@ -15,25 +16,32 @@ constexpr char CS_READY = 2;
 constexpr char CS_PLAY = 3;
 constexpr char CS_RESULT = 4;
 
-
-constexpr char SC_LOGIN = 10;
-constexpr char SC_READY = 11;
+constexpr char SC_LOGIN = 9;
+constexpr char SC_READY = 10;
+constexpr char SC_ALLREADY = 11;
 constexpr char SC_PLAY = 12;
 
 constexpr char SC_MAKE_MONSTER = 13;
 constexpr char SC_MONSTER = 14;
-constexpr char SC_RESULT = 15;
-
-constexpr char SC_ALLREADY = 16;
-
-
-
+constexpr char SC_MISSILE = 15;
+constexpr char SC_RESULT = 16;
 
 struct LOGIN_INFO {
 	short id;
 	in_addr ip;
 	short state;
 	char name[20];
+};
+
+struct CS_LOGIN_INFO_PACKET {
+	unsigned char size;
+	char	type;
+	char name[20];
+};
+
+struct CS_READY_PACKET {
+	unsigned char size;
+	char	type;
 };
 
 struct SC_LOGIN_INFO_PACKET {
@@ -45,12 +53,6 @@ struct SC_LOGIN_INFO_PACKET {
 	LOGIN_INFO data[PLAYER_NUM];
 };
 
-struct CS_LOGIN_INFO_PACKET {
-	unsigned char size;
-	char	type;
-	char name[20];
-};
-
 struct SC_READY_PACKET {
 	unsigned char size;
 	char	type;
@@ -59,11 +61,6 @@ struct SC_READY_PACKET {
 };
 
 struct SC_RESULT_PACKET {
-	unsigned char size;
-	char	type;
-};
-
-struct CS_READY_PACKET {
 	unsigned char size;
 	char	type;
 };
@@ -192,4 +189,18 @@ struct SC_MONSTER_PACKET {
 	char	type;
 
 	MONSTER_INFO_MANAGER monster[20];
+};
+
+struct MISSILE_INFO {
+	short id;
+	bool direction;
+	float radian;
+	POINT pos;
+};
+
+struct SC_MISSILE_PACKET {
+	unsigned char size;
+	char	type;
+
+	MISSILE_INFO info[MISSILE_NUM];
 };

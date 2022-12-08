@@ -80,6 +80,8 @@ public:
 	void Render(HDC scene_dc, const RECT& bit_rect);
 	inline bool IsAppeared() const { return is_appeared; }
 
+	int GetID() { return id; }
+
 	friend class MonsterManager;
 	friend class MonsterAI;
 };

@@ -294,34 +294,36 @@ DWORD WINAPI ClientThread(LPVOID arg)
 
 
 			//플레이어들에게 killmonster이랑 죽은 수 보내주기 - 나중에 여기 부분 몬스터 보내는걸로 수정
-			P_STATE  my_packet{};
-			my_packet.size = sizeof(P_STATE);
-			my_packet.type = SC_RESULT;
-			my_packet.state = 0;
-			for (int i = 0; i < PLAYER_NUM; ++i) {
-				if (player_list[i]) {
-					send(player_list[i]->sock, reinterpret_cast<char*>(&my_packet), sizeof(my_packet), NULL);
-				}
-			}
+			//P_STATE  my_packet{};
+			//my_packet.size = sizeof(P_STATE);
+			//my_packet.type = SC_RESULT;
+			//my_packet.state = 0;
+			//for (int i = 0; i < PLAYER_NUM; ++i) {
+			//	if (player_list[i]) {
+			//		send(player_list[i]->sock, reinterpret_cast<char*>(&my_packet), sizeof(my_packet), NULL);
+			//	}
+			//}
 
 
 			//시간 주고 다시 계산
 			if (StartDun == 0) {
-				EndTime = (unsigned)time(NULL) + 20;
+				EndTime = (unsigned)time(NULL) + 10;
 				StartDun = 1;
 			}
 			StartTime = (unsigned)time(NULL);
 			CntTime = EndTime - StartTime;
 
 			if (CntTime < 0) {
-				P_STATE  my_packet{};
-				my_packet.size = sizeof(P_STATE);
-				my_packet.type = SC_PLAY;
-				my_packet.state = 0;
-
-				for (int i = 0; i < PLAYER_NUM; ++i) {
-					if (player_list[i]) {
-						send(player_list[i]->sock, reinterpret_cast<char*>(&my_packet), sizeof(my_packet), NULL);
+				SC_RESULT_PACKET  my_packet{};
+				my_packet.size = sizeof(SC_RESULT_PACKET);
+				if (CntTime < 0) {
+					my_packet.type = SC_RESULT;
+					StartDun = 0;
+					for (int i = 0; i < PLAYER_NUM; ++i) {
+						if (player_list[i]) {
+							send(player_list[i]->sock, reinterpret_cast<char*>(&my_packet), sizeof(my_packet), NULL);
+							//iD로 구별되니 각각 보내는 것임.. 
+						}
 					}
 				}
 

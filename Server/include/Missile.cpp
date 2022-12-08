@@ -1,4 +1,7 @@
 #include "Missile.h"
+#include "Player.h"
+
+extern std::vector<Player*> player_list;
 
 void Missile::Update()
 {
@@ -97,9 +100,24 @@ void MissileManager::Update(const Dungeon* dungeon)
 			|| missile->IsOutOfRange()) {
 			delete missile;
 			missiles.erase(missiles.begin() + i);
+			/*
+			SC_REMOVE_MISSILE_PACKET my_packet;
+			my_packet.size = sizeof(SC_REMOVE_MISSILE_PACKET);
+			my_packet.type = SC_REMOVE_MISSILE;
+			for (int i = 0; i < player_list.size(); ++i) {
+				my_packet.missile_id = i;
+			}
+
+			for (int i = 0; i < PLAYER_NUM; ++i) {
+				if (player_list[i]->GetState() != UNCONNECT) {
+					send(player_list[i]->sock, reinterpret_cast<char*>(&my_packet), sizeof(my_packet), NULL);
+				}
+			}
+			*/
 			if (i > 0) {	// 메모리 엑세스 위반 방지 
 				--i;
 			}
+			
 		}
 	}
 }
@@ -110,8 +128,9 @@ void MissileManager::Render(HDC scene_dc, const RECT& bit_rect) const
 		missile->Render(scene_dc, bit_rect);*/
 }
 
-void MissileManager::Insert(Missile* given_missile)
+void MissileManager::Insert(Missile* given_missile, short id, short p_id)
 {
+	given_missile->id = id;
 	missiles.push_back(given_missile);
 }
 
@@ -123,4 +142,28 @@ void MissileManager::Delete(Missile* given_missile)
 			missiles.erase(missiles.begin() + i);
 			break;
 		}
+}
+
+void MissileManager::Send()
+{
+	SC_MISSILE_PACKET my_packet;
+	my_packet.size = sizeof(SC_MISSILE_PACKET);
+	my_packet.type = SC_MISSILE;
+
+	for (int i = 0; i < missiles.size(); ++i) {	// missiles.size가 MISSILE_NUM을 넘어가면 엑세스 위반 발생 위험..
+		my_packet.info[i].direction = missiles[i]->looking_direction;
+		my_packet.info[i].id = missiles[i]->id;
+		my_packet.info[i].pos = missiles[i]->pos;
+		my_packet.info[i].radian = missiles[i]->radian;
+	}
+
+	for (int i = missiles.size(); i < MISSILE_NUM; ++i) {	
+		my_packet.info[i].id = -1;
+	}
+
+	for (int i = 0; i < PLAYER_NUM; ++i) {
+		if (player_list[i]->GetState() != UNCONNECT) {
+			send(player_list[i]->sock, reinterpret_cast<char*>(&my_packet), sizeof(my_packet), NULL);
+		}
+	}
 }

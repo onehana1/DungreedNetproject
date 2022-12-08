@@ -3,10 +3,10 @@
 void Monster::Update(const Dungeon* dungeon, const Player* player, AnimationManager* animation_manager, MissileManager* missile_manager, SoundManager* sound_manager)
 {
 	if (is_appeared) {
-		AutoAction(dungeon, player, animation_manager, missile_manager, sound_manager);
+		//AutoAction(dungeon, player, animation_manager, missile_manager, sound_manager);
 		// Die ·çÆ¾
-		ForceGravity(dungeon);
-		ForceGravity(dungeon);
+		//ForceGravity(dungeon);
+		//ForceGravity(dungeon);
 		UpdateAnimation(animation_manager);
 
 		if (!is_attacking && atk_delay)
@@ -430,7 +430,7 @@ void MonsterManager::UpdateMonsterInfo(MONSTER_INFO_MANAGER monster_info[20], Pl
 
 			if (monster_info[i].isFormerAttack) {
 				int player_num = monster_info[i].player_id;
-
+/*
 				switch (monsters[id]->id) {
 				case 4000001:
 				{
@@ -470,7 +470,9 @@ void MonsterManager::UpdateMonsterInfo(MONSTER_INFO_MANAGER monster_info[20], Pl
 					}
 					break;
 				}
+				
 				}
+				*/
 			}
 		}
 		

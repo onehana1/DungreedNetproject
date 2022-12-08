@@ -74,6 +74,20 @@ public:
 		strcpy_s(atk_sound_name, hit_sound);
 	}
 
+	Missile(Character* host, const POINT pos, const int width, const int height, const BOOL looking_direction, const TCHAR* start_image_path,
+		const std::string& start_animation_name, AnimationManager* animation_manager, const char* hit_sound, const float hit_sound_volume)
+		: host{ host }, pos{ pos }, old_pos{ pos }, width{ width }, height{ height }
+		, looking_direction{ looking_direction }, atk_sound_volume{ hit_sound_volume }
+	{
+		animation.LoadAnimation(animation_manager, start_animation_name);
+		animation_name = start_animation_name;
+		printf("%s\n", start_animation_name);
+		image = start_image = new Image(start_image_path);
+		animation.Play();
+		strcpy_s(atk_sound_name, hit_sound);
+	}
+
+
 	~Missile()
 	{
 		delete start_image;
@@ -93,12 +107,15 @@ class MissileManager {
 private:
 public:
 	std::vector<Missile*>  missiles;
+	std::vector<MISSILE_INFO> miss_info;
 
-	void Init();
+	void Init(AnimationManager* animation_manager, int w, int h);
 	void Render(HDC scene_dc, const RECT& bit_rect) const;
 	void Update(const Dungeon* dungeon, AnimationManager* animation_manager);
+	void Update(POINT pos[MISSILE_NUM]);
 	void Insert(Missile* given_missile);
 	void Delete(Missile* given_missile);
+	void Delete(int id);
 };
 
 #endif

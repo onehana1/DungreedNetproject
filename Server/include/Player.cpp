@@ -177,11 +177,7 @@ void Player::AttackProc(Weapon* weapon, MissileManager* missile_manager   )
 		if (is_attacking) {
 			if (is_doing_missile_attack && former_atk_delay == 0) {
 				float radian = Degree(mouse, pos);
-
-				if (looking_direction)
-					missile_manager->Insert(new Missile(this, pos, width, height / 2, radian, x_move_px * 2, 300, TRUE, 3, 70));
-				else
-					missile_manager->Insert(new Missile(this, pos, width, height / 2, radian, x_move_px * 2, 300, FALSE, 3, 70));
+				missile_manager->Insert(new Missile(this, pos, width, height / 2, radian, x_move_px * 2, 300, looking_direction, 3, 70), 3, id);
 			}
 			else if (!is_doing_missile_attack) {
 				int atk_rect_center_x;
@@ -321,10 +317,10 @@ void Player::SC_AttackProc(Weapon* weapon, MissileManager* missile_manager, PLAY
 			if (is_doing_missile_attack && former_atk_delay == 0) {
 				float radian = Degree(mouse.mPos, pos);
 
-				if (looking_direction) //미사일 업뎃장소, 보내는 거에 미사일도 필요할듯. 관리되고있는 missile vector값을 보내자.  
-					missile_manager->Insert(new Missile(this, pos, width, height / 2, radian, x_move_px * 2, 300, TRUE, 3, 70)); 
-				else
-					missile_manager->Insert(new Missile(this, pos, width, height / 2, radian, x_move_px * 2, 300, FALSE, 3, 70));
+				//if (looking_direction) //미사일 업뎃장소, 보내는 거에 미사일도 필요할듯. 관리되고있는 missile vector값을 보내자.  
+				//	missile_manager->Insert(new Missile(this, pos, width, height / 2, radian, x_move_px * 2, 300, TRUE, 3, 70)); 
+				//else
+				//	missile_manager->Insert(new Missile(this, pos, width, height / 2, radian, x_move_px * 2, 300, FALSE, 3, 70));
 			}
 			else if (!is_doing_missile_attack) {
 				int atk_rect_center_x;

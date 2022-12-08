@@ -41,7 +41,7 @@ void MonsterAI::Attack(const Dungeon* dungeon, const Player* player, MissileMana
 			monster->is_former_attack = true;
 			for (double i = -1; i < 1; i += 1.0 / 4.0) {
 				missile_manager->Insert(new Missile(monster, monster->pos, monster->width, monster->height / 6 * 5,
-					i * pi, 2, 250, TRUE, 1, 25)); //L"animation/BansheeBullet1.png", "BansheeBullet","sound\\Water1.ogg", 0.4
+					i * pi, 2, 250, TRUE, 1, 25), 0, monster->GetID()); //L"animation/BansheeBullet1.png", "BansheeBullet","sound\\Water1.ogg", 0.4
 			}
 		}
 		break;
@@ -107,7 +107,7 @@ void MonsterAI::Attack(const Dungeon* dungeon, const Player* player, MissileMana
 					missile_manager->Insert(new Missile(monster,
 						POINT{monster->pos.x + monster->width / 2, monster->pos.y + monster->height / 2}
 						, monster->width / 5, monster->height / 5,
-						i * pi, 4, 500, TRUE, 1, 15)); //, L"animation/SkellBossBullet1.png", "SkellBossBullet" ,"sound\\Explosion1.ogg", 0.4//파일이름 중복이니까 숫자로 관리할 수 있도록 구현전  참고용으로 남겨놈 
+						i * pi, 4, 500, TRUE, 1, 15), 1, monster->GetID()); //, L"animation/SkellBossBullet1.png", "SkellBossBullet" ,"sound\\Explosion1.ogg", 0.4//파일이름 중복이니까 숫자로 관리할 수 있도록 구현전  참고용으로 남겨놈 
 				}
 			}
 			else {
@@ -119,7 +119,7 @@ void MonsterAI::Attack(const Dungeon* dungeon, const Player* player, MissileMana
 						, monster->width / 5, monster->height / 5,
 						Degree(POINT{ player->pos.x + player->width / 2, player->pos.y + player->height / 2 },
 							POINT{ monster->pos.x + monster->width / 2, monster->pos.y + monster->height / 2 })
-						, 4, 500, TRUE, 1, 15)); //, L"animation/SkellBossBullet1.png","SkellBossBullet" , "sound\\Explosion1.ogg", 0.4
+						, 4, 500, TRUE, 1, 15), 1, monster->GetID()); //, L"animation/SkellBossBullet1.png","SkellBossBullet" , "sound\\Explosion1.ogg", 0.4
 		
 
 				}
@@ -131,7 +131,7 @@ void MonsterAI::Attack(const Dungeon* dungeon, const Player* player, MissileMana
 						, monster->width / 5, monster->height / 5,
 						Degree(POINT{ player->pos.x + player->width / 2, player->pos.y + player->height / 2 },
 							POINT{ monster->pos.x + monster->width / 2, monster->pos.y + monster->height / 2 })
-						, 4, 500, FALSE, 1, 15));//, L"animation/SkellBossBullet1.png","SkellBossBullet" , "sound\\Explosion1.ogg", 0.8
+						, 4, 500, FALSE, 1, 15), 2, monster->GetID());//, L"animation/SkellBossBullet1.png","SkellBossBullet" , "sound\\Explosion1.ogg", 0.8
 				}
 			}
 

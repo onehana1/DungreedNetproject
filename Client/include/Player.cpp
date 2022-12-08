@@ -162,12 +162,8 @@ void Player::AttackProc(Weapon* weapon, MissileManager* missile_manager, Animati
 			if (is_doing_missile_attack && former_atk_delay == 0) {
 				float radian = Degree(info.MPos, pos);
 
-				if (looking_direction)
-					missile_manager->Insert(new Missile(this, pos, width, height / 2, radian, x_move_px * 2, 300, TRUE, 3, 70,
-						L"animation/SwordMissile1.png", "SwordMissile", animation_manager, "sound\\Slash8.ogg", 0.4f));
-				else
-					missile_manager->Insert(new Missile(this, pos, width, height / 2, radian, x_move_px * 2, 300, FALSE, 3, 70,
-						L"animation/SwordMissile1.png", "SwordMissile", animation_manager, "sound\\Slash8.ogg", 0.4f));
+				//missile_manager->Insert(new Missile(this, pos, width, height / 2, radian, x_move_px * 2, 300, looking_direction, 3, 70,
+					//L"animation/SwordMissile1.png", "SwordMissile", animation_manager, "sound\\Slash8.ogg", 0.4f));
 			}
 			else if (!is_doing_missile_attack) {
 				int atk_rect_center_x;

@@ -32,6 +32,8 @@ private:
 	int pierce;					// ฐüล๋ทย
 	int atk;
 
+	short id = -1;
+
 	std::vector<const Character*> attack_victims;
 	RECT atk_rect;
 	char atk_sound_name[FILE_NAME_LEN];
@@ -75,8 +77,10 @@ public:
 	void Init();
 	void Render(HDC scene_dc, const RECT& bit_rect) const;
 	void Update(const Dungeon* dungeon);
-	void Insert(Missile* given_missile);
+	void Insert(Missile* given_missilec, short id, short p_id);
 	void Delete(Missile* given_missile);
+
+	void Send();
 };
 
 #endif
