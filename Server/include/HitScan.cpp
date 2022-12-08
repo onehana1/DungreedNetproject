@@ -2,7 +2,8 @@
 
 void HitScanner::operator()(Character* attacker, Character* victim)
 {
-	if (attacker->IsAttacking() && attacker->former_atk_delay <= 0 && !attacker->HasAlreadyAttacked(victim)) {
+	//attacker->former_atk_delay <= 0
+	if (attacker->IsAttacking() && !attacker->HasAlreadyAttacked(victim)) {
 		RECT my_rect = { victim->pos.x, victim->pos.y, victim->pos.x + victim->width, victim->pos.y + victim->height };
 		RECT tmp;
 		if (IntersectRect(&tmp, &my_rect, &attacker->atk_rect)) {

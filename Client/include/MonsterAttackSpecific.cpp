@@ -64,9 +64,9 @@ void MonsterAI::Attack(const Dungeon* dungeon, const Player* player, AnimationMa
 				MoveToPlayer(dungeon, player);
 			}
 		}
-		else if (monster->animation.IsEnd()) {
+		//else if (monster->animation.IsEnd()) {
 			monster->FinishAttack();
-		}
+		//}
 		break;
 	case 4000013:
 		if (monster->atk_delay == 0) {

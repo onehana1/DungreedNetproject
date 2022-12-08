@@ -182,7 +182,7 @@ void Player::AttackProc(Weapon* weapon, MissileManager* missile_manager, Animati
 
 			--former_atk_delay;
 
-			if (weapon->IsAttackFinished())
+			//if (weapon->IsAttackFinished())
 				FinishAttack();
 		}
 		else 
