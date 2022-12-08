@@ -74,7 +74,7 @@ void MonsterAI::Attack(const Dungeon* dungeon, const Player* player, MissileMana
 				MoveToPlayer(dungeon, player);
 			}
 		}
-		else if (std::chrono::duration<double>(std::chrono::system_clock::now() - monster->attack_start).count() > 0.5) {
+		else if (std::chrono::duration<double>(std::chrono::system_clock::now() - monster->attack_start).count() > 0.8) {
 			monster->FinishAttack();
 		}
 		break;
