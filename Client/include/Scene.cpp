@@ -701,10 +701,14 @@ void InterimScene::Update(SOCKET socket, char* name)
 {
 	crosshair->Update(image->GetWidth(), image->GetHeight());
 	effect_manager->Update(animation_manager);
-	/*server_sock = socket;
+
+	server_sock = socket;
 	P_STATE my_packet{};
-	my_packet.state = sizeof(P_STATE);
-	send(server_sock, reinterpret_cast<char*>(&my_packet), sizeof(my_packet), NULL);*/
+	my_packet.size = sizeof(P_STATE);
+	my_packet.type = CS_RESULT;
+	my_packet.state = 1;
+
+	send(server_sock, reinterpret_cast<char*>(&my_packet), sizeof(my_packet), NULL);
 
 	
 }
@@ -721,10 +725,10 @@ int InterimScene::ChangeScene()
 		}
 	}
 
-	for (int i = 0; i < PLAYER_NUM; ++i)
-		if (player_list[i]->GetState() == RESULTING) {
-			return 4;
-		}
+	//for (int i = 0; i < PLAYER_NUM; ++i)
+	//	if (player_list[i]->GetState() == RESULTING) {
+	//		return 4;
+	//	}
 
 	return 0;
 }

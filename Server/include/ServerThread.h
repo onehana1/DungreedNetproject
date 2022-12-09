@@ -197,6 +197,7 @@ DWORD WINAPI ClientThread(LPVOID arg)
 		{
 			//시간
 			if (StartDun == 0) {
+				printf("타이머 온\n");
 				EndTime = (unsigned)time(NULL) + 5;
 				StartDun = 1;
 			}
@@ -285,7 +286,7 @@ DWORD WINAPI ClientThread(LPVOID arg)
 		}
 		case CS_RESULT:
 		{
-			printf("rsult\n");
+			printf("result\n");
 			player_list[id]->SetState(RESULTING);
 
 			char subBuf[sizeof(P_STATE)]{};
@@ -304,19 +305,22 @@ DWORD WINAPI ClientThread(LPVOID arg)
 			//	}
 			//}
 
-
 			//시간 주고 다시 계산
 			if (StartDun == 0) {
+				printf("시간 다시 줌");
 				EndTime = (unsigned)time(NULL) + 5;
 				StartDun = 1;
 			}
 			StartTime = (unsigned)time(NULL);
 			CntTime = EndTime - StartTime;
+			printf("초 - %d", CntTime);
 
 			if (CntTime < 0) {
-				SC_RESULT_PACKET  my_packet{};
-				my_packet.size = sizeof(SC_RESULT_PACKET);
-				my_packet.type = SC_PLAY;
+				printf("send sc_play\n");
+				P_STATE  my_packet{};
+				my_packet.size = sizeof(P_STATE);
+				my_packet.type = SC_RESULT;
+				my_packet.state = 0;
 				StartDun = 0;
 				for (int i = 0; i < PLAYER_NUM; ++i) {
 					if (player_list[i]) {

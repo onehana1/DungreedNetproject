@@ -111,15 +111,15 @@ DWORD WINAPI RecvThread(LPVOID arg)// //Ŭ���̾�Ʈ���� Recv��
 			//recv(sock, PlayBuf, sizeof(PlayBuf), 0);
 			printf("packet size :  %d\n", buf[0]);
 
-			char ResultBuf[sizeof(SC_RESULT_PACKET[3])]{};
+			char ResultBuf[sizeof(P_STATE[3])]{};
 			recv(sock, ResultBuf, sizeof(ResultBuf), 0);
 
-			SC_RESULT_PACKET p_info[3];
-			memcpy(&p_info, &ResultBuf, sizeof(SC_RESULT_PACKET[3]));
+			P_STATE p_info[3];
+			memcpy(&p_info, &ResultBuf, sizeof(P_STATE[3]));
 
 			for (int i = 0; i < PLAYER_NUM; ++i)
 			{
-				if (player_list[i] && p_info->type == SC_PLAY) {
+				if (player_list[i] && p_info->state == 0) {
 					printf("change to playing\n");
 					player_list[i]->SetState(PLAYING);
 					framework->ChangeScene(3);
