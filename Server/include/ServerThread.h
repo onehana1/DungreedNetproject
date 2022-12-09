@@ -197,7 +197,7 @@ DWORD WINAPI ClientThread(LPVOID arg)
 		{
 			//시간
 			if (StartDun == 0) {
-				EndTime = (unsigned)time(NULL) + 80;
+				EndTime = (unsigned)time(NULL) + 5;
 				StartDun = 1;
 			}
 			StartTime = (unsigned)time(NULL);
@@ -307,7 +307,7 @@ DWORD WINAPI ClientThread(LPVOID arg)
 
 			//시간 주고 다시 계산
 			if (StartDun == 0) {
-				EndTime = (unsigned)time(NULL) + 10;
+				EndTime = (unsigned)time(NULL) + 5;
 				StartDun = 1;
 			}
 			StartTime = (unsigned)time(NULL);
@@ -316,20 +316,18 @@ DWORD WINAPI ClientThread(LPVOID arg)
 			if (CntTime < 0) {
 				SC_RESULT_PACKET  my_packet{};
 				my_packet.size = sizeof(SC_RESULT_PACKET);
-				if (CntTime < 0) {
-					my_packet.type = SC_RESULT;
-					StartDun = 0;
-					for (int i = 0; i < PLAYER_NUM; ++i) {
-						if (player_list[i]) {
-							send(player_list[i]->sock, reinterpret_cast<char*>(&my_packet), sizeof(my_packet), NULL);
-							//iD로 구별되니 각각 보내는 것임.. 
-						}
+				my_packet.type = SC_PLAY;
+				StartDun = 0;
+				for (int i = 0; i < PLAYER_NUM; ++i) {
+					if (player_list[i]) {
+						send(player_list[i]->sock, reinterpret_cast<char*>(&my_packet), sizeof(my_packet), NULL);
+						player_list[id]->SetState(PLAYING);
+						//iD로 구별되니 각각 보내는 것임.. 
 					}
 				}
 
-				StartDun = 0;
-
 			}
+
 
 
 		}

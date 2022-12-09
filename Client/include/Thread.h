@@ -95,7 +95,8 @@ DWORD WINAPI RecvThread(LPVOID arg)// //Ŭ���̾�Ʈ���� Recv��
 
 			PLAYER_INFO p_info[3];
 			memcpy(&p_info, &PlayBuf, sizeof(PLAYER_INFO[3]));
-			
+
+
 			//printf("id : %d %d %d\n", p_info[0].ID, p_info[1].ID, p_info[2].ID)
 			//framework->play_scene->Player_Info.time = temp.time;
 			framework->play_scene->SetPlayerInfo(p_info);
@@ -110,23 +111,23 @@ DWORD WINAPI RecvThread(LPVOID arg)// //Ŭ���̾�Ʈ���� Recv��
 			//recv(sock, PlayBuf, sizeof(PlayBuf), 0);
 			printf("packet size :  %d\n", buf[0]);
 
-			//P_STATE temp[3];
-			//memcpy(&temp, &PlayBuf, sizeof(P_STATE[3]));
+			char ResultBuf[sizeof(SC_RESULT_PACKET[3])]{};
+			recv(sock, ResultBuf, sizeof(ResultBuf), 0);
+
+			SC_RESULT_PACKET p_info[3];
+			memcpy(&p_info, &ResultBuf, sizeof(SC_RESULT_PACKET[3]));
 
 			for (int i = 0; i < PLAYER_NUM; ++i)
 			{
-				if (player_list[i])
+				if (player_list[i] && p_info->type == SC_PLAY) {
+					printf("change to playing\n");
+					player_list[i]->SetState(PLAYING);
+					framework->ChangeScene(3);
+				}
+				else if (player_list[i])
 					player_list[i]->SetState(RESULTING);
+
 			}
-
-
-			/*char IdBuf[sizeof(short)]{};
-			recv(sock, IdBuf, sizeof(IdBuf), 0);
-
-			short id;
-			memcpy(&id, &IdBuf, sizeof(short));
-			player_list[id]->SetState(RESULTING);*/
-
 			break;
 		}
 		
