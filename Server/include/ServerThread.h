@@ -230,7 +230,6 @@ DWORD WINAPI ClientThread(LPVOID arg)
 			my_packet.size = sizeof(SC_RESULT_PACKET);
 			if (CntTime < 0) {
 				my_packet.type = SC_RESULT;
-				StartDun = 0;
 				for (int i = 0; i < PLAYER_NUM; ++i) {
 					if (player_list[i]) {
 						send(player_list[i]->sock, reinterpret_cast<char*>(&my_packet), sizeof(my_packet), NULL);

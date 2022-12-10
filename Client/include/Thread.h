@@ -173,7 +173,8 @@ DWORD WINAPI RecvThread(LPVOID arg)// //Ŭ���̾�Ʈ���� Recv��
 			break;
 		}
 		default:
-			printf("Unknown PACKET type [%d]\n", type);
+			//printf("Unknown PACKET type [%d]\n", type);//렉떄문에 잠시 주석
+			break;
 		}
 	}
 }

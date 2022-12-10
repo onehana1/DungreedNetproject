@@ -481,7 +481,7 @@ void LobbyScene::Update(SOCKET socket, char* name)
 	if (g_myid == -1) { return; }
 
 	if(player_list[g_myid]->GetState() != READY){
-		if (GetAsyncKeyState(VK_MBUTTON) & 0x8000) {	// 휠 클릭tl 준비 완료 상태로 변함
+		if (GetAsyncKeyState(VK_MBUTTON) || GetAsyncKeyState(VK_SPACE) & 0x8000) {		// 휠 클릭tl 준비 완료 상태로 변함
 			POINT pos;
 			GetCursorPos(&pos);
 			ScreenToClient(h_wnd, &pos);
