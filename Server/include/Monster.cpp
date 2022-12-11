@@ -377,7 +377,7 @@ bool MonsterManager::MapPixelCollision(const HDC terrain_dc, const COLORREF& val
 		return false;
 }
 
-void MonsterManager::Appear(int num)
+void MonsterManager::Appear(int num) //리젠
 {
 	// 일정 시간 이후 문제가 생긴다면 어쩌면 여기 문제
 	SC_MAKE_MONSTER_PACKET my_packet;

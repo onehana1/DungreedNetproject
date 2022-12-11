@@ -287,11 +287,12 @@ DWORD WINAPI ClientThread(LPVOID arg)
 		}
 		case CS_RESULT:
 		{
-			
+			char Buf[2]{};
+			recv(player_list[id]->sock, Buf, sizeof(Buf), 0);	//padding
 			//printf("result\n");
 			player_list[id]->SetState(RESULTING);
 
-			char subBuf[sizeof(P_STATE)]{};
+			char subBuf[sizeof(P_STATE_INFO)]{};
 			recv(player_list[id]->sock, subBuf, sizeof(subBuf), 0);
 			//printf("패킷 사이즈 :  %d\n", buf[0]);
 
@@ -343,8 +344,8 @@ DWORD WINAPI ClientThread(LPVOID arg)
 		}
 
 		default:
-			//printf("Unknown PACKET type [%d]\n", type); //오류 체크 안보여서 잠시 지움
-			break;
+			printf("Unknown PACKET type [%d]\n", type); //오류 체크 안보여서 잠시 지움
+			//break;
 		}
 	}
 	return 0;

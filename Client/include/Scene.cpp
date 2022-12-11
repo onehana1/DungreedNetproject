@@ -132,7 +132,9 @@ void PlayScene::Render() const
 
 	dungeon->Render(dc_set.buf_dc, dc_set.bit_rect);
 	for (int i = 0; i < PLAYER_NUM; ++i) {
-		player[i]->Render(dc_set.buf_dc, dc_set.bit_rect);
+		player[i]->RenderPlayerTOP(dc_set.buf_dc, dc_set.bit_rect, camera->Rect());
+
+		player[i]->Render(dc_set.buf_dc, dc_set.bit_rect);		
 		player[i]->RenderPlayerHP(dc_set.buf_dc, dc_set.bit_rect, camera->Rect());
 	}
 	monster_manager->Render(dc_set.buf_dc, dc_set.bit_rect);

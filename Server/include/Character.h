@@ -83,7 +83,7 @@ protected:
 
 public:
 	int type = 0;
-
+	int kill_monster=0;
 	Character() = default;
 	Character(const int id, const int width, const int height, const POINT pos, const State state, const BOOL looking_direction,
 		const double x_move_px, const double jump_start_power,const int hp, const int atk, const int def  )

@@ -24,7 +24,7 @@ private:
 	char name[20];
 	in_addr ip;
 
-	int kill_monster;
+	
 
 	short server_state;
 

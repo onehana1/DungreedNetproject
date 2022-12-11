@@ -134,6 +134,37 @@ void Character::NoOut(const Dungeon* dungeon)
 			pos.x += 2;
 }
 
+void Character::DrawClipImage(HDC ah_dc, CImage* ap_image, POINT a_clip_start_pos, POINT a_clip_end_pos)
+{
+	// 부분 이미지의 시작 위치와 폭(cx), 높이(cy) 값을 저장할 변수 선언
+	int x, y, cx, cy;
+	// X 좌표 결정
+	if (a_clip_end_pos.x > a_clip_start_pos.x) {   // 시작 X좌표가 끝 X좌표 보다 작은 경우 ( 정상적인 좌표 )
+		x = a_clip_start_pos.x;
+		cx = a_clip_end_pos.x - a_clip_start_pos.x;   // 부분 이미지의 폭(width)을 계산
+	}
+	else {                // 시작 X좌표가 끝 X좌표보다 큰 경우 ( 좌표가 반대로 된 경우 )
+		x = a_clip_end_pos.x;
+		cx = a_clip_start_pos.x - a_clip_end_pos.x;   // 부분 이미지의 폭(width)을 계산
+	}
+	// Y 좌표 결정
+	if (a_clip_end_pos.y > a_clip_start_pos.y) {    // 시작 Y좌표가 끝 Y좌표 보다 작은 경우 ( 정상적인 좌표 )
+		y = a_clip_start_pos.y;
+		cy = a_clip_end_pos.y - a_clip_start_pos.y;    // 부분 이미지의 폭(width)을 계산
+	}
+	else {    // 시작 Y좌표가 끝 Y좌표보다 큰 경우 ( 좌표가 반대로 된 경우 )
+		y = a_clip_end_pos.y;
+		cy = a_clip_start_pos.y - a_clip_end_pos.y;    // 부분 이미지의 폭(width)을 계산
+	}
+
+	// 폭과 높이가 모두 0 이 아니어야지만 출력한다.
+	if (cx && cy) 
+		// 고정 좌표를 사용하지 않는 경우에는 부분 이미지를 지정할때 사용한 시작좌표에다가 부분 이미지를 출력하고
+		// 고정 좌표를 사용하는 경우에는 a_fixed_x, a_fixed_y 에 지정된 좌표 값을 사용하여 출력한다.
+		ap_image->Draw(ah_dc, x, y, cx, cy, x, y, cx, cy);
+	
+}
+
 void Character::ChangeAnimation(const char* a_name)
 {
 	animation_name = a_name;
@@ -198,7 +229,7 @@ void Character::RenderMonsterHP(HDC scene_dc, const RECT& bit_rect) const
 	DeleteObject(hBrush);
 }
 
-void Character::RenderPlayerHP(HDC scene_dc, const RECT& bit_rect, const RECT& camera) const
+void Character::RenderPlayerHP(HDC scene_dc, const RECT& bit_rect, const RECT& camera) const //여기다 랭킹표 만들거임 
 {
 	int size = width * 3;
 	int height_size = height / 5;
@@ -220,6 +251,24 @@ void Character::RenderPlayerHP(HDC scene_dc, const RECT& bit_rect, const RECT& c
 	FillRect(scene_dc, &rect, hBrush);
 	SelectObject(scene_dc, oldBrush);
 	DeleteObject(hBrush);
+
+	
+}
+
+void Character::RenderPlayerTOP(HDC scene_dc, const RECT& bit_rect, const RECT& camera) 
+{
+
+
+	Ranking[0].Load(L"map_png\\Ranking_Back.png");
+	Ranking[1].Load(L"Background\\Crown.png");
+	Ranking[0].AlphaBlend(scene_dc, 370, 20, 50);
+	//Ranking.StretchBlt(scene_dc, 375, 25, 30, 80); //고쳐야댐 
+	Ranking[1].StretchBlt(scene_dc,(int)(pos.x ), (int)(pos.y - 15), 20, 20, 0, 0, 512, 512);//크기를 10x10
+	
+//순위
+
+	//출력 
+
 }
 
 void Character::Look(const POINT& target)

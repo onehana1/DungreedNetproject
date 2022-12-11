@@ -114,23 +114,23 @@ DWORD WINAPI RecvThread(LPVOID arg)// //Ŭ���̾�Ʈ���� Recv��
 			char Buf[2]{};
 			recv(sock, Buf, sizeof(Buf), 0);
 
-			char ResultBuf[sizeof(P_STATE_INFO[3])]{};
+			char ResultBuf[sizeof(P_STATE_INFO)]{};
 			recv(sock, ResultBuf, sizeof(ResultBuf), 0);
 
-			P_STATE_INFO p_info[3];
-			memcpy(&p_info, &ResultBuf, sizeof(P_STATE_INFO[3]));
+			P_STATE_INFO p_info;
+			memcpy(&p_info, &ResultBuf, sizeof(P_STATE_INFO));
 			//if (player_list[0] && p_info->state == 0)/*printf("ID:%d-----\n", p_info[0].dungeonID);*/framework->StartNum = 1; 
 			
-			if (p_info[0].dungeonID != framework->dungeonID) { //던전 아이디가 바뀔시 playscene를 전환하기 위해 bool활성 
+			if (p_info.dungeonID != framework->dungeonID) { //던전 아이디가 바뀔시 playscene를 전환하기 위해 bool활성 
 				framework->StartNum = 1;
-				framework->dungeonID = p_info[0].dungeonID;
-				printf("ID:%d----------------------\n", p_info[0].dungeonID);
+				framework->dungeonID = p_info.dungeonID;
+				printf("ID:%d----------------------\n", p_info.dungeonID);
 			}
 			
 
 			for (int i = 0; i < PLAYER_NUM; ++i)
 			{
-				if (player_list[i] && p_info->state == 0) {
+				if (player_list[i] && p_info.state == 0) {
 					printf("change to playing\n");
 					player_list[i]->SetState(PLAYING);
 					framework->ChangeScene(3);
@@ -184,8 +184,8 @@ DWORD WINAPI RecvThread(LPVOID arg)// //Ŭ���̾�Ʈ���� Recv��
 			break;
 		}
 		default:
-			//printf("Unknown PACKET type [%d]\n", type);//렉떄문에 잠시 주석
-			break;
+			printf("Unknown PACKET type [%d]\n", type);//렉떄문에 잠시 주석
+			//break;
 		}
 	}
 }

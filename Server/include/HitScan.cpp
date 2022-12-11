@@ -9,6 +9,7 @@ void HitScanner::operator()(Character* attacker, Character* victim)
 		if (IntersectRect(&tmp, &my_rect, &attacker->atk_rect)) {
 			attacker->AddAttackVictim(victim);
 			victim->hp -= calc_damage(attacker, victim);
+			if (victim->hp <= 0)attacker->kill_monster++; //공격받고 죽는 곳 
 			victim->red_flash_cnt = 8;
 		}
 	}
@@ -22,6 +23,7 @@ void HitScanner::operator()(Missile* attacker, Character* victim, MissileManager
 		if (IntersectRect(&tmp, &my_rect, &attacker->atk_rect)) {
 			attacker->AddAttackVictim(victim);
 			victim->hp -= calc_damage(attacker, victim);
+			
 			victim->red_flash_cnt = 8;
 			if (attacker->pierce == attacker->attack_victims.size());
 				//missile_manager->Delete(attacker);	// 액세스 위반 수정 필요

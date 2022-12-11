@@ -56,6 +56,7 @@ protected:
 	bool is_attacking = false;
 	std::vector<const Character*> attack_victims;
 	RECT atk_rect;
+	CImage Ranking[2];
 	int former_atk_delay = 0;
 	int atk_delay = 0;
 	int red_flash_cnt = 0;
@@ -93,6 +94,7 @@ public:
 	{
 		animation.LoadAnimation(animation_manager, start_animation_name);
 		animation_name = start_animation_name;
+		
 		image = start_image = new Image(start_image_path);
 	}
 	~Character() { delete start_image; }
@@ -104,6 +106,7 @@ public:
 	void Render(HDC scene_dc, const RECT& bit_rect);
 	void RenderMonsterHP(HDC scene_dc, const RECT& bit_rect) const;
 	void RenderPlayerHP(HDC scene_dc, const RECT& bit_rect, const RECT& camera) const;
+	void RenderPlayerTOP(HDC scene_dc, const RECT& bit_rect, const RECT& camera);
 
 	void Look(const POINT& target);
 	void Look(const Character& target);
@@ -116,6 +119,7 @@ public:
 	void NoOut(const Dungeon* dungeon);
 
 	inline bool IsDied() const { return (hp <= 0) ? true : false; }
+	void DrawClipImage(HDC ah_dc, CImage* ap_image, POINT a_clip_start_pos, POINT a_clip_end_pos);
 
 	void SetPos(POINT in) { pos = in; }
 	void SetDirection(bool in) { looking_direction = in; }
