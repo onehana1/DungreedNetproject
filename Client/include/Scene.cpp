@@ -130,6 +130,24 @@ void PlayScene::Render() const
 {
 	InstantDCSet dc_set(RECT{ 0, 0, dungeon->dungeon_width, dungeon->dungeon_height });
 
+	//==================================
+	TCHAR lpOut[100];
+	TCHAR name[50];
+	TCHAR kill[50];
+	TCHAR death[50];
+	HFONT hFont, OldFont;	// 폰트 지정
+
+	SetBkMode(dc_set.buf_dc, TRANSPARENT);	// 글자 입력시 배경 투명
+	SetTextColor(dc_set.buf_dc, RGB(255, 255, 255));	// 글자 하얀색
+	hFont = CreateFont(15, 0, 0, 0, 0, 0, 0, 0, HANGEUL_CHARSET, 0, 0, 0,
+		VARIABLE_PITCH | FF_ROMAN, TEXT("맑은 고딕"));		// 폰트 등 추후 수정
+	OldFont = (HFONT)SelectObject(dc_set.buf_dc, hFont);
+
+
+
+
+
+
 	dungeon->Render(dc_set.buf_dc, dc_set.bit_rect);
 	for (int i = 0; i < PLAYER_NUM; ++i) {
 		player[i]->RenderPlayerTOP(dc_set.buf_dc, dc_set.bit_rect, camera->Rect());
@@ -145,8 +163,23 @@ void PlayScene::Render() const
 	}
 	effect_manager->Render(dc_set.buf_dc, dc_set.bit_rect);
 
+	//==================================
+	for (int i = 0; i < PLAYER_NUM; ++i)
+	{
+		ZeroMemory(lpOut, 100);
+		ZeroMemory(kill, 50);
+		MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, player_list[i]->GetName(), strlen(player_list[i]->GetName()), kill, 50); //playerinfo 받는걸로 바꾸기
+		wsprintf(lpOut, TEXT("킬수여기다가 : %s"), kill);
+		TextOut(dc_set.buf_dc, 45 + 294, 50+ 10 * i, lpOut, lstrlen(lpOut));
 
+		//ZeroMemory(death, 50);
+		//MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, player_list[i]->GetName(), strlen(player_list[i]->GetName()), death, 50);//playerinfo 받는걸로 바꾸기
+		//wsprintf(lpOut, TEXT("죽은수여기다가 : %s"), death);
+		//TextOut(dc_set.buf_dc, 45 + 294 , 50 + 10 * i, lpOut, lstrlen(lpOut));
+	}
 
+	SelectObject(dc_set.buf_dc, OldFont);
+	DeleteObject(hFont);
 	DrawBuffer(dc_set.buf_dc, camera->Rect());
 }
 
@@ -590,7 +623,7 @@ InterimScene::InterimScene()
 {
 	try {
 		image = new Image(L"Background\\InterimResults.png");
-		start_button = new Image(L"Background\\start_button.png");
+
 		crosshair = new Crosshair(image->GetWidth(), image->GetHeight());
 		animation_manager = new AnimationManager;
 		animation_manager->Insert("player_stand");
@@ -618,7 +651,7 @@ InterimScene::InterimScene(SOCKET socket, char* name)
 
 
 		image = new Image(L"Background\\InterimResults.png");
-		start_button = new Image(L"Background\\start_button.png");	// 추후 이미지 변경 필요
+
 		crosshair = new Crosshair(image->GetWidth(), image->GetHeight());
 		animation_manager = new AnimationManager;
 		animation_manager->Insert("player_stand");
@@ -641,7 +674,7 @@ InterimScene::~InterimScene()
 {
 	delete crosshair;
 	delete image;
-	delete start_button;
+
 	delete animation_manager;
 	delete effect_manager;
 	delete[] player;
@@ -654,7 +687,7 @@ void InterimScene::Render() const
 	InstantDCSet dc_set(RECT{ 0, 0, width, height });
 
 	image->Draw(dc_set.buf_dc, 0, 0, dc_set.bit_rect.right, dc_set.bit_rect.bottom, 0, 0, width, height);
-	start_button->Draw(dc_set.buf_dc, dc_set.bit_rect.right - 100, dc_set.bit_rect.bottom - 70, 80, 50, 0, 0, start_button->GetWidth(), start_button->GetHeight());
+	
 	crosshair->Render(dc_set.buf_dc, dc_set.bit_rect);
 	effect_manager->Render(dc_set.buf_dc, dc_set.bit_rect);
 
@@ -663,6 +696,9 @@ void InterimScene::Render() const
 	ScreenToClient(h_wnd, &pos);
 	TCHAR lpOut[100];
 	TCHAR name[50];
+	TCHAR kill[50];
+	TCHAR death[50];
+
 	TCHAR ip[50];
 	HFONT hFont, OldFont;	// 폰트 지정
 
@@ -673,9 +709,29 @@ void InterimScene::Render() const
 	OldFont = (HFONT)SelectObject(dc_set.buf_dc, hFont);
 
 
-	for (int i = 0; i < PLAYER_NUM; ++i)
-	{
-		if (player_list[i] && (player_list[i]->GetState() == RESULTING)) {
+	TCHAR str[128];
+	wsprintf(str, TEXT("[프로그램 기준] X: %04d, Y: %04d"), pos.x, pos.y);
+
+
+
+		ZeroMemory(lpOut, 100);
+		//ZeroMemory(name, 50);
+		//MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, player_list[g_myid]->GetName(), strlen(player_list[g_myid]->GetName()), name, 50);
+		//wsprintf(lpOut, TEXT("닉네임 : %s"), name);
+		//TextOut(dc_set.buf_dc, 45 + 147, 50, lpOut, lstrlen(lpOut));
+
+		ZeroMemory(kill, 50);
+		MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, player_list[g_myid]->GetName(), strlen(player_list[g_myid]->GetName()), kill, 50); //playerinfo 받는걸로 바꾸기
+		wsprintf(lpOut, TEXT("킬수여기다가 : %s"), kill);
+		TextOut(dc_set.buf_dc, 45 + 147, 250, lpOut, lstrlen(lpOut));
+
+
+		ZeroMemory(death, 50);
+		MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, player_list[g_myid]->GetName(), strlen(player_list[g_myid]->GetName()), death, 50);//playerinfo 받는걸로 바꾸기
+		wsprintf(lpOut, TEXT("죽은수여기다가 : %s"), death);
+		TextOut(dc_set.buf_dc, 45 + 147, 150, lpOut, lstrlen(lpOut));
+
+		/*if (player_list[i] && (player_list[i]->GetState() == RESULTING)) {
 			ZeroMemory(lpOut, 100);
 			ZeroMemory(name, 50);
 			ZeroMemory(ip, 50);
@@ -690,8 +746,8 @@ void InterimScene::Render() const
 			TextOut(dc_set.buf_dc, 45 + 147 * i, 300, lpOut, lstrlen(lpOut));
 
 
-		}
-	}
+		}*/
+	
 
 	SelectObject(dc_set.buf_dc, OldFont);
 	DeleteObject(hFont);

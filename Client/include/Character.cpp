@@ -249,6 +249,36 @@ void Character::RenderPlayerHP(HDC scene_dc, const RECT& bit_rect, const RECT& c
 	int hp_max_hp = (static_cast<double>(hp) / static_cast<double>(max_hp)) * size;
 	rect = { left_top.x + 1, left_top.y + 1, left_top.x + hp_max_hp, left_top.y + height_size };
 	FillRect(scene_dc, &rect, hBrush);
+
+	////=================================
+	//TCHAR lpOut[100];
+	//TCHAR name[50];
+	//TCHAR kill[50];
+	//TCHAR death[50];
+	//HFONT hFont, OldFont;	// 폰트 지정
+
+	//SetBkMode(scene_dc, TRANSPARENT);	// 글자 입력시 배경 투명
+	//SetTextColor(scene_dc, RGB(255, 255, 255));	// 글자 하얀색
+	//hFont = CreateFont(15, 0, 0, 0, 0, 0, 0, 0, HANGEUL_CHARSET, 0, 0, 0,
+	//	VARIABLE_PITCH | FF_ROMAN, TEXT("맑은 고딕"));		// 폰트 등 추후 수정
+	//OldFont = (HFONT)SelectObject(scene_dc, hFont);
+
+	//for (int i = 0; i < PLAYER_NUM; ++i)
+	//{
+	//	ZeroMemory(lpOut, 100);
+	//	ZeroMemory(kill, 50);
+	//	MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, player_list[i]->GetName(), strlen(player_list[i]->GetName()), kill, 50); //playerinfo 받는걸로 바꾸기
+	//	wsprintf(lpOut, TEXT("킬수여기다가 : %s"), kill);
+	//	TextOut(dc_set.buf_dc, 45 + 294, 50 + 10 * i, lpOut, lstrlen(lpOut));
+
+	//	//ZeroMemory(death, 50);
+	//	//MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, player_list[i]->GetName(), strlen(player_list[i]->GetName()), death, 50);//playerinfo 받는걸로 바꾸기
+	//	//wsprintf(lpOut, TEXT("죽은수여기다가 : %s"), death);
+	//	//TextOut(dc_set.buf_dc, 45 + 294 , 50 + 10 * i, lpOut, lstrlen(lpOut));
+	//}
+
+	////=================================
+
 	SelectObject(scene_dc, oldBrush);
 	DeleteObject(hBrush);
 
