@@ -221,10 +221,11 @@ void PlayScene::UpdateInfo(Player* player)
 
 void PlayScene::SetPlayerInfo(PLAYER_INFO p_info[PLAYER_NUM])
 {
-	for (int i = 0; i < PLAYER_NUM; ++i)
-	{
-		player[i]->SetPlayerInfo(p_info[i]);
-	}
+    for (int i = 0; i < PLAYER_NUM; ++i)
+    {
+        player[i]->SetPlayerInfo(p_info[i]);
+    }
+	//player[p_info[0].ID]->SetPlayerInfo(p_info[0]);
 }
 
 void PlayScene::DeleteMissile(int id)
@@ -609,7 +610,7 @@ InterimScene::InterimScene(SOCKET socket, char* name)
 		P_STATE my_packet{};
 		my_packet.size = sizeof(P_STATE);
 		my_packet.type = CS_RESULT;
-		my_packet.state = 1;
+		my_packet.info.state = 1;
 
 		send(server_sock, reinterpret_cast<char*>(&my_packet), sizeof(my_packet), NULL);
 
@@ -706,7 +707,7 @@ void InterimScene::Update(SOCKET socket, char* name)
 	P_STATE my_packet{};
 	my_packet.size = sizeof(P_STATE);
 	my_packet.type = CS_RESULT;
-	my_packet.state = 1;
+	my_packet.info.state = 1;
 
 	send(server_sock, reinterpret_cast<char*>(&my_packet), sizeof(my_packet), NULL);
 

@@ -15,6 +15,7 @@ extern bool game_start;
 
 
 int StartDun = 0;
+int StartChange = 0;
 int StartTime;
 int EndTime;
 
@@ -229,6 +230,7 @@ DWORD WINAPI ClientThread(LPVOID arg)
 			SC_RESULT_PACKET  my_packet{};
 			my_packet.size = sizeof(SC_RESULT_PACKET);
 			if (CntTime < 0) {
+				StartChange = 0;
 				my_packet.type = SC_RESULT;
 				for (int i = 0; i < PLAYER_NUM; ++i) {
 					if (player_list[i]) {
@@ -285,12 +287,13 @@ DWORD WINAPI ClientThread(LPVOID arg)
 		}
 		case CS_RESULT:
 		{
-			printf("result\n");
+			
+			//printf("result\n");
 			player_list[id]->SetState(RESULTING);
 
 			char subBuf[sizeof(P_STATE)]{};
 			recv(player_list[id]->sock, subBuf, sizeof(subBuf), 0);
-			printf("패킷 사이즈 :  %d\n", buf[0]);
+			//printf("패킷 사이즈 :  %d\n", buf[0]);
 
 
 			//플레이어들에게 killmonster이랑 죽은 수 보내주기 - 나중에 여기 부분 몬스터 보내는걸로 수정
@@ -304,23 +307,27 @@ DWORD WINAPI ClientThread(LPVOID arg)
 			//	}
 			//}
 
-			//시간 주고 다시 계산
-			if (StartDun == 0) {
-				printf("시간 다시 줌");
+			//시간 주고 다시 계산(씬전환시마다 호출) 
+			int dungeonID = 0;
+			if (StartChange== 0) {
+				printf("-----시간 다시 줌-----------\n");
 				EndTime = (unsigned)time(NULL) + 5;
-				StartDun = 1;
+				StartChange = 1;
 			}
 			StartTime = (unsigned)time(NULL);
 			CntTime = EndTime - StartTime;
-			printf("초 - %d", CntTime);
+			//printf("초 - %d", CntTime);
 
-			if (CntTime < 0) {
-				printf("send sc_play\n");
+				
+			if (CntTime < 0) { //결과-.플레이어 
+				printf("send sc_play!\n");
+				scene->Check_Dun_Change[id] = true;
 				P_STATE  my_packet{};
 				my_packet.size = sizeof(P_STATE);
 				my_packet.type = SC_RESULT;
-				my_packet.state = 0;
-				StartDun = 0;
+				my_packet.info.state = 0;
+				my_packet.info.dungeonID = scene->GetDungeon()->next_dungeon_id;
+				StartChange = 0;
 				for (int i = 0; i < PLAYER_NUM; ++i) {
 					if (player_list[i]) {
 						send(player_list[i]->sock, reinterpret_cast<char*>(&my_packet), sizeof(my_packet), NULL);
@@ -336,7 +343,8 @@ DWORD WINAPI ClientThread(LPVOID arg)
 		}
 
 		default:
-			printf("Unknown PACKET type [%d]\n", type);
+			//printf("Unknown PACKET type [%d]\n", type); //오류 체크 안보여서 잠시 지움
+			break;
 		}
 	}
 	return 0;

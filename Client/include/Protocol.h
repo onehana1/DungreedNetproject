@@ -85,11 +85,15 @@ struct STATE_PACKET {
 	char	type;
 };
 
+struct P_STATE_INFO {
+	int state; // 0 플레이 / 1 결과
+	int dungeonID = 0;
+};
 
 struct P_STATE {
 	unsigned char size;
 	char	type;
-	int state; // 0 플레이 / 1 결과
+	P_STATE_INFO info;
 };
 
 struct PLAYER_INPUT_INFO {

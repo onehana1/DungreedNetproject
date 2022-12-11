@@ -42,7 +42,7 @@ private:
 	int update_cnt = 0;
 	int Play_count = 0; // 플레이 중인 사람 수 
 
-	void GoNextDungeon();
+	
 	void GoPrevDungeon();
 	void ChangeDungeon(const int dungeon_id);
 	
@@ -57,6 +57,9 @@ public:
 	PLAYER_INFO_MANAGER* SC_INFO;  //보낼 정보 정리 ( Server -> client) 이놈이 변경된 보낼 정보 가지고잇음
 	void InputUpdate(PLAYER_INPUT_INFO INFO);
 	void UpdateInfo(int num, Player* player);
+	Dungeon* GetDungeon() { return dungeon; };
+	void GoNextDungeon();
+
 	
 public:
 	HRESULT Init();
@@ -65,7 +68,7 @@ public:
 		Play_count = num; 
 		SC_INFO = new PLAYER_INFO_MANAGER[num];
 	}
-
+	bool Check_Dun_Change[3]{ false,false,false };
 	PLAYER_INFO_MANAGER Player_Info[PLAYER_NUM];
 	CS_PLAYER_INPUT_INFO_PACKET CS_Player_Info[PLAYER_NUM]; // 서버에서 받으면 대체. 
 

@@ -23,6 +23,9 @@ private:
 public:
 	Scene* scene;
 	PlayScene* play_scene;
+	int StartNum = 1;
+	int Checking = 0;
+	int dungeonID = 0;
 	Framework();
 	~Framework();
 

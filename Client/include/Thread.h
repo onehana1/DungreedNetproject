@@ -104,18 +104,29 @@ DWORD WINAPI RecvThread(LPVOID arg)// //Ŭ���̾�Ʈ���� Recv��
 			break;
 		}
 
-		case SC_RESULT:
+		case SC_RESULT: //질문, 우리 1개씩 받아오는건데 배열 크기 3으로 지정한 이유가있나용 
 		{
 			printf("result\n");
 			//char PlayBuf[sizeof(P_STATE[3])]{}; // 잡은 몬스터와 죽은 횟수로 수정 필요
 			//recv(sock, PlayBuf, sizeof(PlayBuf), 0);
 			printf("packet size :  %d\n", buf[0]);
 
-			char ResultBuf[sizeof(P_STATE[3])]{};
+			char Buf[2]{};
+			recv(sock, Buf, sizeof(Buf), 0);
+
+			char ResultBuf[sizeof(P_STATE_INFO[3])]{};
 			recv(sock, ResultBuf, sizeof(ResultBuf), 0);
 
-			P_STATE p_info[3];
-			memcpy(&p_info, &ResultBuf, sizeof(P_STATE[3]));
+			P_STATE_INFO p_info[3];
+			memcpy(&p_info, &ResultBuf, sizeof(P_STATE_INFO[3]));
+			//if (player_list[0] && p_info->state == 0)/*printf("ID:%d-----\n", p_info[0].dungeonID);*/framework->StartNum = 1; 
+			
+			if (p_info[0].dungeonID != framework->dungeonID) { //던전 아이디가 바뀔시 playscene를 전환하기 위해 bool활성 
+				framework->StartNum = 1;
+				framework->dungeonID = p_info[0].dungeonID;
+				printf("ID:%d----------------------\n", p_info[0].dungeonID);
+			}
+			
 
 			for (int i = 0; i < PLAYER_NUM; ++i)
 			{

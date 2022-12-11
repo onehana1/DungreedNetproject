@@ -95,6 +95,14 @@ void Scene::Update()
 		weapon[i]->Update(player[i], {0, 0});	// 플레이어들에게서 받은 마우스 좌표 넣어 줘야 함
 	}
 
+	if (Check_Dun_Change[0] && Check_Dun_Change[1] && Check_Dun_Change[2]) {
+		Check_Dun_Change[0] = false;
+		Check_Dun_Change[1] = false;
+		Check_Dun_Change[2] = false;
+		printf("던전바꾸기 실행");
+		GoNextDungeon();
+		
+	}
 	HitUpdate();
 	DungeonChangeProc();
 }

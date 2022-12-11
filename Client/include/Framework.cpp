@@ -24,10 +24,18 @@ void Framework::ChangeScene(int scene_num)
 		scene_id = LOBBY;
 		break;
 	case PLAY:
+		if (StartNum > 0&& dungeonID != 0) {
+			StartNum--;
+			Checking++;
+			printf("%d ¹ø¤Š °»½Å ---------------\d\n", Checking, dungeonID);
+			//play_scene->SetDungeon(dungeonID); 
+			play_scene->GoNextDungeon();	
+		}
 		new_scene = play_scene;
 		scene_id = PLAY;
 		break;
 	case RESULT:
+		StartNum = 1;
 		new_scene = new InterimScene(sock, nickname);
 		scene_id = RESULT;
 		break;

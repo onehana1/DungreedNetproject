@@ -64,7 +64,7 @@ private:
 
 	void GoDungeonResult();
 
-	void GoNextDungeon();
+	
 	void GoPrevDungeon();
 	void ChangeDungeon(const int dungeon_id);
 	HRESULT Init();
@@ -85,6 +85,10 @@ public:
 	virtual void Update(SOCKET socket, char* name);
 
 	virtual int ChangeScene();
+	void GoNextDungeon();
+	Dungeon* GetDungeon() { return dungeon; };
+	virtual void SetDungeon(int dungeonID) { ChangeDungeon(dungeonID); Init();
+	};
 
 	Player** GetPlayer() { return player; }
 	MonsterManager* GetMonsterManager(){return monster_manager;};
