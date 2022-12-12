@@ -145,7 +145,7 @@ int main() {
 				StartTime = (unsigned)time(NULL);
 				CntTime = EndTime - StartTime;
 
-				if (CntTime < 0 && map_set<3) {
+				if (CntTime < 0 && map_set<2) {
 					a = 1;
 					//»÷µå¸¦Çô
 					P_STATE my_packet;

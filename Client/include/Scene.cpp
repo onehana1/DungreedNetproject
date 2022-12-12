@@ -168,7 +168,7 @@ void PlayScene::Render() const
 	{
 		ZeroMemory(lpOut, 100);
 		kill = player[i]->GetKillMonster();
-		wsprintf(lpOut, TEXT("%d 플레이어 - 킬 수 : %d"),i, kill);
+		wsprintf(lpOut, TEXT("%dP - 킬 수 : %d"), i+1, kill);
 		TextOut(dc_set.buf_dc, 45 + 294, 50+ 10 * i, lpOut, lstrlen(lpOut));
 
 		//ZeroMemory(death, 50);
@@ -476,7 +476,7 @@ void LobbyScene::Render() const
 			player[i]->Render(dc_set.buf_dc, dc_set.bit_rect);
 
 			MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, player_list[i]->GetName(), strlen(player_list[i]->GetName()), name, 50);
-			wsprintf(lpOut, TEXT("닉네임 : %s"), name);
+			wsprintf(lpOut, TEXT("닉네임 : %dP"), i+1);
 			TextOut(dc_set.buf_dc, 45 + 147 * i, 280, lpOut, lstrlen(lpOut));
 			
 			MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, player_list[i]->GetIp(), strlen(player_list[i]->GetIp()), ip, 50);
@@ -705,7 +705,7 @@ void InterimScene::Render() const
 
 	SetBkMode(dc_set.buf_dc, TRANSPARENT);	// 글자 입력시 배경 투명
 	SetTextColor(dc_set.buf_dc, RGB(255, 255, 255));	// 글자 하얀색
-	hFont = CreateFont(15, 0, 0, 0, 0, 0, 0, 0, HANGEUL_CHARSET, 0, 0, 0,
+	hFont = CreateFont(30, 0, 0, 0, 0, 0, 0, 0, HANGEUL_CHARSET, 0, 0, 0,
 		VARIABLE_PITCH | FF_ROMAN, TEXT("맑은 고딕"));		// 폰트 등 추후 수정
 	OldFont = (HFONT)SelectObject(dc_set.buf_dc, hFont);
 
@@ -724,13 +724,13 @@ void InterimScene::Render() const
 		//ZeroMemory(kill, 50);
 		
 		kill = player_list[g_myid]->GetKillMonster();
-		wsprintf(lpOut, TEXT("킬수여기다가 : %d"), kill);
+		wsprintf(lpOut, TEXT("%d"), kill);
 		TextOut(dc_set.buf_dc, 45 + 147, 250, lpOut, lstrlen(lpOut));
 
 
 		ZeroMemory(death, 50);
 		MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, player_list[g_myid]->GetName(), strlen(player_list[g_myid]->GetName()), death, 50);//playerinfo 받는걸로 바꾸기
-		wsprintf(lpOut, TEXT("죽은수여기다가 : %s"), death);
+		wsprintf(lpOut, TEXT("%dP : %s"), g_myid + 1 , death);
 		TextOut(dc_set.buf_dc, 45 + 147, 150, lpOut, lstrlen(lpOut));
 
 		/*if (player_list[i] && (player_list[i]->GetState() == RESULTING)) {
