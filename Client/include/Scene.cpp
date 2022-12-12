@@ -761,13 +761,13 @@ void InterimScene::Update(SOCKET socket, char* name)
 	crosshair->Update(image->GetWidth(), image->GetHeight());
 	effect_manager->Update(animation_manager);
 
-	server_sock = socket;
+	/*server_sock = socket;
 	P_STATE my_packet{};
 	my_packet.size = sizeof(P_STATE);
 	my_packet.type = CS_RESULT;
 	my_packet.info.state = 1;
 
-	send(server_sock, reinterpret_cast<char*>(&my_packet), sizeof(my_packet), NULL);
+	send(server_sock, reinterpret_cast<char*>(&my_packet), sizeof(my_packet), NULL);*/
 
 	
 }

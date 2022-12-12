@@ -240,63 +240,22 @@ DWORD WINAPI ClientThread(LPVOID arg)
 				}
 			}
 
-			
-
-			//else
-				//my_packet.type = SC_PLAY;
-			/*
-			printf("%d id 출력하기\n", id);
-			my_packet.ID = id;
-
-			my_packet.PPos = scene->SC_INFO[id].PPos;
-			my_packet.State= scene->SC_INFO[id].State;
-			//my_packet.animation_name = scene->SC_INFO[id].animation_name;
-
-			my_packet.hp = scene->SC_INFO[id].hp;
-			my_packet.killMonster = scene->SC_INFO[id].killMonster;
-
-			my_packet.IsMove = scene->SC_INFO[id].IsMove;
-			my_packet.IsAttack = scene->SC_INFO[id].IsAttack;
-			my_packet.IsMisile = scene->SC_INFO[id].IsMisile;
-
-			printf("%d 전송했습니다\n", id);
-			//scene->SC_INFO[id];
-
-			//SC_INFO[ID]로 보낼 정보 찾고 3구역으로 흩뿌리기 
-			for (int i = 0; i < PLAYER_NUM; ++i) {
-				if (player_list[i]) {
-					send(player_list[i]->sock, reinterpret_cast<char*>(&my_packet), sizeof(my_packet), NULL);
-					//iD로 구별되니 각각 보내는 것임.. 
-				}
-			}
-
-			printf("cnttime : %d\n", my_packet.time);
-			*/
-
-
-			
-
-			/*for (int i = 0; i < PLAYER_NUM; ++i) {
-				if (player_list[i] && (player_list[i]->GetState() == PLAYING)) {
-					send(player_list[i]->sock, subBuf, sizeof(subBuf), NULL);
-				}
-			}*/
-
 			break;
 
 		}
 		case CS_RESULT:
 		{
+			CntTime = 0;
 			char Buf[2]{};
 			recv(player_list[id]->sock, Buf, sizeof(Buf), 0);	//padding
-			//printf("result\n");
+			printf("result\n");
 			player_list[id]->SetState(RESULTING);
 
 			char subBuf[sizeof(P_STATE_INFO)]{};
 			recv(player_list[id]->sock, subBuf, sizeof(subBuf), 0);
 			//printf("패킷 사이즈 :  %d\n", buf[0]);
 
-
+			
 			//플레이어들에게 killmonster이랑 죽은 수 보내주기 - 나중에 여기 부분 몬스터 보내는걸로 수정
 			//P_STATE  my_packet{};
 			//my_packet.size = sizeof(P_STATE);
@@ -315,8 +274,13 @@ DWORD WINAPI ClientThread(LPVOID arg)
 				EndTime = (unsigned)time(NULL) + 5;
 				StartChange = 1;
 			}
-			StartTime = (unsigned)time(NULL);
-			CntTime = EndTime - StartTime;
+			while (CntTime>=0)
+			{
+				//printf("%d, %d, %d ", EndTime, StartTime, CntTime);
+				StartTime = (unsigned)time(NULL);
+				CntTime = EndTime - StartTime;
+			}
+
 			//printf("초 - %d", CntTime);
 
 				
@@ -338,6 +302,7 @@ DWORD WINAPI ClientThread(LPVOID arg)
 				}
 
 			}
+			break;
 
 
 
