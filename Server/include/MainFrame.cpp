@@ -104,7 +104,8 @@ int main() {
 		if (fps.count() > 0.01f) {	// 0.01초마다 update, send
 			scene->Update();
 			// 클라에게 몬스터/플레이어 전송 
-			scene->Send();
+			if(scene->Check_Send_Player)
+				scene->Send();
 
 			fps = fpsEnd - fpsEnd;
 		}

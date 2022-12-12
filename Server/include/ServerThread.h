@@ -245,6 +245,7 @@ DWORD WINAPI ClientThread(LPVOID arg)
 		}
 		case CS_RESULT:
 		{
+			scene->Check_Send_Player = false;
 			CntTime = 0;
 			char Buf[2]{};
 			recv(player_list[id]->sock, Buf, sizeof(Buf), 0);	//padding
@@ -293,6 +294,7 @@ DWORD WINAPI ClientThread(LPVOID arg)
 				my_packet.info.state = 0;
 				my_packet.info.dungeonID = scene->GetDungeon()->next_dungeon_id;
 				StartChange = 0;
+				scene->Check_Send_Player = true;
 				for (int i = 0; i < PLAYER_NUM; ++i) {
 					if (player_list[i]) {
 						send(player_list[i]->sock, reinterpret_cast<char*>(&my_packet), sizeof(my_packet), NULL);

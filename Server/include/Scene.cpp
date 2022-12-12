@@ -110,6 +110,7 @@ void Scene::Update()
 
 void Scene::Send()
 {
+	//printf("play sending \n tlqkf\n");
 	SC_PLAYER_INPUT_INFO_PACKET my_packet;
 	my_packet.size = sizeof(SC_PLAYER_INPUT_INFO_PACKET);
 	my_packet.type = SC_PLAY;

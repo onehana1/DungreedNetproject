@@ -59,7 +59,7 @@ public:
 	void UpdateInfo(int num, Player* player);
 	Dungeon* GetDungeon() { return dungeon; };
 	void GoNextDungeon();
-
+	bool Check_Send_Player = true;
 	
 public:
 	HRESULT Init();
