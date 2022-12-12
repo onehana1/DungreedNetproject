@@ -57,6 +57,7 @@ void Player::SetPlayerInfo(PLAYER_INFO p_info)
 	if (hp > info.hp) {
 		red_flash_cnt = 8;
 	}
+	kill_monster = p_info.killMonster;
 	have_to_update = true;
 }
 

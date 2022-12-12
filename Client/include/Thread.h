@@ -95,7 +95,11 @@ DWORD WINAPI RecvThread(LPVOID arg)// //Ŭ���̾�Ʈ���� Recv��
 			PLAYER_INFO p_info[3];
 			memcpy(&p_info, &PlayBuf, sizeof(PLAYER_INFO[3]));
 
-
+			for (int i = 0; i < PLAYER_NUM; ++i)
+			{
+				player_list[i]->SetKillMonster(p_info[i].killMonster);
+			}
+			
 			//printf("id : %d %d %d\n", p_info[0].ID, p_info[1].ID, p_info[2].ID)
 			//framework->play_scene->Player_Info.time = temp.time;
 			framework->play_scene->SetPlayerInfo(p_info);

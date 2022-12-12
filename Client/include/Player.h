@@ -91,6 +91,11 @@ public:
 
 	void SetIp(char* p_ip) { strcpy(ip, p_ip); }
 	char* GetIp() { return ip; }
+
+
+	void SetKillMonster(int p_killmonster) { kill_monster = p_killmonster; }
+	int GetKillMonster() { return kill_monster; }
+
 	
 	PLAYER_INFO GetInfo() { return info; }
 

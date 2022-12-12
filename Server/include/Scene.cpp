@@ -122,6 +122,7 @@ void Scene::Send()
 		
 		my_packet.p_info[i].hp = player[i]->Gethp();
 		my_packet.p_info[i].killMonster = player[i]->GetKillMonster();
+		printf("k-%d\n", player[i]->GetKillMonster());
 
 		my_packet.p_info[i].isMove = player[i]->isMove();
 		my_packet.p_info[i].isAttack = player[i]->GetisAttack();

@@ -82,10 +82,10 @@ public:
 
 	void SetName(char* p_name) { strcpy(name, p_name); }
 	char* GetName() { return name; }
-	bool GetMisile() { return is_doing_missile_attack; }
 
 	void SetIp(in_addr p_ip) { ip = p_ip; }
 	in_addr GetIp() { return ip; }
+	bool GetMisile() { return is_doing_missile_attack; }
 
 	void SetInput(PLAYER_INPUT_INFO p_input);
 	PLAYER_INPUT_INFO GetInput() { return input; }

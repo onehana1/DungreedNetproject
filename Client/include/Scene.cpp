@@ -133,7 +133,7 @@ void PlayScene::Render() const
 	//==================================
 	TCHAR lpOut[100];
 	TCHAR name[50];
-	TCHAR kill[50];
+	int kill;
 	TCHAR death[50];
 	HFONT hFont, OldFont;	// 폰트 지정
 
@@ -150,7 +150,7 @@ void PlayScene::Render() const
 
 	dungeon->Render(dc_set.buf_dc, dc_set.bit_rect);
 	for (int i = 0; i < PLAYER_NUM; ++i) {
-		player[i]->RenderPlayerTOP(dc_set.buf_dc, dc_set.bit_rect, camera->Rect());
+		//player[i]->RenderPlayerTOP(dc_set.buf_dc, dc_set.bit_rect, camera->Rect());
 
 		player[i]->Render(dc_set.buf_dc, dc_set.bit_rect);		
 		player[i]->RenderPlayerHP(dc_set.buf_dc, dc_set.bit_rect, camera->Rect());
@@ -167,9 +167,8 @@ void PlayScene::Render() const
 	for (int i = 0; i < PLAYER_NUM; ++i)
 	{
 		ZeroMemory(lpOut, 100);
-		ZeroMemory(kill, 50);
-		MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, player_list[i]->GetName(), strlen(player_list[i]->GetName()), kill, 50); //playerinfo 받는걸로 바꾸기
-		wsprintf(lpOut, TEXT("킬수여기다가 : %s"), kill);
+		kill = player[i]->GetKillMonster();
+		wsprintf(lpOut, TEXT("%d 플레이어 - 킬 수 : %d"),i, kill);
 		TextOut(dc_set.buf_dc, 45 + 294, 50+ 10 * i, lpOut, lstrlen(lpOut));
 
 		//ZeroMemory(death, 50);
@@ -698,7 +697,7 @@ void InterimScene::Render() const
 	ScreenToClient(h_wnd, &pos);
 	TCHAR lpOut[100];
 	TCHAR name[50];
-	TCHAR kill[50];
+	int kill;
 	TCHAR death[50];
 
 	TCHAR ip[50];
@@ -722,9 +721,10 @@ void InterimScene::Render() const
 		//wsprintf(lpOut, TEXT("닉네임 : %s"), name);
 		//TextOut(dc_set.buf_dc, 45 + 147, 50, lpOut, lstrlen(lpOut));
 
-		ZeroMemory(kill, 50);
-		MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, player_list[g_myid]->GetName(), strlen(player_list[g_myid]->GetName()), kill, 50); //playerinfo 받는걸로 바꾸기
-		wsprintf(lpOut, TEXT("킬수여기다가 : %s"), kill);
+		//ZeroMemory(kill, 50);
+		
+		kill = player_list[g_myid]->GetKillMonster();
+		wsprintf(lpOut, TEXT("킬수여기다가 : %d"), kill);
 		TextOut(dc_set.buf_dc, 45 + 147, 250, lpOut, lstrlen(lpOut));
 
 

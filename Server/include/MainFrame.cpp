@@ -38,7 +38,7 @@ void DrawBuffer(HDC instant_dc, const RECT& rect);
 bool MapPixelCollision(const HDC terrain_dc, const COLORREF& val, const POINT& pt);
 bool CanGoToPos(const HDC terrain_dc, const POINT pos);
 
-int a=1, aa=1, aaa=0;
+int a=1, time_set=1, map_set=0;
 
 int main() {
 	//대기소켓 생성
@@ -110,16 +110,16 @@ int main() {
 				// 클라에게 몬스터/플레이어 전송 
 				scene->Send();
 				//타임
-				if (aa == 1) {
+				if (time_set == 1) {
 					printf("타이머 온\n");
-					EndTime = (unsigned)time(NULL) + 5;
-					aa = 0;
+					EndTime = (unsigned)time(NULL) + 2;
+					time_set = 0;
 				}
 				StartTime = (unsigned)time(NULL);
 				CntTime = EndTime - StartTime;
 				if (CntTime < 0) {
 					a = 0;
-					aa = 1;
+					time_set = 1;
 					//결과창으로 들어가기
 					P_STATE my_packet;
 					my_packet.size = sizeof(P_STATE);
@@ -137,15 +137,15 @@ int main() {
 			}
 			else
 			{
-				if (aa == 1) {
+				if (time_set == 1) {
 					printf("타이머 온\n");
-					EndTime = (unsigned)time(NULL) + 5;
-					aa = 0;
+					EndTime = (unsigned)time(NULL) + 2;
+					time_set = 0;
 				}
 				StartTime = (unsigned)time(NULL);
 				CntTime = EndTime - StartTime;
 
-				if (CntTime < 0 && aaa<3) {
+				if (CntTime < 0 && map_set<3) {
 					a = 1;
 					//샌드를혀
 					P_STATE my_packet;
@@ -154,7 +154,7 @@ int main() {
 					my_packet.info.state = 0;
 					my_packet.info.dungeonID = scene->GetDungeon()->next_dungeon_id;
 					scene->GoNextDungeon();
-					++aaa;
+					++map_set;
 
 
 
@@ -164,7 +164,7 @@ int main() {
 						}
 					}
 
-					aa = 1;
+					time_set = 1;
 				}
 
 			}

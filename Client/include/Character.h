@@ -152,6 +152,7 @@ public:
 	int GetHeight() { return height; }
 	bool GetDirection() { return looking_direction; }
 
+
 	void ChangeAnimation(const char* a_name);
 	std::string GetAnimationName() { return animation_name; }
 

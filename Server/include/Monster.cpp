@@ -418,6 +418,9 @@ void MonsterManager::Send()
 	int num = 0;
 	for (int i = 0; i < monsters.size(); ++i) {
 		if (monsters[i]->IsAppeared()) {
+			if (monsters[i]->id == 4000013) {
+				monsters[i]->m_id = 0;
+			}
 			my_packet.monster[num].Direction = monsters[i]->GetDirection();
 			my_packet.monster[num].hp = monsters[i]->Gethp();
 			my_packet.monster[num].id = monsters[i]->GetID();
