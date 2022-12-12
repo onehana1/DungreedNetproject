@@ -86,7 +86,7 @@ struct STATE_PACKET {
 };
 
 struct P_STATE_INFO {
-	int state; // 0 플레이 / 1 결과
+	int state=1; // 0 플레이 / 1 결과
 	int dungeonID = 0;
 };
 

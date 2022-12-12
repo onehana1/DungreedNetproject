@@ -185,10 +185,12 @@ void PlayScene::Render() const
 
 void PlayScene::Update(SOCKET socket, char* name)
 {
+	
 	server_sock = socket;
 	CS_PLAYER_INPUT_INFO_PACKET my_packet;
 
 	my_packet.size = sizeof(CS_PLAYER_INPUT_INFO_PACKET);
+
 	my_packet.type = CS_PLAY;
 
 	my_packet.p_info.key.a = GetAsyncKeyState('A');
@@ -223,10 +225,10 @@ void PlayScene::Update(SOCKET socket, char* name)
 
 int PlayScene::ChangeScene()
 {
-	for (int i = 0; i < PLAYER_NUM; ++i)
+	/*for (int i = 0; i < PLAYER_NUM; ++i)
 		if (player_list[i]->GetState() == RESULTING) {
 			return 4;
-		}
+		}*/
 	return 0;
 
 }
@@ -641,13 +643,13 @@ InterimScene::InterimScene(SOCKET socket, char* name)
 {
 	try {
 		//p가 지금 result 창에 있다만 알려준다.
-		server_sock = socket;
+	/*	server_sock = socket;
 		P_STATE my_packet{};
 		my_packet.size = sizeof(P_STATE);
 		my_packet.type = CS_RESULT;
 		my_packet.info.state = 1;
 
-		send(server_sock, reinterpret_cast<char*>(&my_packet), sizeof(my_packet), NULL);
+		send(server_sock, reinterpret_cast<char*>(&my_packet), sizeof(my_packet), NULL);*/
 
 
 		image = new Image(L"Background\\InterimResults.png");

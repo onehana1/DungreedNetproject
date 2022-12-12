@@ -78,7 +78,6 @@ DWORD WINAPI RecvThread(LPVOID arg)// //Ŭ���̾�Ʈ���� Recv��
 			
 		case SC_PLAY:
 		{
-			//printf("playing\n");
 			for (int i = 0; i < PLAYER_NUM; ++i)
 			{
 				if (player_list[i])
@@ -106,10 +105,10 @@ DWORD WINAPI RecvThread(LPVOID arg)// //Ŭ���̾�Ʈ���� Recv��
 
 		case SC_RESULT: //질문, 우리 1개씩 받아오는건데 배열 크기 3으로 지정한 이유가있나용 
 		{
-			printf("result\n");
 			//char PlayBuf[sizeof(P_STATE[3])]{}; // 잡은 몬스터와 죽은 횟수로 수정 필요
 			//recv(sock, PlayBuf, sizeof(PlayBuf), 0);
 			printf("packet size :  %d\n", buf[0]);
+
 
 			char Buf[2]{};
 			recv(sock, Buf, sizeof(Buf), 0);
@@ -135,8 +134,9 @@ DWORD WINAPI RecvThread(LPVOID arg)// //Ŭ���̾�Ʈ���� Recv��
 					player_list[i]->SetState(PLAYING);
 					framework->ChangeScene(3);
 				}
-				else if (player_list[i]) {
-					printf("change to playing으로 가지 못했다\n");
+				else if (player_list[i] && p_info.state == 1) {
+					framework->ChangeScene(4);
+					printf("not change to playing\n");
 					player_list[i]->SetState(RESULTING);
 				}
 

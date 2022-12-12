@@ -99,7 +99,7 @@ void Scene::Update()
 		Check_Dun_Change[0] = false;
 		Check_Dun_Change[1] = false;
 		Check_Dun_Change[2] = false;
-		printf("던전바꾸기 실행");
+		printf("던전바꾸기 실행 %d \n", dungeon->next_dungeon_id);
 		GoNextDungeon();
 		
 	}
@@ -138,6 +138,8 @@ void Scene::Send()
 			send(player_list[i]->sock, reinterpret_cast<char*>(&my_packet), sizeof(my_packet), NULL);
 		}
 	}
+
+
 
 	monster_manager->Send();
 	missile_manager->Send();

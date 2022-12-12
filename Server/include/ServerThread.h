@@ -227,92 +227,96 @@ DWORD WINAPI ClientThread(LPVOID arg)
 			
 			//printf("input update");
 			
-			SC_RESULT_PACKET  my_packet{};
-			my_packet.size = sizeof(SC_RESULT_PACKET);
-			if (CntTime < 0) {
-				printf("결과창으로 보내십시오.\n");
-				StartChange = 0;
-				my_packet.type = SC_RESULT;
-				for (int i = 0; i < PLAYER_NUM; ++i) {
-					if (player_list[i]) {
-						send(player_list[i]->sock, reinterpret_cast<char*>(&my_packet), sizeof(my_packet), NULL);
-						//iD로 구별되니 각각 보내는 것임.. 
-					}
-				}
-			}
+			//P_STATE  my_packet{};
+			//my_packet.size = sizeof(P_STATE);
+			//if (CntTime < 0) {
+			//	my_packet.info.state = 1;
+			//	printf("결과창으로 보내십시오.\n");
+			//	player_list[id]->SetState(RESULTING);
+			//	StartChange = 0;
+			//	my_packet.type = SC_RESULT;
+			//	for (int i = 0; i < PLAYER_NUM; ++i) {
+			//		if (player_list[i]) {
+			//			send(player_list[i]->sock, reinterpret_cast<char*>(&my_packet), sizeof(my_packet), NULL);
+			//			//iD로 구별되니 각각 보내는 것임.. 
+			//		}
+			//	}
+			//}
 
 			break;
 
 		}
 		case CS_RESULT:
 		{
-			scene->Check_Send_Player = false;
-			CntTime = 0;
-			char Buf[2]{};
-			recv(player_list[id]->sock, Buf, sizeof(Buf), 0);	//padding
-			printf("result\n");
-			player_list[id]->SetState(RESULTING);
+			//scene->Check_Send_Player = false;
+			//CntTime = 0;
+			//char Buf[2]{};
+			//recv(player_list[id]->sock, Buf, sizeof(Buf), 0);	//padding
+			//printf("result\n");
+			//player_list[id]->SetState(RESULTING);
 
-			char subBuf[sizeof(P_STATE_INFO)]{};
-			recv(player_list[id]->sock, subBuf, sizeof(subBuf), 0);
-			//printf("패킷 사이즈 :  %d\n", buf[0]);
+			//char subBuf[sizeof(P_STATE_INFO)]{};
+			//recv(player_list[id]->sock, subBuf, sizeof(subBuf), 0);
+			////printf("패킷 사이즈 :  %d\n", buf[0]);
 
-			
-			//플레이어들에게 killmonster이랑 죽은 수 보내주기 - 나중에 여기 부분 몬스터 보내는걸로 수정
-			//P_STATE  my_packet{};
-			//my_packet.size = sizeof(P_STATE);
-			//my_packet.type = SC_RESULT;
-			//my_packet.state = 0;
-			//for (int i = 0; i < PLAYER_NUM; ++i) {
-			//	if (player_list[i]) {
-			//		send(player_list[i]->sock, reinterpret_cast<char*>(&my_packet), sizeof(my_packet), NULL);
-			//	}
+			//
+			////플레이어들에게 killmonster이랑 죽은 수 보내주기 - 나중에 여기 부분 몬스터 보내는걸로 수정
+			////P_STATE  my_packet{};
+			////my_packet.size = sizeof(P_STATE);
+			////my_packet.type = SC_RESULT;
+			////my_packet.state = 0;
+			////for (int i = 0; i < PLAYER_NUM; ++i) {
+			////	if (player_list[i]) {
+			////		send(player_list[i]->sock, reinterpret_cast<char*>(&my_packet), sizeof(my_packet), NULL);
+			////	}
+			////}
+
+			////시간 주고 다시 계산(씬전환시마다 호출) 
+			//int dungeonID = 0;
+			//if (StartChange== 0) {
+			//	printf("-----시간 다시 줌-----------\n");
+			//	EndTime = (unsigned)time(NULL) + 5;
+			//	StartChange = 1;
+			//}
+			//while (CntTime>=0)
+			//{
+			//	//printf("%d, %d, %d ", EndTime, StartTime, CntTime);
+			//	StartTime = (unsigned)time(NULL);
+			//	CntTime = EndTime - StartTime;
 			//}
 
-			//시간 주고 다시 계산(씬전환시마다 호출) 
-			int dungeonID = 0;
-			if (StartChange== 0) {
-				printf("-----시간 다시 줌-----------\n");
-				EndTime = (unsigned)time(NULL) + 5;
-				StartChange = 1;
-			}
-			while (CntTime>=0)
-			{
-				//printf("%d, %d, %d ", EndTime, StartTime, CntTime);
-				StartTime = (unsigned)time(NULL);
-				CntTime = EndTime - StartTime;
-			}
+			////printf("초 - %d", CntTime);
 
-			//printf("초 - %d", CntTime);
+			//	
+			//if (CntTime < 0) { //결과-.플레이어 
+			//	StartDun = 0;
+			//	printf("send sc_play!\n");
+			//	scene->Check_Dun_Change[id] = true;
+			//	P_STATE  my_packet{};
+			//	my_packet.size = sizeof(P_STATE);
+			//	my_packet.type = SC_RESULT;
+			//	my_packet.info.state = 0;
+			//	my_packet.info.dungeonID = scene->GetDungeon()->next_dungeon_id;
+			//	printf("next_dungeon_id : %d\n", scene->GetDungeon()->next_dungeon_id);
+			//	StartChange = 0;
+			//	scene->Check_Send_Player = true;
+			//	//for (int i = 0; i < PLAYER_NUM; ++i) {
+			//	//	if (player_list[i]) {
+			//	//		send(player_list[i]->sock, reinterpret_cast<char*>(&my_packet), sizeof(my_packet), NULL);
+			//	//		player_list[id]->SetState(PLAYING);
+			//	//		//iD로 구별되니 각각 보내는 것임.. 
+			//	//	}
+			//	//}
+			//	if (player_list[id]) {
+			//		printf("다시 플레잉으로 전환해");
+			//		send(player_list[id]->sock, reinterpret_cast<char*>(&my_packet), sizeof(my_packet), NULL);
+			//		player_list[id]->SetState(PLAYING);
+			//		//iD로 구별되니 각각 보내는 것임.. 
+			//	}
 
-				
-			if (CntTime < 0) { //결과-.플레이어 
-				StartDun = 0;
-				printf("send sc_play!\n");
-				scene->Check_Dun_Change[id] = true;
-				P_STATE  my_packet{};
-				my_packet.size = sizeof(P_STATE);
-				my_packet.type = SC_RESULT;
-				my_packet.info.state = 0;
-				my_packet.info.dungeonID = scene->GetDungeon()->next_dungeon_id;
-				StartChange = 0;
-				scene->Check_Send_Player = true;
-				//for (int i = 0; i < PLAYER_NUM; ++i) {
-				//	if (player_list[i]) {
-				//		send(player_list[i]->sock, reinterpret_cast<char*>(&my_packet), sizeof(my_packet), NULL);
-				//		player_list[id]->SetState(PLAYING);
-				//		//iD로 구별되니 각각 보내는 것임.. 
-				//	}
-				//}
-				if (player_list[id]) {
-					send(player_list[id]->sock, reinterpret_cast<char*>(&my_packet), sizeof(my_packet), NULL);
-					player_list[id]->SetState(PLAYING);
-					//iD로 구별되니 각각 보내는 것임.. 
-				}
-
-				
-			}
-			break;
+			//	
+			//}
+			//break;
 
 
 
