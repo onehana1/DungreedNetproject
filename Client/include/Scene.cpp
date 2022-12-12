@@ -173,7 +173,7 @@ void PlayScene::Render() const
 	effect_manager->Render(dc_set.buf_dc, dc_set.bit_rect);
 
 	//==================================
-	int temp=0;
+	int temp =0;
 	int temp2 = 0;
 
 	for (int i = 0; i < PLAYER_NUM; ++i)
