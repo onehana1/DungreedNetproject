@@ -135,8 +135,10 @@ DWORD WINAPI RecvThread(LPVOID arg)// //Ŭ���̾�Ʈ���� Recv��
 					player_list[i]->SetState(PLAYING);
 					framework->ChangeScene(3);
 				}
-				else if (player_list[i])
+				else if (player_list[i]) {
+					printf("change to playing으로 가지 못했다\n");
 					player_list[i]->SetState(RESULTING);
+				}
 
 			}
 			break;

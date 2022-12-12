@@ -200,8 +200,11 @@ void Scene::GoNextDungeon()
 		for (int i = 0; i < PLAYER_NUM; ++i) {
 			player[i]->PlaceWithDungeonLeft(dungeon);
 		}
+		printf("다음 던전\n");
 	}
 	catch (const TCHAR* error_message) {
+		printf("다음 던전 안됨\n");
+
 		MessageBox(h_wnd, error_message, L"Error", MB_OK);
 	}
 }

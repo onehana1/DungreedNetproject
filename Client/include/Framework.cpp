@@ -28,8 +28,8 @@ void Framework::ChangeScene(int scene_num)
 			StartNum--;
 			Checking++;
 			printf("%d ¹ø¤Š °»½Å ---------------\d\n", Checking, dungeonID);
-			//play_scene->SetDungeon(dungeonID); 
-			play_scene->GoNextDungeon();	
+			play_scene->SetDungeon(dungeonID); 
+			//play_scene->GoNextDungeon();	
 		}
 		new_scene = play_scene;
 		scene_id = PLAY;

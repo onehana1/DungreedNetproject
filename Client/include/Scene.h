@@ -87,7 +87,17 @@ public:
 	virtual int ChangeScene();
 	void GoNextDungeon();
 	Dungeon* GetDungeon() { return dungeon; };
-	virtual void SetDungeon(int dungeonID) { ChangeDungeon(dungeonID); Init();
+	virtual void SetDungeon(int dungeonID) {
+		try {
+			ChangeDungeon(dungeonID);
+			Init();
+			for (int i = 0; i < PLAYER_NUM; ++i) {
+				player[i]->PlaceWithDungeonLeft(dungeon);
+			}
+		}
+		catch (const TCHAR* error_message) {
+			MessageBox(h_wnd, error_message, L"Error", MB_OK);
+		}
 	};
 
 	Player** GetPlayer() { return player; }

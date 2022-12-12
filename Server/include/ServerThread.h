@@ -230,6 +230,7 @@ DWORD WINAPI ClientThread(LPVOID arg)
 			SC_RESULT_PACKET  my_packet{};
 			my_packet.size = sizeof(SC_RESULT_PACKET);
 			if (CntTime < 0) {
+				printf("결과창으로 보내십시오.\n");
 				StartChange = 0;
 				my_packet.type = SC_RESULT;
 				for (int i = 0; i < PLAYER_NUM; ++i) {
@@ -286,6 +287,7 @@ DWORD WINAPI ClientThread(LPVOID arg)
 
 				
 			if (CntTime < 0) { //결과-.플레이어 
+				StartDun = 0;
 				printf("send sc_play!\n");
 				scene->Check_Dun_Change[id] = true;
 				P_STATE  my_packet{};
@@ -295,14 +297,20 @@ DWORD WINAPI ClientThread(LPVOID arg)
 				my_packet.info.dungeonID = scene->GetDungeon()->next_dungeon_id;
 				StartChange = 0;
 				scene->Check_Send_Player = true;
-				for (int i = 0; i < PLAYER_NUM; ++i) {
-					if (player_list[i]) {
-						send(player_list[i]->sock, reinterpret_cast<char*>(&my_packet), sizeof(my_packet), NULL);
-						player_list[id]->SetState(PLAYING);
-						//iD로 구별되니 각각 보내는 것임.. 
-					}
+				//for (int i = 0; i < PLAYER_NUM; ++i) {
+				//	if (player_list[i]) {
+				//		send(player_list[i]->sock, reinterpret_cast<char*>(&my_packet), sizeof(my_packet), NULL);
+				//		player_list[id]->SetState(PLAYING);
+				//		//iD로 구별되니 각각 보내는 것임.. 
+				//	}
+				//}
+				if (player_list[id]) {
+					send(player_list[id]->sock, reinterpret_cast<char*>(&my_packet), sizeof(my_packet), NULL);
+					player_list[id]->SetState(PLAYING);
+					//iD로 구별되니 각각 보내는 것임.. 
 				}
 
+				
 			}
 			break;
 
