@@ -28,6 +28,8 @@ HINSTANCE g_h_inst;
 LPCTSTR lpszClass = L"Window Class Name";
 LPCTSTR lpszWindowName = L"windows program";
 
+HANDLE hReadEvent;
+
 LRESULT CALLBACK WndProc(HWND h_wnd, UINT u_msg, WPARAM w_param, LPARAM l_param);
 void PrepareToDoubleBuffering();
 void DoubleBuffering();
@@ -43,12 +45,13 @@ int a=1, time_set=1, map_set=0;
 int main() {
 	//措扁家南 积己
 
-
+	hReadEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
 	LISTEN = Create_Listen();
 	scene = new Scene;
 
 	HANDLE hThread;
 	int retval;
+	SetEvent(hReadEvent);
 	while (true)
 	{
 		int num = FindEmptyInPlayerList(player_list);

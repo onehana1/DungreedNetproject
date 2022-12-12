@@ -39,7 +39,7 @@ DWORD WINAPI RecvThread(LPVOID arg)// //Ŭ���̾�Ʈ���� Recv��
 			LOGIN_INFO loginInfo[3];
 			memcpy(&id, &IdBuf, sizeof(short));
 			memcpy(&loginInfo, &subBuf, sizeof(LOGIN_INFO[3]));
-			g_myid = my_id = id;
+			g_myid = my_id  = id;
 
 			printf("id : %d\n", my_id);
 
@@ -127,20 +127,20 @@ DWORD WINAPI RecvThread(LPVOID arg)// //Ŭ���̾�Ʈ���� Recv��
 			if (p_info.dungeonID != framework->dungeonID) { //던전 아이디가 바뀔시 playscene를 전환하기 위해 bool활성 
 				framework->StartNum = 1;
 				framework->dungeonID = p_info.dungeonID;
-				printf("ID:%d----------------------\n", p_info.dungeonID);
+				//printf("ID:%d----------------------\n", p_info.dungeonID);
 			}
 			
 
 			for (int i = 0; i < PLAYER_NUM; ++i)
 			{
 				if (player_list[i] && p_info.state == 0) {
-					printf("change to playing\n");
+					//printf("change to playing\n");
 					player_list[i]->SetState(PLAYING);
 					framework->ChangeScene(3);
 				}
 				else if (player_list[i] && p_info.state == 1) {
 					framework->ChangeScene(4);
-					printf("not change to playing\n");
+					//printf("not change to playing\n");
 					player_list[i]->SetState(RESULTING);
 				}
 

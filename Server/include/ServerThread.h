@@ -10,6 +10,7 @@
 
 std::vector<Player*> player_list(3, NULL);
 //Scene* Info_Scene = new Scene;
+extern HANDLE hReadEvent;
 extern Scene* scene;
 extern bool game_start;
 
@@ -58,6 +59,8 @@ DWORD WINAPI ClientThread(LPVOID arg)
 	int id = (int)arg;
 
 	while (true) {
+		
+		
 		char buf[2];
 		DWORD recvByte{ 0 }, recvFlag{ 0 };
 		//recv(sock, buf, sizeof(buf), MSG_WAITALL);
@@ -102,7 +105,8 @@ DWORD WINAPI ClientThread(LPVOID arg)
 		//SHORT key{ static_cast<SHORT>(buf[2]) };
 
 		
-
+		int retval = WaitForSingleObject(hReadEvent, INFINITE);
+		//printf("%d ----%d\n", id);
 		switch (type)
 		{
 		case CS_LOGIN: //로그인
@@ -326,6 +330,7 @@ DWORD WINAPI ClientThread(LPVOID arg)
 			printf("Unknown PACKET type [%d]\n", type); //오류 체크 안보여서 잠시 지움
 			//break;
 		}
+		SetEvent(hReadEvent);
 	}
 	return 0;
 }
