@@ -21,6 +21,14 @@ int Scene::ChangeScene()
 	return 0;
 }
 
+int compare(const void* one, const void* two) {
+	if (*(int*)one > *(int*)two)
+		return 1;
+	else if (*(int*)one < *(int*)two)
+		return -1;
+	else return 0;
+}
+
 //------------------------------------------------------------------------------------------------------------------
 
 PlayScene::PlayScene()
@@ -134,6 +142,7 @@ void PlayScene::Render() const
 	TCHAR lpOut[100];
 	TCHAR name[50];
 	int kill;
+	int killarr[3][2];
 	TCHAR death[50];
 	HFONT hFont, OldFont;	// 폰트 지정
 
@@ -164,18 +173,51 @@ void PlayScene::Render() const
 	effect_manager->Render(dc_set.buf_dc, dc_set.bit_rect);
 
 	//==================================
+	int temp=0;
+	int temp2 = 0;
+
 	for (int i = 0; i < PLAYER_NUM; ++i)
 	{
-		ZeroMemory(lpOut, 100);
-		kill = player[i]->GetKillMonster();
-		wsprintf(lpOut, TEXT("%dP - 킬 수 : %d"), i+1, kill);
-		TextOut(dc_set.buf_dc, 45 + 294, 50+ 10 * i, lpOut, lstrlen(lpOut));
+		killarr[i][0] = player[i]->GetKillMonster();
+		killarr[i][1] = i;
+
+	}
+	{
+		for (int i = 0; i < 3 - 1; i++)
+		{
+			for (int j = 0; j < 3 - 1 - i; j++)
+			{
+				if (killarr[j][0] < killarr[j + 1][0])
+				{
+					temp = killarr[j][0];
+					temp2 = killarr[j][1];
+
+					killarr[j][0] = killarr[j + 1][0];
+					killarr[j][1] = killarr[j + 1][1];
+
+					killarr[j + 1][0] = temp;
+					killarr[j + 1][1] = temp2;
+
+				}
+			}
+		}
+	}
+		
 
 		//ZeroMemory(death, 50);
 		//MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, player_list[i]->GetName(), strlen(player_list[i]->GetName()), death, 50);//playerinfo 받는걸로 바꾸기
 		//wsprintf(lpOut, TEXT("죽은수여기다가 : %s"), death);
 		//TextOut(dc_set.buf_dc, 45 + 294 , 50 + 10 * i, lpOut, lstrlen(lpOut));
+		
+	for (int i = 0; i < PLAYER_NUM; ++i) {
+		ZeroMemory(lpOut, 100);
+		wsprintf(lpOut, TEXT("%dP - 킬 수 : %d"), killarr[i][1] + 1, killarr[i][0]);
+		TextOut(dc_set.buf_dc, 45 + 294, 50 + 10 * i, lpOut, lstrlen(lpOut));
 	}
+	
+
+
+
 
 	SelectObject(dc_set.buf_dc, OldFont);
 	DeleteObject(hFont);

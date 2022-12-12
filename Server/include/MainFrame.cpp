@@ -112,7 +112,7 @@ int main() {
 				//타임
 				if (time_set == 1) {
 					printf("타이머 온\n");
-					EndTime = (unsigned)time(NULL) + 2;
+					EndTime = (unsigned)time(NULL) + 10;
 					time_set = 0;
 				}
 				StartTime = (unsigned)time(NULL);
